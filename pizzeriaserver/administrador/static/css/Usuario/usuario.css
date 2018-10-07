@@ -1,0 +1,39 @@
+.main-container {
+	padding: 25px;
+	text-align: center;
+	width: 650px;
+	margin: 100px auto;
+	border: 2px solid gray;
+	border-radius: 7px;
+}
+.informacion-container {
+	margin: 0px auto 10px;
+	padding: 5px 0px;
+	width: 600px;
+	display: flex;
+	text-align: left;
+	border-bottom: 1px solid gray;
+}
+.informacion-container > a {
+	color: black;
+	width: 70%;
+}
+.informacion-container > a:hover {
+	color: #7eb2ff;
+}
+.btn-container {
+	width: 30%;
+	display: flex;
+	text-align: right;
+}
+
+/* ESTILOS DE BOTON */
+.usuario-activo-btn {
+	background-color: green;
+	margin: 0px 5px;
+	color: white;
+}
+.usuario-inactivo-btn {
+	background-color: red;
+	color: white;
+}

@@ -1,0 +1,16 @@
+.main-container {
+	margin: 100px 0px; 
+}
+.sub-container {
+	width: 400px;
+	padding: 20px;
+	border: 2px solid gray;
+	border-radius: 7px;
+	margin: auto;
+}
+.sub2-container > h4 {
+	border-bottom: 1px solid gray;
+}
+.sub2-container > h5 {
+	margin-left: 10px;
+}

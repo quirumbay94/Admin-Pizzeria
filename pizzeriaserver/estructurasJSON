@@ -1,0 +1,18 @@
+***	ESTRUCTURA DE JSON	***
+
+-- LOGIN -> (POST) http://127.0.0.1:8000/rest/login
+{
+	'CORREO' : 'ejemplo@gmail.com',
+	'CONTRASENA' : 'contrasena123'
+}
+
+
+-- REGISTRO -> (POST) http://127.0.0.1:8000/rest/registrar
+{
+	'CORREO' : 'ejemplo@gmail.com',
+	'CONTRASENA' : 'contrasena123',
+	'NOMBRES' : 'Julio',
+	'APELLIDOS' : 'Cesar',
+	'CEDULA' : '1234567890',
+	'TELEFONO' : '0999999999'
+}

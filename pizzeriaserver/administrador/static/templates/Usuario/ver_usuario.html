@@ -1,0 +1,29 @@
+{% load static %}
+{% include 'General/header.html' %}
+{% include 'General/navbar.html' %}
+{% include 'General/subbarra.html' %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/Usuario/ver_usuario.css' %}">
+<div class="main-container">
+	<div class="sub-container">
+		<div class="sub2-container">
+			<h4>Nombres</h4>
+			<h5>{{ USUARIO.nombres }}</h5>
+		</div>
+		<div class="sub2-container">
+			<h4>Apellidos</h4>
+			<h5>{{ USUARIO.apellidos }}</h5>
+		</div>
+		<div class="sub2-container">
+			<h4>Teléfono</h4>
+			<h5>{{ USUARIO.telefono }}</h5>
+		</div>
+		<div class="sub2-container">
+			<h4>Correo</h4>
+			<h5>{{ USUARIO.correo }}</h5>
+		</div>
+		<div class="sub2-container">
+			<h4>Cédula</h4>
+			<h5>{{ USUARIO.cedula }}</h5>
+		</div>
+	</div>
+</div>

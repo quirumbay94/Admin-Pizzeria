@@ -1,0 +1,26 @@
+form {
+	margin: 0px;
+}
+small {
+	text-align: center;
+	color: red;
+}
+.login-wrapper {
+	width: 100%;
+	margin: 0% auto;
+	padding-top: 12.5%; 
+}
+.login-container {
+	width: 500px;
+	margin: auto;
+	padding: 20px;
+	border-radius: 7px;
+	border: 2px solid black; 
+}
+.login-title-h2 {
+	text-align: center;
+	margin: 10px;
+}
+.login-btn {
+	margin: 20px 0px 0px 380px;
+}

@@ -1,0 +1,25 @@
+nav {
+	width: 100%;
+	display: flex;
+	padding: 15px 10px;
+	background-color: lightgray;
+}
+form {
+	margin: 0px;
+}
+.callcenter-a {
+	color: black;
+	font-size: 23px;
+	font-weight: 500;
+	margin-left: 15px;
+}
+.bienvenido-title-h4 {
+	margin: 0px 0px 0px auto;
+	padding-top: 7px;
+}
+.btn-logout {
+	background-color: lightgray;
+	border-radius: 7px;
+	border: 1px solid gray;
+	margin: 0px 0px 0px 10px;
+}

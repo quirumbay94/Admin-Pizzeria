@@ -1,0 +1,53 @@
+form {
+	display: contents;
+	margin: 0px;
+}
+.btn-regresar {
+	border: 2px solid gray;
+	border-radius: 7px;
+	font-size: 20px;
+	color: darkgray;
+	height: 45px;
+}
+.title-container {
+	display: flex;
+	padding: 20px;
+}
+.title-h1 {
+	height: 45px;
+	width: 750px;
+	text-align: center;
+	margin: 0px 0px 0px calc(50% - 375px - 108.38px);
+}
+.opcion-wrapper {
+	width: 975px;
+	margin: 25px auto;
+}
+.opcion-container-button {
+	width: 200px;
+	height: 250px;
+	margin: 20px 20px;
+	padding: 30px;
+	border-radius: 7px;
+	border: 2px solid gray;
+	position: relative;
+}
+.opcion-container-button:hover {
+	background-color: lightgray;
+}
+.opcion-container-button:focus {
+	outline: 0px;
+}
+.opcion-aumentar-h3 {
+	font-size: 120px;
+    width: 136px;
+    position: absolute;
+    top: 24px;
+    left: 34px;
+}
+.opcion-tittle-h3 {
+	width: 136px;
+	position: absolute;
+	top: 65px;
+	left: 30px;
+}
