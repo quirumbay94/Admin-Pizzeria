@@ -13,7 +13,6 @@ def redireccionar(request):
 		return redirect("menu")
 	return redirect("login")
 
-
 ## AUTH ##
 def verificarSesion(request):
 	sesion = request.session.get("SESION",None)
@@ -86,7 +85,6 @@ def ver_usuario(request, usuario_id):
 	paquete = {'USUARIO' : usuario, 'URL' : 'usuario', 'TITULO' : 'USUARIOS'}
 	paquete["NOMBRE"] = request.session["DETALLES_PERSONALES"]['NOMBRE'] ##NOMBRE DEL USUARIO PARA LA BARRA DE NAV
 	return render(request, "Usuario/ver_usuario.html", paquete)
-
 
 
 
