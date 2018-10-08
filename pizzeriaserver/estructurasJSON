@@ -16,20 +16,3 @@
 	'CEDULA' : '1234567890',
 	'TELEFONO' : '0999999999'
 }
-
-
--- VER USUARIO -> (GET) http://127.0.0.1:8000/rest/usuario/ver/<USUARIO_ID>   || NOTA: USUARIO_ID = id de instancia de Detalles_Personales ||
-** NO LLEVA CUERPO ESTE REQUEST, SOLO NECESITA TENER EL ID EL USUAIRO EN EL URL **
-
-EJEMPLO: http://127.0.0.1:8000/rest/usuario/ver/3
-
-
--- EDITAR USUARIO -> (POST) http://127.0.0.1:8000/rest/usuario/editar/<USUARIO_ID> || NOTA: USUARIO_ID = id de instancia de Detalles_Personales ||
-{
-	'NOMBRES' : 'Paul',
-	'APELLIDOS' : 'Estrada',
-	'CORREO' : 'pdestrad@gmail.com',
-	'TELEFONO' : '0903290434',
-	'CEDULA' : '123123123'
-
-}

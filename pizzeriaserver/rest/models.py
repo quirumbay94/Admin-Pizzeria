@@ -39,5 +39,3 @@ class Detalles_Personales(models.Model):
 			return p
 		except:
 			return None
-
-
