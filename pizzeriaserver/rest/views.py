@@ -53,6 +53,7 @@ def registrar(request):
 			return JsonResponse({'RESPUESTA': 'SOLICITUD_INCOMPLETA'})
 	return JsonResponse({'RESPUESTA': 'ERROR_SOLICITUD'})
 
+@csrf_exempt
 def ver_usuario(request, usuario_id):
 	if request.method == "GET":
 		usuario = Detalles_Personales.objects.get(pk=usuario_id)
