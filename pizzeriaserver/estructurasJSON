@@ -16,3 +16,20 @@
 	'CEDULA' : '1234567890',
 	'TELEFONO' : '0999999999'
 }
+
+
+-- VER USUARIO -> (GET) http://127.0.0.1:8000/rest/usuario/ver/<USUARIO_ID> 
+** NOTA: USUARIO_ID = id de Detalles_Personales ** 
+NO LLEVA CUERPO EL REQUEST
+
+
+-- EDITAR USUARIO -> (POST) http://127.0.0.1:8000/rest/usuario/editar/<USUARIO_ID>
+** NOTA: USUARIO_ID = id de Detalles_Personales **
+{ 
+	'CORREO' : 'ejemplo@gmail.com',
+	'CONTRASENA' : 'contrasena123',
+	'NOMBRES' : 'Julio',
+	'APELLIDOS' : 'Cesar',
+	'CEDULA' : '1234567890',
+	'TELEFONO' : '0999999999'
+}

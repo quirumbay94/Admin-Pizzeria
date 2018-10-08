@@ -53,4 +53,46 @@ def registrar(request):
 			return JsonResponse({'RESPUESTA': 'SOLICITUD_INCOMPLETA'})
 	return JsonResponse({'RESPUESTA': 'ERROR_SOLICITUD'})
 
+def ver_usuario(request, usuario_id):
+	if request.method == "GET":
+		usuario = Detalles_Personales.objects.get(pk=usuario_id)
+		paquete = {
+			'NOMBRES' : usuario.nombres,
+			'APELLIDOS' : usuario.apellidos,
+			'CORREO' : usuario.correo,
+			'TELEFONO' : usuario.telefono,
+			'CEDULA' : usuario.cedula
+		}
+		return JsonResponse({'RESPUESTA': paquete})
+	return JsonResponse({'RESPUESTA': 'ERROR'})
+
+@csrf_exempt
+def editar_usuario(request, usuario_id):
+	if request.method == "POST":
+		usuario = Detalles_Personales.objects.get(pk=usuario_id)
+
+		## RECUPERANDO DATOS DEL REQUEST
+		nombres = request.POST.get("NOMBRES",None)
+		apellidos = request.POST.get("APELLIDOS",None)
+		correo = request.POST.get("CORREO",None)
+		telefono = request.POST.get("TELEFONO",None)
+		cedula = request.POST.get("CEDULA",None)
+
+		if nombres and apellidos and correo and telefono and cedula:
+			usuario.nombres = nombres
+			usuario.apellidos = apellidos
+			usuario.correo = correo
+			usuario.telefono = telefono
+			usuario.cedula = cedula
+			usuario.save()
+			return JsonResponse({'RESPUESTA': 'EXITO'})
+	return JsonResponse({'RESPUESTA': 'ERROR'})
+
+
+
+
+
+
+
+
 
