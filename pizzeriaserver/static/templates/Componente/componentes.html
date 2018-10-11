@@ -4,24 +4,24 @@
 {% include 'General/subbarra.html' %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/Menu/menu.css' %}">
 <div class="title-container">
-	<h1 class="title-h1">Componentes</h1>
+	<h1 class="title-h1">{{ TIPO }}</h1>
 </div>
 <div class="opcion-wrapper">
-	<form method="GET" action="/menu/componentes/nuevo_componente">
+	<form method="GET" action="/menu/componentes/nuevo_componente/{{ TIPO }}">
 		<button class="opcion-container-button">
 			<h3 class="opcion-aumentar-h3">+</h3>
 			<h3> </h3>
 		</button>
 	</form>
 	{% for ingrediente in INGREDIENTES %}
-		<a href="/menu/componentes/{{ ingrediente.id }}">
+		<a href="/menu/componentes/{{ TIPO }}/{{ ingrediente.id }}">
 			<button class="opcion-container-button">
 				<h3 class="opcion-tittle-h3">{{ ingrediente.nombre }}</h3>
 			</button>
 		</a>
 	{% endfor %}
 	{% for adicional in ADICIONALES %}
-		<a href="/menu/componentes/{{ adicional.id }}">
+		<a href="/menu/componentes/{{ TIPO }}/{{ adicional.id }}">
 			<button class="opcion-container-button">
 				<h3 class="opcion-tittle-h3">{{ adicional.nombre }}</h3>
 			</button>

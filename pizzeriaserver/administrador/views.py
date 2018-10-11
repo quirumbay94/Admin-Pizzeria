@@ -90,23 +90,27 @@ def ver_usuario(request, usuario_id):
 	return redirect("login")
 
 ## COMPONENTES ##
-def componentes(request):
+def componentes(request, tipo):
 	if verificarSesion(request):
 		paquete = {"NOMBRE" : request.session["DETALLES_PERSONALES"]['NOMBRE']} ##NOMBRE DEL USUARIO PARA LA BARRA DE NAV
 		
 		##RECOLECTAR TODOS LOS COMPONENTES ACTIVOS
-		ingredientes = Componente.objects.filter(tipo="INGREDIENTE", estado=True).order_by('nombre')
-		adicionales = Componente.objects.filter(tipo="ADICIONAL", estado=True).order_by('nombre')
-		paquete["INGREDIENTES"] = ingredientes
-		paquete["ADICIONALES"] = adicionales
+		if tipo == "INGREDIENTES":
+			ingredientes = Componente.objects.filter(tipo="INGREDIENTE", estado=True).order_by('nombre')
+			paquete["INGREDIENTES"] = ingredientes
+		elif tipo == "ADICIONALES":
+			adicionales = Componente.objects.filter(tipo="ADICIONAL", estado=True).order_by('nombre')
+			paquete["ADICIONALES"] = adicionales
+		paquete["TIPO"] = tipo.capitalize()
 		return render(request,"Componente/componentes.html", paquete)
 	return redirect("login")
 
-def nuevo_componente(request):
+def nuevo_componente(request, tipo):
 	if verificarSesion(request):
 		##DETALLES PARA LA SUBBARRA DE NAVEGACION
-		paquete = {'USUARIO' : usuario, 'URL' : 'componentes', 'TITULO' : 'COMPONENTES'}
+		paquete = {'USUARIO' : usuario, 'URL' : 'componentes/' + tipo.upper(), 'TITULO' : tipo.upper()}
 		paquete["NOMBRE"] = request.session["DETALLES_PERSONALES"]['NOMBRE'] ##NOMBRE DEL USUARIO PARA LA BARRA DE NAV
+		paquete["TIPO"] = tipo.upper()
 
 		if request.method == "POST":
 			tipo = request.POST.get("TIPO",None)
@@ -126,10 +130,10 @@ def nuevo_componente(request):
 		return render(request, "Componente/nuevo_componente.html", paquete)
 	return redirect("login")
 
-def ver_componente(request, componente_id):
+def ver_componente(request, tipo, componente_id):
 	if verificarSesion(request):
 		##DETALLES PARA LA SUBBARRA DE NAVEGACION
-		paquete = {'USUARIO' : usuario, 'URL' : 'componentes', 'TITULO' : 'COMPONENTES'}
+		paquete = {'USUARIO' : usuario, 'URL' : 'componentes/'  + tipo.upper(), 'TITULO' : tipo.upper()}
 		paquete["NOMBRE"] = request.session["DETALLES_PERSONALES"]['NOMBRE'] ##NOMBRE DEL USUARIO PARA LA BARRA DE NAV
 
 		##BUSCANDO COMPONENTE

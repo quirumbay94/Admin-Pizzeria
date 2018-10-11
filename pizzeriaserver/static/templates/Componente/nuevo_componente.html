@@ -4,21 +4,23 @@
 {% include 'General/subbarra.html' %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/General/formulario.css' %}">
 <div class="title-container">
-	<h1 class="title-h1">Nuevo Componente</h1>
+	<h1 class="title-h1">Crear</h1>
 	<small>{{ MENSAJE }}</small>
 </div>
 <div class="wrapper">
 	<div class="input-main-container">
 		<form action="" method="POST" id="form" enctype="multipart/form-data">
 			{% csrf_token %}
-			<div class="input-container">
+			<!--div class="input-container">
 				<h4>Tipo</h4>
 				<select class="form-control input" name="TIPO">
 					<option value="">Seleccione un tipo de componente</option>
 					<option value="INGREDIENTE">INGREDIENTE</option>
 					<option value="ADICIONAL">ADICIONAL</option>
 				</select>
-			</div>
+			</div-->
+			<input type="hidden" name="TIPO" value="{{ TIPO }}">
+
 			<div class="input-container">
 				<h4>Nombre</h4>
 				<input type="text" class="form-control input" name="NOMBRE">

@@ -13,10 +13,10 @@ urlpatterns = [
 
     ## USUARIOS
     url(r'^menu/usuario$', views.usuario, name='usuario'),
-    url(r'^menu/usuario/(?P<usuario_id>\d+)/$$', views.ver_usuario, name='ver_usuario'),
+    url(r'^menu/usuario/(?P<usuario_id>\d+)/$', views.ver_usuario, name='ver_usuario'),
 
     ## COMPONENTES
-    url(r'^menu/componentes$', views.componentes, name='componentes'),
-    url(r'^menu/componentes/nuevo_componente$', views.nuevo_componente, name='nuevo_componente'),
-    url(r'^menu/componentes/(?P<componente_id>\d+)/$$', views.ver_componente, name='ver_componente'),
+    url(r'^menu/componentes/(?P<tipo>[\w\-]+)/$', views.componentes, name='componentes'),
+    url(r'^menu/componentes/nuevo_componente/(?P<tipo>[\w\-]+)/$', views.nuevo_componente, name='nuevo_componente'),
+    url(r'^menu/componentes/(?P<tipo>[\w\-]+)/(?P<componente_id>\d+)/$', views.ver_componente, name='ver_componente'),
 ]
