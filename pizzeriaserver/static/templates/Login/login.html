@@ -1,0 +1,17 @@
+{% load static %}
+{% include 'General/header.html' %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/Login/login.css' %}">
+<div class="login-wrapper">
+	<div class="login-container">
+		<form action="" method="post">
+			{% csrf_token %}
+			<h2 class="login-title-h2">Pizzeria Admin</h2>
+			<small>{{ MENSAJE }}</small>
+			<h4>Correo</h4>
+			<input type="text" class="form-control" name="correo">
+			<h4>Contraseña</h4>
+			<input type="password" class="form-control" name="contrasena">
+			<button class="btn btn-primary login-btn">Ingresar</button>
+		</form>
+	</div>
+</div>

@@ -1,0 +1,10 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/General/navbar.css' %}">
+<nav>
+	<a class="callcenter-a" href="/menu">PizzeriaAdmin</a>
+	<h4 class="bienvenido-title-h4">Bienvenido, {{ NOMBRE }}</h4>
+	<form action="/logout" method="POST">
+		{% csrf_token %}
+		<button class="btn btn-logout">Cerrar Sesión</button>
+	</form>
+</nav>

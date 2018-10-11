@@ -1,0 +1,12 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/General/subbarra.css' %}">
+<div class="subbarra-container">
+	<div class="seccion-container">
+		<a href="/menu">
+			<h2>MENU</h2>
+		</a>
+	</div>
+	<a href="/menu/{{ URL }}">
+		<h2>{{ TITULO }}</h2>
+	</a>
+</div>

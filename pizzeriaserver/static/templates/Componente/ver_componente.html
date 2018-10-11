@@ -1,0 +1,37 @@
+{% load static %}
+{% include 'General/header.html' %}
+{% include 'General/navbar.html' %}
+{% include 'General/subbarra.html' %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/Menu/menu.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/General/ver_formulario.css' %}">
+<div class="title-container">
+	<h1 class="title-h1">Componente</h1>
+</div>
+<div class="main-container">
+	<div class="sub-container">
+		<div class="sub2-container">
+			<h4>Tipo</h4>
+			<h5>{{ COMPONENTE.tipo }}</h5>
+		</div>
+		<div class="sub2-container">
+			<h4>Nombre</h4>
+			<h5>{{ COMPONENTE.nombre }}</h5>
+		</div>
+		<div class="sub2-container">
+			<h4>Descripción</h4>
+			<h5>{{ COMPONENTE.descripcion }}</h5>
+		</div>
+		<div class="sub2-container">
+			<h4>Costo</h4>
+			<h5>{{ COMPONENTE.costo }}</h5>
+		</div>
+		<div class="sub2-container">
+			<h4>Imagen</h4>
+			<img src="{{ COMPONENTE.imagen_url }}">
+		</div>
+		<div class="sub2-container">
+			<h4>Estado</h4>
+			<h5>{% if COMPONENTE.estado %} Activo {% else %} Inactivo {% endif %}</h5>
+		</div>
+	</div>
+</div>

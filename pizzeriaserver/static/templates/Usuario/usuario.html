@@ -1,0 +1,37 @@
+{% load static %}
+{% include 'General/header.html' %}
+{% include 'General/navbar.html' %}
+{% include 'General/subbarra.html' %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/Usuario/usuario.css' %}">
+<div class="title-container">
+	<h1 class="title-h1">Usuarios</h1>
+</div>
+<div class="main-container">
+	{% for usuario in USUARIOS %}
+		<div class="informacion-container">
+			<a href="/menu/usuario/{{ usuario.id }}">
+				<h5 class="informacion-h5">{{ usuario.nombres }} {{ usuario.apellidos }} | {{ usuario.telefono }} |
+				{% if usuario.usuario.is_active %} 
+					Activo
+				{% else %}
+					Inactivo
+				{% endif %}
+				</h5>
+			</a>
+			<div class="btn-container">
+				<form action="" method="POST">
+					{% csrf_token %}
+					<input type="hidden" name="USUARIO" value="{{ usuario.usuario.id }}">
+					<input type="hidden" name="ACCION" value="true">
+					<button class="btn usuario-activo-btn">Habilitar</button>
+				</form>
+				<form action="" method="POST">
+					{% csrf_token %}
+					<input type="hidden" name="USUARIO" value="{{ usuario.usuario.id }}">
+					<input type="hidden" name="ACCION" value="false">
+					<button class="btn usuario-inactivo-btn">Desabilitar</button>
+				</form>
+			</div>
+		</div>	
+	{% endfor %}
+</div>

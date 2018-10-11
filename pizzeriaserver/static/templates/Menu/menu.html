@@ -1,0 +1,24 @@
+{% load static %}
+{% include 'General/header.html' %}
+{% include 'General/navbar.html' %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/Menu/menu.css' %}">
+<div class="title-container">
+	<h1 class="title-h1">MENU PRINCIPAL</h1>
+</div>
+<div class="opcion-wrapper">
+	<a href="/menu/componentes">
+		<button class="opcion-container-button">
+			<h3 class="opcion-tittle-h3">Componentes</h3>
+		</button>
+	</a>
+	<a href="/menu/usuario">
+		<button class="opcion-container-button">
+			<h3 class="opcion-tittle-h3">Pizzas Tradicionales</h3>
+		</button>
+	</a>
+	<a href="/menu/usuario">
+		<button class="opcion-container-button">
+			<h3 class="opcion-tittle-h3">Usuarios</h3>
+		</button>
+	</a>
+</div>

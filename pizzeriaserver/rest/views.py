@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest.models import Usuario, Detalles_Personales, Pizza_Tradicional
 import json
 
-IP = "http://127.0.0.1:8000"
+IP = "http://navi.pythonanywhere.com"
 
 #TRES TIPOS DE RESPUESTA EN EL LOGIN
 #	EXITO = EXITO DE LOGIN
@@ -22,7 +22,7 @@ def login(request):
 			usuario = authenticate(username=correo, password=contrasena)
 			if usuario is not None:
 				return JsonResponse({'RESPUESTA': 'EXITO'})
-			else: 
+			else:
 				return JsonResponse({'RESPUESTA': 'ERROR_CREDENCIALES'})
 
 	return JsonResponse({'RESPUESTA': 'ERROR_SOLICITUD'})
@@ -90,7 +90,7 @@ def editar_usuario(request, usuario_id):
 			return JsonResponse({'RESPUESTA': 'EXITO'})
 	return JsonResponse({'RESPUESTA': 'ERROR'})
 
-## PIZZAS TRADICIONALES ## 
+## PIZZAS TRADICIONALES ##
 def ver_pizzas_tradicionales(request):
 	if request.method == "GET":
 		pizzas = Pizza_Tradicional.objects.all()
