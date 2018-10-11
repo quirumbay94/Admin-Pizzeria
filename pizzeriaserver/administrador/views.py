@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, logout
-from rest.models import Detalles_Personales
+from rest.models import Detalles_Personales, Componente
 from django.contrib.auth.models import User
 
 ## ERROR ##
@@ -81,10 +81,63 @@ def usuario(request):
 	return redirect("login")
 
 def ver_usuario(request, usuario_id):
-	usuario = Detalles_Personales.objects.get(pk=usuario_id)
-	paquete = {'USUARIO' : usuario, 'URL' : 'usuario', 'TITULO' : 'USUARIOS'}
-	paquete["NOMBRE"] = request.session["DETALLES_PERSONALES"]['NOMBRE'] ##NOMBRE DEL USUARIO PARA LA BARRA DE NAV
-	return render(request, "Usuario/ver_usuario.html", paquete)
+	if verificarSesion(request):
+		##DETALLES PARA LA SUBBARRA DE NAVEGACION
+		usuario = Detalles_Personales.objects.get(pk=usuario_id)
+		paquete = {'USUARIO' : usuario, 'URL' : 'usuario', 'TITULO' : 'USUARIOS'}
+		paquete["NOMBRE"] = request.session["DETALLES_PERSONALES"]['NOMBRE'] ##NOMBRE DEL USUARIO PARA LA BARRA DE NAV
+		return render(request, "Usuario/ver_usuario.html", paquete)
+	return redirect("login")
+
+## COMPONENTES ##
+def componentes(request):
+	if verificarSesion(request):
+		paquete = {"NOMBRE" : request.session["DETALLES_PERSONALES"]['NOMBRE']} ##NOMBRE DEL USUARIO PARA LA BARRA DE NAV
+		
+		##RECOLECTAR TODOS LOS COMPONENTES ACTIVOS
+		ingredientes = Componente.objects.filter(tipo="INGREDIENTE", estado=True).order_by('nombre')
+		adicionales = Componente.objects.filter(tipo="ADICIONAL", estado=True).order_by('nombre')
+		paquete["INGREDIENTES"] = ingredientes
+		paquete["ADICIONALES"] = adicionales
+		return render(request,"Componente/componentes.html", paquete)
+	return redirect("login")
+
+def nuevo_componente(request):
+	if verificarSesion(request):
+		##DETALLES PARA LA SUBBARRA DE NAVEGACION
+		paquete = {'USUARIO' : usuario, 'URL' : 'componentes', 'TITULO' : 'COMPONENTES'}
+		paquete["NOMBRE"] = request.session["DETALLES_PERSONALES"]['NOMBRE'] ##NOMBRE DEL USUARIO PARA LA BARRA DE NAV
+
+		if request.method == "POST":
+			tipo = request.POST.get("TIPO",None)
+			nombre = request.POST.get("NOMBRE",None)
+			descripcion = request.POST.get("DESCRIPCION",None)
+			costo = request.POST.get("COSTO",None)
+			imagen = request.FILES.get("IMAGEN",None)
+			estado = True
+
+			##CREANDO COMPONENTE
+			componente = Componente().crear(nombre, descripcion, tipo, costo, imagen, estado)
+			if componente:
+				paquete["MENSAJE"] = "Componente creado con exito."
+			else: 
+				paquete["MENSAJE"] = "Error creando componente."
+		
+		return render(request, "Componente/nuevo_componente.html", paquete)
+	return redirect("login")
+
+def ver_componente(request, componente_id):
+	if verificarSesion(request):
+		##DETALLES PARA LA SUBBARRA DE NAVEGACION
+		paquete = {'USUARIO' : usuario, 'URL' : 'componentes', 'TITULO' : 'COMPONENTES'}
+		paquete["NOMBRE"] = request.session["DETALLES_PERSONALES"]['NOMBRE'] ##NOMBRE DEL USUARIO PARA LA BARRA DE NAV
+
+		##BUSCANDO COMPONENTE
+		componente = Componente.objects.get(pk=componente_id)
+		paquete["COMPONENTE"] = componente
+
+		return render(request, "Componente/ver_componente.html", paquete)
+	return redirect("login")
 
 
 

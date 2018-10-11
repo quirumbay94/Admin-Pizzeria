@@ -1,0 +1,33 @@
+.title-container {
+	width: 100%;
+	text-align: center;
+}
+.wrapper {
+	width: 100%;
+	margin: 50px 0px;
+}
+.input-main-container {
+	width: 500px;
+	padding: 20px;
+	margin: 0px auto;
+	border: 2px solid gray;
+	border-radius: 7px;
+}
+.input-container {
+	margin-bottom: 10px;
+}
+.btn-container {
+	display: flex;
+	margin: 25px 0px 10px;
+}
+.btn-formulario {
+	background-color: gray;
+	color: white;
+}
+.btn-formulario:hover {
+	background-color: lightgray;
+	color: white;
+}
+.btn-guardar {
+	margin: 0px 0px 0px auto;
+}

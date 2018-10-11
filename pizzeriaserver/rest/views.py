@@ -3,9 +3,10 @@ from django.http import JsonResponse
 from django.contrib.auth import authenticate, logout
 from django.db import IntegrityError
 from django.views.decorators.csrf import csrf_exempt
-from rest.models import Usuario, Detalles_Personales
+from rest.models import Usuario, Detalles_Personales, Pizza_Tradicional
 import json
 
+IP = "http://127.0.0.1:8000"
 
 #TRES TIPOS DE RESPUESTA EN EL LOGIN
 #	EXITO = EXITO DE LOGIN
@@ -53,7 +54,7 @@ def registrar(request):
 			return JsonResponse({'RESPUESTA': 'SOLICITUD_INCOMPLETA'})
 	return JsonResponse({'RESPUESTA': 'ERROR_SOLICITUD'})
 
-@csrf_exempt
+## USUARIOS ##
 def ver_usuario(request, usuario_id):
 	if request.method == "GET":
 		usuario = Detalles_Personales.objects.get(pk=usuario_id)
@@ -89,6 +90,21 @@ def editar_usuario(request, usuario_id):
 			return JsonResponse({'RESPUESTA': 'EXITO'})
 	return JsonResponse({'RESPUESTA': 'ERROR'})
 
+## PIZZAS TRADICIONALES ## 
+def ver_pizzas_tradicionales(request):
+	if request.method == "GET":
+		pizzas = Pizza_Tradicional.objects.all()
+		paquete = {}
+		for pizza in pizzas:
+			pizza_tradicional = {
+				"NOMBRE" : pizza.pizza.nombre,
+				"IMAGEN_URL" : IP + pizza.pizza.img_url.url,
+				"DESCRIPCION" : pizza.pizza.descripcion,
+				"COSTO" : "%.2f" % float(pizza.costo)
+			}
+			paquete[pizza.id] = pizza_tradicional
+
+		return JsonResponse(paquete)
 
 
 

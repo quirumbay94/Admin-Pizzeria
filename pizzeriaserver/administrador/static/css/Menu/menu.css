@@ -10,14 +10,8 @@ form {
 	height: 45px;
 }
 .title-container {
-	display: flex;
-	padding: 20px;
-}
-.title-h1 {
-	height: 45px;
-	width: 750px;
+	width: 100%;
 	text-align: center;
-	margin: 0px 0px 0px calc(50% - 375px - 108.38px);
 }
 .opcion-wrapper {
 	width: 975px;
