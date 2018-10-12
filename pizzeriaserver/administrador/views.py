@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, logout
-from rest.models import Detalles_Personales, Componente
+from rest.models import *
 from django.contrib.auth.models import User
 
 ## ERROR ##
@@ -142,6 +142,72 @@ def ver_componente(request, tipo, componente_id):
 
 		return render(request, "Componente/ver_componente.html", paquete)
 	return redirect("login")
+
+## PIZZAS TRADICIONALES
+def pizzas_tradicionales(request):
+	if verificarSesion(request):
+		paquete = {}
+		paquete["NOMBRE"] = request.session["DETALLES_PERSONALES"]['NOMBRE'] ##NOMBRE DEL USUARIO PARA LA BARRA DE NAV
+
+		## BUSCANDO PIZZAS TRADICIONALES
+		pizzas_t = Pizza_Tradicional.objects.all()
+		paquete["PIZZAS_T"] = pizzas_t
+		return render(request, "Pizza/pizzas_tradicionales.html",paquete)
+	return redirect("login")
+
+def ver_pizza_tradicional(request, pizza_t_id):
+	if verificarSesion(request):
+		##DETALLES PARA LA SUBBARRA DE NAVEGACION
+		paquete = {'USUARIO' : usuario, 'URL' : 'pizzas_tradicionales', 'TITULO' : "PIZZAS TRADICIONALES"}
+		paquete["NOMBRE"] = request.session["DETALLES_PERSONALES"]['NOMBRE'] ##NOMBRE DEL USUARIO PARA LA BARRA DE NAV
+
+		pizza_t = Pizza_Tradicional.objects.get(pk=pizza_t_id)
+		paquete["PIZZA_T"] = pizza_t
+		return render(request, "Pizza/ver_pizza_tradicional.html",paquete)
+	return redirect("login")
+
+def nueva_pizza_tradicional(request):
+	if verificarSesion(request):
+		##DETALLES PARA LA SUBBARRA DE NAVEGACION
+		paquete = {'USUARIO' : usuario, 'URL' : 'pizzas_tradicionales', 'TITULO' : "PIZZAS TRADICIONALES"}
+		paquete["NOMBRE"] = request.session["DETALLES_PERSONALES"]['NOMBRE'] ##NOMBRE DEL USUARIO PARA LA BARRA DE NAV
+
+		##COLECTANDO TODAS PIZZAS 
+		masas = Masa.objects.filter(estado=True)
+		bordes = Borde.objects.filter(estado=True)
+		paquete["MASAS"] = masas
+		paquete["BORDES"] = bordes
+
+		if request.method == "POST":
+			nombre = request.POST.get("NOMBRE",None)
+			masa = request.POST.get("MASA",None)
+			borde = request.POST.get("BORDE",None)
+			descripcion = request.POST.get("DESCRIPCION",None)
+			costo = request.POST.get("COSTO",None)
+			imagen = request.FILES.get("IMAGEN",None)
+
+			print("")
+			print("PIZZA TRADICIONALES")
+			print(nombre, masa, borde, descripcion, costo, imagen)
+
+			pizza = Pizza().crear(masa, borde, nombre, descripcion, imagen)
+			if pizza:
+				pizza_t = Pizza_Tradicional().crear(pizza,costo)
+				if pizza_t:
+					paquete["MENSAJE"] = "Pizza tradicional creada con exito."
+				else: 
+					paquete["MENSAJE"] = "Error creando pizza tradicional."
+			else:
+				paquete["MENSAJE"] = "Error creando pizza."
+
+		return render(request, "Pizza/nueva_pizza_tradicional.html",paquete)
+	return redirect("login")
+
+
+
+
+
+
 
 
 

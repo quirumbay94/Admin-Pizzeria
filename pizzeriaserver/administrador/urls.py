@@ -19,4 +19,9 @@ urlpatterns = [
     url(r'^menu/componentes/(?P<tipo>[\w\-]+)/$', views.componentes, name='componentes'),
     url(r'^menu/componentes/nuevo_componente/(?P<tipo>[\w\-]+)/$', views.nuevo_componente, name='nuevo_componente'),
     url(r'^menu/componentes/(?P<tipo>[\w\-]+)/(?P<componente_id>\d+)/$', views.ver_componente, name='ver_componente'),
+
+    ## PIZZAS TRADICIONALES
+    url(r'^menu/pizzas_tradicionales$', views.pizzas_tradicionales, name='pizzas_tradicionales'),
+    url(r'^menu/pizzas_tradicionales/ver/(?P<pizza_t_id>\d+)/$', views.ver_pizza_tradicional, name='ver_pizza_tradicional'),
+    url(r'^menu/pizzas_tradicionales/nueva_pizza_tradicional$', views.nueva_pizza_tradicional, name='nueva_pizza_tradicional'),
 ]

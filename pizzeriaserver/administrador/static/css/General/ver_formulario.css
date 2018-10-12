@@ -14,3 +14,7 @@
 .sub2-container > h5 {
 	margin-left: 10px;
 }
+.sub2-container > img {
+	width: 200px;
+	padding-bottom: 10px;
+}

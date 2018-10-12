@@ -11,11 +11,27 @@
 	<div class="input-main-container">
 		<form action="" method="POST" id="form" enctype="multipart/form-data">
 			{% csrf_token %}
-			<input type="hidden" name="TIPO" value="{{ TIPO }}">
-
 			<div class="input-container">
 				<h4>Nombre</h4>
 				<input type="text" class="form-control input" name="NOMBRE">
+			</div>
+			<div class="input-container">
+				<h4>Masa</h4>
+				<select class="form-control input" name="MASA">
+					<option value="">Seleccione un tipo de masa</option>
+					{% for masa in MASAS %}
+						<option value="{{ masa.id }}">{{ masa.nombre }}</option>
+					{% endfor %}
+				</select>
+			</div>
+			<div class="input-container">
+				<h4>Borde</h4>
+				<select class="form-control input" name="BORDE">
+					<option value="">Seleccione un tipo de borde</option>
+					{% for borde in BORDES %}
+						<option value="{{ borde.id }}">{{ borde.nombre }}</option>
+					{% endfor %}
+				</select>
 			</div>
 			<div class="input-container">
 				<h4>Descripción</h4>

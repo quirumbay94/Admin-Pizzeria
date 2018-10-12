@@ -11,14 +11,6 @@
 	<div class="input-main-container">
 		<form action="" method="POST" id="form" enctype="multipart/form-data">
 			{% csrf_token %}
-			<!--div class="input-container">
-				<h4>Tipo</h4>
-				<select class="form-control input" name="TIPO">
-					<option value="">Seleccione un tipo de componente</option>
-					<option value="INGREDIENTE">INGREDIENTE</option>
-					<option value="ADICIONAL">ADICIONAL</option>
-				</select>
-			</div-->
 			<input type="hidden" name="TIPO" value="{{ TIPO }}">
 
 			<div class="input-container">

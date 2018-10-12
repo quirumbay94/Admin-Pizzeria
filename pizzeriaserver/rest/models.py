@@ -122,15 +122,15 @@ class Pizza(models.Model):
 			estadoStr = "Inactivo"
 		return self.nombre + " | " + estadoStr
 
-	def crear(self, masa, borde, nombre, descripcion, img_url, estado):
+	def crear(self, masa, borde, nombre, descripcion, img_url):
 		try: 
 			p = Pizza()
-			p.masa = masa
-			p.borde = borde
+			p.masa = Masa.objects.get(pk=masa)
+			p.borde = Borde.objects.get(pk=borde)
 			p.nombre = nombre
 			p.descripcion = descripcion
 			p.img_url = img_url
-			p.estado = estado
+			p.estado = True
 			p.save()
 			return p
 		except:
@@ -145,12 +145,12 @@ class Pizza_Tradicional(models.Model):
 	def __str__(self):
 		return self.pizza.nombre + " | $" + str(self.costo)
 
-	def crear(self, pizza, costo, estado):
+	def crear(self, pizza, costo):
 		try:
 			pt = Pizza_Tradicional()
 			pt.pizza = pizza
 			pt.costo = costo
-			pt.estado = estado
+			pt.estado = True
 			pt.save()
 			return pt
 		except:
