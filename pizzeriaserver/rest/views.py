@@ -25,18 +25,18 @@ def login(request):
 					'STATUS' : 'OK',
 					'CODIGO' : 1,
 					'TOKEN' : sesion.token,
-					'DETALLE' : 'ver lista'
+					'DETALLE' : 'Inicio de sesión exitoso'
 					})
 			else:
 				return JsonResponse({
 					'STATUS' : 'ERROR',
 					'CODIGO' : 2,
-					'DETALLE' : 'VER LISTA'
+					'DETALLE' : 'No existe ninguna cuenta asociada a este correo'
 					})
 	return JsonResponse({
 		'STATUS' : 'ERROR',
 		'CODIGO' : 15,
-		'DETALLE' : 'VER LISTA'
+		'DETALLE' : 'Error de solicitud'
 		})
 
 @csrf_exempt
@@ -52,18 +52,18 @@ def login_RS(request):
 				'STATUS' : 'OK',
 				'CODIGO' : 1,
 				'TOKEN' : sesion.token,
-				'DETALLE' : 'ver lista'
+				'DETALLE' : 'Inicio de sesión exitoso'
 				})
 		except:
 			return JsonResponse({
 				'STATUS' : 'ERROR',
 				'CODIGO' : 2,
-				'DETALLE' : 'VER LISTA'
+				'DETALLE' : 'No existe ninguna cuenta asociada a este correo'
 				})
 	return JsonResponse({
 		'STATUS' : 'ERROR',
 		'CODIGO' : 15,
-		'DETALLE' : 'VER LISTA'
+		'DETALLE' : 'Error de solicitud'
 		})
 
 @csrf_exempt
@@ -77,18 +77,18 @@ def logout(request):
 				return JsonResponse({
 					'STATUS' : 'OK',
 					'CODIGO' : 0,
-					'DETALLE' : 'VER LISTA'
+					'DETALLE' : 'Sesión cerrada con éxito '
 					})
 		except:
 			return JsonResponse({
 				'STATUS' : 'ERROR',
 				'CODIGO' : 11,
-				'DETALLE' : 'VER LISTA'
+				'DETALLE' : 'No existe una sesion'
 				})
 	return JsonResponse({
 		'STATUS' : 'ERROR',
-		'CODIGO' : 4,
-		'DETALLE' : 'VER LISTA'
+		'CODIGO' : 15,
+		'DETALLE' : 'Error de solicitud'
 		})
 
 @csrf_exempt
@@ -112,24 +112,24 @@ def registrar(request):
 						'STATUS' : 'OK',
 						'CODIGO' : 10,
 						'TOKEN' : sesion.token,
-						'DETALLE' : 'ver lista'
+						'DETALLE' : 'La cuenta ha sido creada con éxito '
 						})
 			else:
 				return JsonResponse({
 						'STATUS' : 'ERROR',
-						'CODIGO' : 15,
-						'DETALLE' : 'ver lista'
+						'CODIGO' : 4,
+						'DETALLE' : 'El json no cumple la estructura'
 						})
 		except(IntegrityError):
 			return JsonResponse({
 				'STATUS' : 'ERROR',
 				'CODIGO' : 5,
-				'DETALLE' : 'ver lista'
+				'DETALLE' : 'El correo ya se encuentra en uso'
 				})
 	return JsonResponse({
 			'STATUS' : 'ERROR',
 			'CODIGO' : 15,
-			'DETALLE' : 'ver lista'
+			'DETALLE' : 'Error de solicitud'
 			})
 
 ## USUARIOS ##
