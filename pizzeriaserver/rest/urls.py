@@ -3,6 +3,8 @@ from rest import views
 
 urlpatterns = [
     url(r'^login$', views.login, name='login'),
+    url(r'^login_RS$', views.login_RS, name='login_RS'),
+    url(r'^logout$', views.logout, name='logout'),
     url(r'^registrar$', views.registrar, name='registrar'),
 
     ## USUARIOS ##

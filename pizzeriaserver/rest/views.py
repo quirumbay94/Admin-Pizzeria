@@ -1,37 +1,96 @@
+from django.contrib.auth import authenticate, logout
 from django.shortcuts import render
 from django.http import JsonResponse
-from django.contrib.auth import authenticate, logout
 from django.db import IntegrityError
 from django.views.decorators.csrf import csrf_exempt
-from rest.models import Usuario, Detalles_Personales, Pizza_Tradicional
+
+from .models import Usuario, Detalles_Personales, Pizza_Tradicional, Sesion
 import json
 
 IP = "http://navi.pythonanywhere.com"
 
-#TRES TIPOS DE RESPUESTA EN EL LOGIN
-#	EXITO = EXITO DE LOGIN
-#	ERROR_CREDENCIALES = EMAIL O CONTRASENA INCORRECTOS
-# 	ERROR_SOLICITUD = SOLICITUD INCORRECTA
 @csrf_exempt
 def login(request):
 	if request.method == "POST":
 		body = json.loads(request.body.decode('utf-8'))
-		correo = body['CORREO']
-		contrasena = body['CONTRASENA']
+		correo = body.get('CORREO', None)
+		contrasena = body.get('CONTRASENA', None)
+		# correo = request.POST.get('CORREO', None)
+		# contrasena = request.POST.get('CONTRASENA', None)
 		if correo and contrasena:
 			usuario = authenticate(username=correo, password=contrasena)
 			if usuario is not None:
-				return JsonResponse({'RESPUESTA': 'EXITO'})
+				sesion = Sesion().crear(usuario)
+				return JsonResponse({
+					'STATUS' : 'OK',
+					'CODIGO' : 1,
+					'TOKEN' : sesion.token,
+					'DETALLE' : 'ver lista'
+					})
 			else:
-				return JsonResponse({'RESPUESTA': 'ERROR_CREDENCIALES'})
+				return JsonResponse({
+					'STATUS' : 'ERROR',
+					'CODIGO' : 2,
+					'DETALLE' : 'VER LISTA'
+					})
+	return JsonResponse({
+		'STATUS' : 'ERROR',
+		'CODIGO' : 15,
+		'DETALLE' : 'VER LISTA'
+		})
 
-	return JsonResponse({'RESPUESTA': 'ERROR_SOLICITUD'})
+@csrf_exempt
+def login_RS(request):
+	body = json.loads(request.body.decode('utf-8'))
+	correo = body.get('CORREO', None)
+	# correo = request.POST.get('CORREO', None)
+	if correo:
+		try:
+			usuario = Usuario.objects.get(email=correo)
+			sesion = Sesion().crear(usuario)
+			return JsonResponse({
+				'STATUS' : 'OK',
+				'CODIGO' : 1,
+				'TOKEN' : sesion.token,
+				'DETALLE' : 'ver lista'
+				})
+		except:
+			return JsonResponse({
+				'STATUS' : 'ERROR',
+				'CODIGO' : 2,
+				'DETALLE' : 'VER LISTA'
+				})
+	return JsonResponse({
+		'STATUS' : 'ERROR',
+		'CODIGO' : 15,
+		'DETALLE' : 'VER LISTA'
+		})
 
-#TRES TIPOS DE RESPUESTA EN EL REGISTRO
-#	EXITO = EXITO DE REGISTRO
-#	CREDENCIALES_REPETIDAS = EMAIL YA OCUPADO
-# 	SOLICITUD_INCOMPLETA = FALTAN CAMPOS PARA EL REGISTRO
-# 	ERROR_SOLICITUD = SOLICITUD INCORRECTA
+@csrf_exempt
+def logout(request):
+	body = json.loads(request.body.decode('utf-8'))
+	token = body.get('TOKEN', None)
+	#token = request.POST.get('TOKEN', None)
+	if token:
+		try:
+			if Sesion().logout(token):
+				return JsonResponse({
+					'STATUS' : 'OK',
+					'CODIGO' : 0,
+					'DETALLE' : 'VER LISTA'
+					})
+		except:
+			return JsonResponse({
+				'STATUS' : 'ERROR',
+				'CODIGO' : 11,
+				'DETALLE' : 'VER LISTA'
+				})
+	return JsonResponse({
+		'STATUS' : 'ERROR',
+		'CODIGO' : 4,
+		'DETALLE' : 'VER LISTA'
+		})
+
 @csrf_exempt
 def registrar(request):
 	if request.method == "POST":
@@ -43,21 +102,41 @@ def registrar(request):
 		cedula = body['CEDULA']
 		telefono = body['TELEFONO']
 
-		usuario = Usuario().crear(correo, contrasena)
-		if usuario == IntegrityError: #VERIFICACION SI ESTA REPETIDO
-			return JsonResponse({'RESPUESTA': 'CREDENCIALES_REPETIDAS'})
-		elif usuario and correo and contrasena and nombres and apellidos and cedula and telefono: #EXITO
-			detalles_personales = Detalles_Personales().crear(usuario, nombres, apellidos, correo, cedula, telefono)
-			if detalles_personales:
-				return JsonResponse({'RESPUESTA': 'EXITO'})
-		else:
-			return JsonResponse({'RESPUESTA': 'SOLICITUD_INCOMPLETA'})
-	return JsonResponse({'RESPUESTA': 'ERROR_SOLICITUD'})
+		try:
+			usuario = Usuario(email=correo, username=correo).save()
+			if usuario and correo and contrasena and nombres and apellidos and cedula and telefono:  # EXITO
+				detalles_personales = Detalles_Personales().crear(usuario, nombres, apellidos, correo, cedula, telefono)
+				if detalles_personales:
+					sesion = Sesion().crear(usuario)
+					return JsonResponse({
+						'STATUS' : 'OK',
+						'CODIGO' : 10,
+						'TOKEN' : sesion.token,
+						'DETALLE' : 'ver lista'
+						})
+			else:
+				return JsonResponse({
+						'STATUS' : 'ERROR',
+						'CODIGO' : 15,
+						'DETALLE' : 'ver lista'
+						})
+		except(IntegrityError):
+			return JsonResponse({
+				'STATUS' : 'ERROR',
+				'CODIGO' : 5,
+				'DETALLE' : 'ver lista'
+				})
+	return JsonResponse({
+			'STATUS' : 'ERROR',
+			'CODIGO' : 15,
+			'DETALLE' : 'ver lista'
+			})
 
 ## USUARIOS ##
 def ver_usuario(request, usuario_id):
 	if request.method == "GET":
-		usuario = Detalles_Personales.objects.get(pk=usuario_id)
+		user = Usuario.objects.get(pk=usuario_id)
+		usuario = Detalles_Personales.objects.get(usuario=user)
 		paquete = {
 			'NOMBRES' : usuario.nombres,
 			'APELLIDOS' : usuario.apellidos,
@@ -71,7 +150,8 @@ def ver_usuario(request, usuario_id):
 @csrf_exempt
 def editar_usuario(request, usuario_id):
 	if request.method == "POST":
-		usuario = Detalles_Personales.objects.get(pk=usuario_id)
+		user = Usuario.objects.get(pk=usuario_id)
+		usuario = Detalles_Personales.objects.get(usuario=user)
 
 		## RECUPERANDO DATOS DEL REQUEST
 		nombres = request.POST.get("NOMBRES",None)
