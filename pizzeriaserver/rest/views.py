@@ -12,11 +12,8 @@ IP = "http://navi.pythonanywhere.com"
 @csrf_exempt
 def login(request):
 	if request.method == "POST":
-		body = json.loads(request.body.decode('utf-8'))
-		correo = body.get('CORREO', None)
-		contrasena = body.get('CONTRASENA', None)
-		# correo = request.POST.get('CORREO', None)
-		# contrasena = request.POST.get('CONTRASENA', None)
+		correo = request.POST.get('CORREO', None)
+		contrasena = request.POST.get('CONTRASENA', None)
 		if correo and contrasena:
 			usuario = authenticate(username=correo, password=contrasena)
 			if usuario is not None:
@@ -41,18 +38,18 @@ def login(request):
 
 @csrf_exempt
 def login_RS(request):
-	body = json.loads(request.body.decode('utf-8'))
-	correo = body.get('CORREO', None)
-	nombres = body.get('NOMBRES', None)
-	apellidos = body.get('APELLIDOS', None)
-	# correo = request.POST.get('CORREO', None)
-	# nombres = request.POST.get('NOMBRES', None)
-	# apellidos = request.POST.get('APELLIDOS', None)
+	# body = json.loads(request.body.decode('utf-8'))
+	# correo = body.get('CORREO', None)
+	# nombres = body.get('NOMBRES', None)
+	# apellidos = body.get('APELLIDOS', None)
+	correo = request.POST.get('CORREO', None)
+	nombres = request.POST.get('NOMBRES', None)
+	apellidos = request.POST.get('APELLIDOS', None)
 
 	if correo and nombres and apellidos:
 		if Usuario.objects.filter(email=correo).count() == 0: ##USUARIO SIN REGISTRAR, SE CREA UNA CUENTA
 			usuario = Usuario().crearSinContrasena(correo)
-			
+
 			##CREANDO DETALLES PERSONALES -- INTENTAR CREAR FUNCION EN MODELS (NO SE PUDO EN EL PRIMER INTENTO)
 			detalles = Detalles_Personales()
 			detalles.usuario = usuario
@@ -84,9 +81,9 @@ def login_RS(request):
 
 @csrf_exempt
 def logout(request):
-	body = json.loads(request.body.decode('utf-8'))
-	token = body.get('TOKEN', None)
-	#token = request.POST.get('TOKEN', None)
+	# body = json.loads(request.body.decode('utf-8'))
+	# token = body.get('TOKEN', None)
+	token = request.POST.get('TOKEN', None)
 	if token:
 		try:
 			if Sesion().logout(token):
@@ -110,17 +107,23 @@ def logout(request):
 @csrf_exempt
 def registrar(request):
 	if request.method == "POST":
-		body = json.loads(request.body.decode('utf-8'))
-		correo = body['CORREO']
-		contrasena = body['CONTRASENA']
-		nombres = body['NOMBRES']
-		apellidos = body['APELLIDOS']
-		cedula = body['CEDULA']
-		telefono = body['TELEFONO']
+		# body = json.loads(request.body.decode('utf-8'))
+		# correo = body['CORREO']
+		# contrasena = body['CONTRASENA']
+		# nombres = body['NOMBRES']
+		# apellidos = body['APELLIDOS']
+		# cedula = body['CEDULA']
+		# telefono = body['TELEFONO']
+		correo = request.POST.get('CORREO', None)
+		contrasena = request.POST.get('CONTRASENA', None)
+		nombres = request.POST.get('NOMBRES', None)
+		apellidos = request.POST.get('APELLIDOS', None)
+		cedula = request.POST.get('CEDULA', None)
+		telefono = request.POST.get('TELEFONO', None)
 
 		try:
-			usuario = Usuario(email=correo, username=correo).save()
 			if usuario and correo and contrasena and nombres and apellidos and cedula and telefono:  # EXITO
+				usuario = Usuario(email=correo, username=correo).save()
 				detalles_personales = Detalles_Personales().crear(usuario, nombres, apellidos, correo, cedula, telefono)
 				if detalles_personales:
 					sesion = Sesion().crear(usuario)
