@@ -196,13 +196,13 @@ class Usuario(AbstractBaseUser , PermissionsMixin):
 
 class Sesion(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    token =  models.CharField(max_length=40)
+    token =  models.CharField(max_length=70)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def crear(self, usuario):
         s = Sesion()
         s.usuario = usuario
-        s.token = secrets.token_hex(16)
+        s.token = secrets.token_hex(32)
         s.save()
         return s
     def logout(self, token):
