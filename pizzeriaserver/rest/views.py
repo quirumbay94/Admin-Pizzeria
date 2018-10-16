@@ -41,11 +41,27 @@ def login(request):
 
 @csrf_exempt
 def login_RS(request):
-	body = json.loads(request.body.decode('utf-8'))
-	correo = body.get('CORREO', None)
-	# correo = request.POST.get('CORREO', None)
-	if correo:
-		try:
+	# body = json.loads(request.body.decode('utf-8'))
+	# correo = body.get('CORREO', None)
+	# nombres = body.get('NOMBRES', None)
+	# apellidos = body.get('APELLIDOS', None)
+	correo = request.POST.get('CORREO', None)
+	nombres = request.POST.get('NOMBRES', None)
+	apellidos = request.POST.get('APELLIDOS', None)
+
+	if correo and nombres and apellidos:
+		if Usuario.objects.filter(email=correo).count() == 0: ##USUARIO SIN REGISTRAR, SE CREA UNA CUENTA
+			usuario = Usuario().crearSinContrasena(correo)
+			
+			##CREANDO DETALLES PERSONALES -- INTENTAR CREAR FUNCION EN MODELS (NO SE PUDO EN EL PRIMER INTENTO)
+			detalles = Detalles_Personales()
+			detalles.usuario = usuario
+			detalles.nombres = nombres
+			detalles.apellidos = apellidos
+			detalles.correo = correo
+			detalles.save()
+
+		try: 
 			usuario = Usuario.objects.get(email=correo)
 			sesion = Sesion().crear(usuario)
 			return JsonResponse({
@@ -135,8 +151,8 @@ def registrar(request):
 ## USUARIOS ##
 def ver_usuario(request, usuario_id):
 	if request.method == "GET":
-		user = Usuario.objects.get(pk=usuario_id)
-		usuario = Detalles_Personales.objects.get(usuario=user)
+		usuario = Usuario.objects.get(pk=usuario_id)
+		usuario = Detalles_Personales.objects.get(usuario=usuario)
 		paquete = {
 			'NOMBRES' : usuario.nombres,
 			'APELLIDOS' : usuario.apellidos,
@@ -150,8 +166,8 @@ def ver_usuario(request, usuario_id):
 @csrf_exempt
 def editar_usuario(request, usuario_id):
 	if request.method == "POST":
-		user = Usuario.objects.get(pk=usuario_id)
-		usuario = Detalles_Personales.objects.get(usuario=user)
+		usuario = Usuario.objects.get(pk=usuario_id)
+		usuario = Detalles_Personales.objects.get(usuario=usuario)
 
 		## RECUPERANDO DATOS DEL REQUEST
 		nombres = request.POST.get("NOMBRES",None)

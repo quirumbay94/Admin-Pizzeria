@@ -226,8 +226,8 @@ class Detalles_Personales(models.Model):
 	nombres = models.CharField(max_length=40)
 	apellidos = models.CharField(max_length=40)
 	correo = models.CharField(max_length=30)
-	cedula = models.CharField(max_length=20)
-	telefono = models.CharField(max_length=15)
+	cedula = models.CharField(max_length=20, blank=True)
+	telefono = models.CharField(max_length=15, blank=True)
 
 	def __str__ (self):
 		return self.nombres + " " + self.apellidos + " | " + self.correo
@@ -245,6 +245,10 @@ class Detalles_Personales(models.Model):
 			return p
 		except:
 			return None
+
+    
+
+    
 
 ## INGREDIENTES DE LA PIZZA O ADICIONALES (BEBIDAS, ETC)
 class Componente(models.Model):

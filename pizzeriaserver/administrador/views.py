@@ -66,7 +66,7 @@ def usuario(request):
 			usuario_id = request.POST.get("USUARIO",None)
 			accion = request.POST.get("ACCION",None)
 			if usuario_id and accion:
-				usuario = User.objects.get(pk=usuario_id) ##BUSCANDO EL USUARIO
+				usuario = Usuario.objects.get(pk=usuario_id) ##BUSCANDO EL USUARIO
 				if accion in ["true","True"]:
 					usuario.is_active = True
 				else: 
