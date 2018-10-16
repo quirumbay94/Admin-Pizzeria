@@ -41,13 +41,13 @@ def login(request):
 
 @csrf_exempt
 def login_RS(request):
-	# body = json.loads(request.body.decode('utf-8'))
-	# correo = body.get('CORREO', None)
-	# nombres = body.get('NOMBRES', None)
-	# apellidos = body.get('APELLIDOS', None)
-	correo = request.POST.get('CORREO', None)
-	nombres = request.POST.get('NOMBRES', None)
-	apellidos = request.POST.get('APELLIDOS', None)
+	body = json.loads(request.body.decode('utf-8'))
+	correo = body.get('CORREO', None)
+	nombres = body.get('NOMBRES', None)
+	apellidos = body.get('APELLIDOS', None)
+	# correo = request.POST.get('CORREO', None)
+	# nombres = request.POST.get('NOMBRES', None)
+	# apellidos = request.POST.get('APELLIDOS', None)
 
 	if correo and nombres and apellidos:
 		if Usuario.objects.filter(email=correo).count() == 0: ##USUARIO SIN REGISTRAR, SE CREA UNA CUENTA
