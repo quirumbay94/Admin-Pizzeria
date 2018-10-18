@@ -38,10 +38,6 @@ def login(request):
 
 @csrf_exempt
 def login_RS(request):
-	# body = json.loads(request.body.decode('utf-8'))
-	# correo = body.get('CORREO', None)
-	# nombres = body.get('NOMBRES', None)
-	# apellidos = body.get('APELLIDOS', None)
 	correo = request.POST.get('CORREO', None)
 	nombres = request.POST.get('NOMBRES', None)
 	apellidos = request.POST.get('APELLIDOS', None)
