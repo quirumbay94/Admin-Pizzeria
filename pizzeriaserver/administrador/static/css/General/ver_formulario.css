@@ -8,6 +8,17 @@
 	border-radius: 7px;
 	margin: auto;
 }
+.editar-container {
+	text-align: right;
+} 
+.editar-container > a > button {
+	background-color: gray;
+	color: white;
+}
+.editar-container > a > button:hover {
+	background-color: lightgray;
+	color: white;
+} 
 .sub2-container {
 	border-bottom: 1px solid gray;
 }

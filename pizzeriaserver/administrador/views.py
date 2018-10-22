@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, logout
-from rest.models import *
 from django.contrib.auth.models import User
+from rest.models import *
+from administrador.Funciones import diccionarios
 
 ## ERROR ##
 def error(request):
@@ -38,9 +39,9 @@ def login(request):
 				crearSesion(request,detalles) ##CREANDO SESION DEL USUARIO
 				return redirect("menu")
 			else:
-				paquete["MENSAJE"] = "Correo o contraseña invalida"
+				paquete = diccionarios.diccionarioMensaje(paquete, "Correo o contraseña incorrecta")
 		else:
-			paquete["MENSAJE"] = "Correo o contraseña imcompleta"
+			paquete = diccionarios.diccionarioMensaje(paquete, "Correo o contraseña invalida")
 		return render(request, "Login/login.html", paquete)
 	return render(request, "Login/login.html")
 
@@ -54,15 +55,15 @@ def logout_(request):
 ## INDEX ##
 def menu(request):
 	if verificarSesion(request):
-		paquete = {}
-		paquete["NOMBRE"] = request.session["DETALLES_PERSONALES"]['NOMBRE'] ##NOMBRE DEL USUARIO PARA LA BARRA DE NAV
+		paquete = diccionarios.diccionarioBarraNav(request,{})
 		return render(request,"Menu/menu.html", paquete)
 	return redirect("login")
 
 ## USUARIOS ##
 def usuario(request):
 	if verificarSesion(request):
-		if request.method == "POST": ##MANEJAR LA ACCION DE HABILITAR O DESABILITAR EL USUARIO
+		##MANEJAR LA ACCION DE HABILITAR O DESABILITAR EL USUARIO
+		if request.method == "POST": 
 			usuario_id = request.POST.get("USUARIO",None)
 			accion = request.POST.get("ACCION",None)
 			if usuario_id and accion:
@@ -73,9 +74,9 @@ def usuario(request):
 					usuario.is_active = False
 				usuario.save()
 
-		usuarios = Detalles_Personales.objects.all()
-		paquete = {'USUARIOS' : usuarios}
-		paquete["NOMBRE"] = request.session["DETALLES_PERSONALES"]['NOMBRE'] ##NOMBRE DEL USUARIO PARA LA BARRA DE NAV
+		##DICCIONARIOS CON DATOS PARA EL FRONTEND
+		paquete = diccionarios.diccionarioBarraNav(request,{})
+		paquete = diccionarios.diccionarioUsuarios(paquete)
 
 		return render(request,"Usuario/usuario.html", paquete)
 	return redirect("login")
@@ -83,23 +84,21 @@ def usuario(request):
 def ver_usuario(request, usuario_id):
 	if verificarSesion(request):
 		##DETALLES PARA LA SUBBARRA DE NAVEGACION
-		usuario = Detalles_Personales.objects.get(pk=usuario_id)
-		paquete = {'USUARIO' : usuario, 'URL' : 'usuario', 'TITULO' : 'USUARIOS'}
-		paquete["NOMBRE"] = request.session["DETALLES_PERSONALES"]['NOMBRE'] ##NOMBRE DEL USUARIO PARA LA BARRA DE NAV
+		paquete = diccionarios.diccionarioBarraNav(request,{})
+		paquete = diccionarios.diccionarioDatosSubBarraUsuario(paquete,usuario_id)
 		return render(request, "Usuario/ver_usuario.html", paquete)
 	return redirect("login")
 
 ## COMPONENTES ##
 def componentes(request, tipo):
 	if verificarSesion(request):
-		paquete = {"NOMBRE" : request.session["DETALLES_PERSONALES"]['NOMBRE']} ##NOMBRE DEL USUARIO PARA LA BARRA DE NAV
-		
-		##RECOLECTAR TODOS LOS COMPONENTES ACTIVOS
+		paquete = diccionarios.diccionarioBarraNav(request,{})
+
 		if tipo == "INGREDIENTES":
-			ingredientes = Componente.objects.filter(tipo="INGREDIENTE", estado=True).order_by('nombre')
+			ingredientes = Componente.objects.filter(tipo="INGREDIENTES").order_by('nombre')
 			paquete["INGREDIENTES"] = ingredientes
 		elif tipo == "ADICIONALES":
-			adicionales = Componente.objects.filter(tipo="ADICIONAL", estado=True).order_by('nombre')
+			adicionales = Componente.objects.filter(tipo="ADICIONALES").order_by('nombre')
 			paquete["ADICIONALES"] = adicionales
 		paquete["TIPO"] = tipo.capitalize()
 		return render(request,"Componente/componentes.html", paquete)
@@ -108,9 +107,8 @@ def componentes(request, tipo):
 def nuevo_componente(request, tipo):
 	if verificarSesion(request):
 		##DETALLES PARA LA SUBBARRA DE NAVEGACION
-		paquete = {'USUARIO' : usuario, 'URL' : 'componentes/' + tipo.upper(), 'TITULO' : tipo.upper()}
-		paquete["NOMBRE"] = request.session["DETALLES_PERSONALES"]['NOMBRE'] ##NOMBRE DEL USUARIO PARA LA BARRA DE NAV
-		paquete["TIPO"] = tipo.upper()
+		paquete = diccionarios.diccionarioBarraNav(request,{})
+		paquete = diccionarios.diccionarioDatosSubBarraComponente(paquete, tipo)
 
 		if request.method == "POST":
 			tipo = request.POST.get("TIPO",None)
@@ -123,9 +121,9 @@ def nuevo_componente(request, tipo):
 			##CREANDO COMPONENTE
 			componente = Componente().crear(nombre, descripcion, tipo, costo, imagen, estado)
 			if componente:
-				paquete["MENSAJE"] = "Componente creado con exito."
+				paquete = diccionarios.diccionarioMensaje(paquete, "Componente creado con exito.")
 			else: 
-				paquete["MENSAJE"] = "Error creando componente."
+				paquete = diccionarios.diccionarioMensaje(paquete, "Error creando componente.")
 		
 		return render(request, "Componente/nuevo_componente.html", paquete)
 	return redirect("login")
@@ -133,50 +131,76 @@ def nuevo_componente(request, tipo):
 def ver_componente(request, tipo, componente_id):
 	if verificarSesion(request):
 		##DETALLES PARA LA SUBBARRA DE NAVEGACION
-		paquete = {'USUARIO' : usuario, 'URL' : 'componentes/'  + tipo.upper(), 'TITULO' : tipo.upper()}
-		paquete["NOMBRE"] = request.session["DETALLES_PERSONALES"]['NOMBRE'] ##NOMBRE DEL USUARIO PARA LA BARRA DE NAV
+		paquete = diccionarios.diccionarioBarraNav(request,{})
+		paquete = diccionarios.diccionarioDatosSubBarraComponente(paquete, tipo)
 
-		##BUSCANDO COMPONENTE
-		componente = Componente.objects.get(pk=componente_id)
-		paquete["COMPONENTE"] = componente
+		##INFORMACION DEL COMPONENTE SELECCIONADO
+		paquete = diccionarios.diccionarioDatosComponente(paquete, componente_id)
 
 		return render(request, "Componente/ver_componente.html", paquete)
+	return redirect("login")
+
+def editar_componente(request, tipo, componente_id):
+	##DETALLES PARA LA BARRA DE NAV
+	paquete = diccionarios.diccionarioBarraNav(request,{})
+
+	if verificarSesion(request):
+		if request.method == "POST":
+			tipo = request.POST.get("TIPO",None)
+			nombre = request.POST.get("NOMBRE",None)
+			descripcion = request.POST.get("DESCRIPCION",None)
+			costo = request.POST.get("COSTO",None)
+			imagen = request.FILES.get("IMAGEN",None)
+			estado = request.POST.get("ESTADO",None)
+			if estado in ["True", "true"]:
+				estado = True
+			else:
+				estado = False
+
+			##EDITANDO COMPONENTE
+			componente = Componente().editar(componente_id, nombre, descripcion, tipo, costo, imagen, estado)
+			if componente:
+				paquete = diccionarios.diccionarioMensaje(paquete, "Componente editado con exito.")
+			else: 
+				paquete = diccionarios.diccionarioMensaje(paquete, "Error editando componente.")
+
+		##DETALLES PARA LA SUBBARRA DE NAVEGACION
+		paquete = diccionarios.diccionarioDatosSubBarraComponente(paquete, tipo)
+
+		##INFORMACION DEL COMPONENTE SELECCIONADO
+		paquete = diccionarios.diccionarioDatosComponente(paquete, componente_id)
+
+		return render(request, "Componente/editar_componente.html", paquete)
 	return redirect("login")
 
 ## PIZZAS TRADICIONALES
 def pizzas_tradicionales(request):
 	if verificarSesion(request):
-		paquete = {}
-		paquete["NOMBRE"] = request.session["DETALLES_PERSONALES"]['NOMBRE'] ##NOMBRE DEL USUARIO PARA LA BARRA DE NAV
-
-		## BUSCANDO PIZZAS TRADICIONALES
-		pizzas_t = Pizza_Tradicional.objects.all()
-		paquete["PIZZAS_T"] = pizzas_t
+		paquete = diccionarios.diccionarioBarraNav(request,{})
+		paquete = diccionarios.diccionarioPizzasTradicionales(paquete)
 		return render(request, "Pizza/pizzas_tradicionales.html",paquete)
 	return redirect("login")
 
 def ver_pizza_tradicional(request, pizza_t_id):
 	if verificarSesion(request):
 		##DETALLES PARA LA SUBBARRA DE NAVEGACION
-		paquete = {'USUARIO' : usuario, 'URL' : 'pizzas_tradicionales', 'TITULO' : "PIZZAS TRADICIONALES"}
-		paquete["NOMBRE"] = request.session["DETALLES_PERSONALES"]['NOMBRE'] ##NOMBRE DEL USUARIO PARA LA BARRA DE NAV
+		paquete = diccionarios.diccionarioBarraNav(request,{})
+		paquete = diccionarios.diccionarioDatosSubBarraPizza_T(paquete)
 
-		pizza_t = Pizza_Tradicional.objects.get(pk=pizza_t_id)
-		paquete["PIZZA_T"] = pizza_t
+		##INFORMACION DE PIZZA TRADICIONAL SELECCIONADA
+		paquete = diccionarios.diccionarioDatoPizza_T(paquete, pizza_t_id)
+
 		return render(request, "Pizza/ver_pizza_tradicional.html",paquete)
 	return redirect("login")
 
 def nueva_pizza_tradicional(request):
 	if verificarSesion(request):
 		##DETALLES PARA LA SUBBARRA DE NAVEGACION
-		paquete = {'USUARIO' : usuario, 'URL' : 'pizzas_tradicionales', 'TITULO' : "PIZZAS TRADICIONALES"}
-		paquete["NOMBRE"] = request.session["DETALLES_PERSONALES"]['NOMBRE'] ##NOMBRE DEL USUARIO PARA LA BARRA DE NAV
+		paquete = diccionarios.diccionarioBarraNav(request,{})
+		paquete = diccionarios.diccionarioDatosSubBarraPizza_T(paquete)
 
-		##COLECTANDO TODAS PIZZAS 
-		masas = Masa.objects.filter(estado=True)
-		bordes = Borde.objects.filter(estado=True)
-		paquete["MASAS"] = masas
-		paquete["BORDES"] = bordes
+		##RECOLECTANDO TIPOS DE MASAS Y BORDES 
+		paquete = diccionarios.diccionarioMasasyBordes(paquete)
 
 		if request.method == "POST":
 			nombre = request.POST.get("NOMBRE",None)
@@ -186,24 +210,57 @@ def nueva_pizza_tradicional(request):
 			costo = request.POST.get("COSTO",None)
 			imagen = request.FILES.get("IMAGEN",None)
 
-			print("")
-			print("PIZZA TRADICIONALES")
-			print(nombre, masa, borde, descripcion, costo, imagen)
-
 			pizza = Pizza().crear(masa, borde, nombre, descripcion, imagen)
 			if pizza:
 				pizza_t = Pizza_Tradicional().crear(pizza,costo)
 				if pizza_t:
-					paquete["MENSAJE"] = "Pizza tradicional creada con exito."
+					paquete = diccionarios.diccionarioMensaje(paquete, "Pizza tradicional creada con exito.")
 				else: 
-					paquete["MENSAJE"] = "Error creando pizza tradicional."
+					paquete = diccionarios.diccionarioMensaje(paquete, "Error creando pizza tradicional.")
 			else:
-				paquete["MENSAJE"] = "Error creando pizza."
+				paquete = diccionarios.diccionarioMensaje(paquete, "Error creando pizza.")
 
 		return render(request, "Pizza/nueva_pizza_tradicional.html",paquete)
 	return redirect("login")
 
+def editar_pizza_tradicional(request, pizza_t_id):
+	if verificarSesion(request):
+		##DETALLES PARA LA SUBBARRA DE NAVEGACION
+		paquete = diccionarios.diccionarioBarraNav(request,{})
+		paquete = diccionarios.diccionarioDatosSubBarraPizza_T(paquete)
 
+		##RECOLECTANDO TIPOS DE MASAS Y BORDES 
+		paquete = diccionarios.diccionarioMasasyBordes(paquete)
+
+		if request.method == "POST":
+			pizza_id = request.POST.get("PIZZA_ID",None)
+			nombre = request.POST.get("NOMBRE",None)
+			masa = request.POST.get("MASA",None)
+			borde = request.POST.get("BORDE",None)
+			descripcion = request.POST.get("DESCRIPCION",None)
+			costo = request.POST.get("COSTO",None)
+			imagen = request.FILES.get("IMAGEN",None)
+			estado = request.POST.get("ESTADO",None)
+			if estado in ["True", "true"]:
+				estado = True
+			else:
+				estado = False
+
+			pizza = Pizza().editar(pizza_id, masa, borde, nombre, descripcion, imagen, estado)
+			if pizza:
+				pizza_t = Pizza_Tradicional().editar(pizza_t_id, pizza, costo, estado)
+				if pizza_t:
+					paquete = diccionarios.diccionarioMensaje(paquete, "Pizza tradicional creada con exito.")
+				else: 
+					paquete = diccionarios.diccionarioMensaje(paquete, "Error creando pizza tradicional.")
+			else:
+				paquete = diccionarios.diccionarioMensaje(paquete, "Error creando pizza.")
+
+		##INFORMACION DE PIZZA TRADICIONAL SELECCIONADA
+		paquete = diccionarios.diccionarioDatoPizza_T(paquete, pizza_t_id)
+
+		return render(request, "Pizza/editar_pizza_tradicional.html",paquete)
+	return redirect("login")
 
 
 
