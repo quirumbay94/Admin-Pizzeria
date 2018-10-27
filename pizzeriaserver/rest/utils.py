@@ -17,3 +17,11 @@ def verificarToken(token):
         return True
     except:
         return False
+
+##OBTENER ID DE USUARIO A TRAVES DEL TOKEN
+def getUsuarioIdConToken(token):
+    try:
+        sesion = Sesion.objects.get(token=token)
+        return sesion.usuario.id
+    except:
+        return False

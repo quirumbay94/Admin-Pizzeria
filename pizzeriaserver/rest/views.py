@@ -153,9 +153,10 @@ def registrar(request):
             })
 
 ## USUARIOS ##
-def ver_usuario(request, usuario_id):
+def ver_usuario(request):
     token = request.GET.get('TOKEN', None)
-    if request.method == "GET" and utils.verificarToken(token):
+    usuario_id = utils.getUsuarioIdConToken(token)
+    if request.method == "GET" and usuario_id:
         try:
             usuario = Usuario.objects.get(pk=usuario_id)
             usuario = Detalles_Personales.objects.get(usuario=usuario)
@@ -183,7 +184,7 @@ def ver_usuario(request, usuario_id):
             })
 
 @csrf_exempt
-def editar_usuario(request, usuario_id):
+def editar_usuario(request):
     body = utils.request_todict(request)
     token = body.get('TOKEN', None)
     nombres = body.get("NOMBRES",None)
@@ -192,13 +193,15 @@ def editar_usuario(request, usuario_id):
     telefono = body.get("TELEFONO",None)
     cedula = body.get("CEDULA",None)
 
+    usuario_id = utils.getUsuarioIdConToken(token)
+
     if not token or not nombres or not apellidos or not correo or not telefono or not cedula:
         return JsonResponse({
             'STATUS' : 'ERROR',
             'CODIGO' : 4,
             'DETALLE' : 'El json no cumple la estructura'
         })
-    elif request.method == "POST" and utils.verificarToken(token):
+    elif request.method == "POST" and usuario_id:
         try:
             usuario = Usuario.objects.get(pk=usuario_id)
             detalles = Detalles_Personales.objects.get(usuario=usuario)
