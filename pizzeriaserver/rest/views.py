@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from django.db import IntegrityError
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import Usuario, Detalles_Personales, Pizza_Tradicional, Sesion
+from .models import Usuario, Detalles_Personales, Pizza_Tradicional, Sesion, Tamano, Tamano_Masa, Tamano_Borde, Tamano_Ingrediente
 from rest import utils
 import json
 
@@ -280,7 +280,109 @@ def ver_pizzas_tradicionales(request):
         'DETALLE' : 'Error de solicitud'
         })
 
+##TAMAÑOS
+def tamano_masa(request):
+    token = request.GET.get('TOKEN', None)
+    tamano = request.GET.get('TAMANO', None)
+    if request.method == "GET" and utils.verificarToken(token) and tamano:
+        try:
+            tamano_model = Tamano.objects.get(nombre=tamano)
+            tamanos_masas = Tamano_Masa.objects.filter(tamano=tamano_model)
+            masas = {}
+            for t_m in tamanos_masas:
+                masas[t_m.masa.id] = {
+                    'NOMBRE' : t_m.masa.nombre,
+                    'DESCRIPCION' : t_m.masa.descripcion,
+                    'TAMANO' : t_m.tamano.nombre,
+                    'COSTO' : "%.2f" % float(t_m.costo )
+                }
+            return JsonResponse({
+                'STATUS' : 'ERROR',
+                'CODIGO' : 19,
+                'MASAS' : masas,
+                'DETALLE' : 'Solicitud correcta'
+                }) 
+        except Exception as e:
+            return JsonResponse({
+                'STATUS' : 'ERROR',
+                'CODIGO' : 18,
+                'DETALLE' : 'Tamaño incorrecto'
+                }) 
 
+    return JsonResponse({
+        'STATUS' : 'ERROR',
+        'CODIGO' : 15,
+        'DETALLE' : 'Error de solicitud'
+        })
+
+def tamano_borde(request):
+    token = request.GET.get('TOKEN', None)
+    tamano = request.GET.get('TAMANO', None)
+    if request.method == "GET" and utils.verificarToken(token) and tamano:
+        try:
+            tamano_model = Tamano.objects.get(nombre=tamano)
+            tamanos_bordes = Tamano_Borde.objects.filter(tamano=tamano_model)
+            bordes = {}
+            for t_b in tamanos_bordes:
+                bordes[t_b.borde.id] = {
+                    'NOMBRE' : t_b.borde.nombre,
+                    'DESCRIPCION' : t_b.borde.descripcion,
+                    'TAMANO' : t_b.tamano.nombre,
+                    'COSTO' : "%.2f" % float(t_b.costo )
+                }
+            return JsonResponse({
+                'STATUS' : 'ERROR',
+                'CODIGO' : 19,
+                'BORDES' : bordes,
+                'DETALLE' : 'Solicitud correcta'
+                }) 
+        except Exception as e:
+            return JsonResponse({
+                'STATUS' : 'ERROR',
+                'CODIGO' : 18,
+                'DETALLE' : 'Tamaño incorrecto'
+                }) 
+
+    return JsonResponse({
+        'STATUS' : 'ERROR',
+        'CODIGO' : 15,
+        'DETALLE' : 'Error de solicitud'
+        })
+
+def tamano_ingrediente(request):
+    token = request.GET.get('TOKEN', None)
+    tamano = request.GET.get('TAMANO', None)
+    if request.method == "GET" and utils.verificarToken(token) and tamano:
+        try:
+            tamano_model = Tamano.objects.get(nombre=tamano)
+            tamanos_ingredientes = Tamano_Ingrediente.objects.filter(tamano=tamano_model)
+            ingredientes = {}
+            for t_i in tamanos_ingredientes:
+                ingredientes[t_i.ingrediente.id] = {
+                    'NOMBRE' : t_i.ingrediente.nombre,
+                    'DESCRIPCION' : t_i.ingrediente.descripcion,
+                    'IMAGEN_URL' : t_i.ingrediente.img_url.url,
+                    'TAMANO' : t_i.tamano.nombre,
+                    'COSTO' : "%.2f" % float(t_i.costo)
+                }
+            return JsonResponse({
+                'STATUS' : 'ERROR',
+                'CODIGO' : 19,
+                'INGREDIENTES' : ingredientes,
+                'DETALLE' : 'Solicitud correcta'
+                }) 
+        except Exception as e:
+            return JsonResponse({
+                'STATUS' : 'ERROR',
+                'CODIGO' : 18,
+                'DETALLE' : 'Tamaño incorrecto'
+                }) 
+
+    return JsonResponse({
+        'STATUS' : 'ERROR',
+        'CODIGO' : 15,
+        'DETALLE' : 'Error de solicitud'
+        })
 
 
 
