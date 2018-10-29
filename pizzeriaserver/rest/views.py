@@ -297,7 +297,7 @@ def tamano_masa(request):
                     'COSTO' : "%.2f" % float(t_m.costo )
                 }
             return JsonResponse({
-                'STATUS' : 'ERROR',
+                'STATUS' : 'OK',
                 'CODIGO' : 19,
                 'MASAS' : masas,
                 'DETALLE' : 'Solicitud correcta'
@@ -331,7 +331,7 @@ def tamano_borde(request):
                     'COSTO' : "%.2f" % float(t_b.costo )
                 }
             return JsonResponse({
-                'STATUS' : 'ERROR',
+                'STATUS' : 'OK',
                 'CODIGO' : 19,
                 'BORDES' : bordes,
                 'DETALLE' : 'Solicitud correcta'
@@ -366,7 +366,7 @@ def tamano_ingrediente(request):
                     'COSTO' : "%.2f" % float(t_i.costo)
                 }
             return JsonResponse({
-                'STATUS' : 'ERROR',
+                'STATUS' : 'OK',
                 'CODIGO' : 19,
                 'INGREDIENTES' : ingredientes,
                 'DETALLE' : 'Solicitud correcta'
