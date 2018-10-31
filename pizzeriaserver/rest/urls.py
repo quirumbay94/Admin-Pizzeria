@@ -18,4 +18,7 @@ urlpatterns = [
     url(r'^tamano_masa', views.tamano_masa, name='tamano_masa'),
     url(r'^tamano_borde', views.tamano_borde, name='tamano_borde'),
     url(r'^tamano_ingrediente', views.tamano_ingrediente, name='tamano_ingrediente'),
+
+    ##COMBOS
+    url(r'^combos_promocionales', views.combos_promocionales, name='combos_promocionales'),
 ]

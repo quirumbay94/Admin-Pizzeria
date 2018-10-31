@@ -5,6 +5,7 @@ from django.db import IntegrityError
 from django.views.decorators.csrf import csrf_exempt
 
 from .models import Usuario, Detalles_Personales, Pizza_Tradicional, Sesion, Tamano, Tamano_Masa, Tamano_Borde, Tamano_Ingrediente
+from .models import Combos_Promocionales, Combinacion_Pizza, Combinacion_Adicional
 from rest import utils
 import json
 
@@ -383,6 +384,88 @@ def tamano_ingrediente(request):
         'CODIGO' : 15,
         'DETALLE' : 'Error de solicitud'
         })
+
+##COMBOS PROMOCIONALES
+def combos_promocionales(request):
+    token = request.GET.get('TOKEN', None)
+    if request.method == "GET" and utils.verificarToken(token):
+        combos = Combos_Promocionales.objects.all()
+        paquete = {}
+        for combo in combos:
+            combinaciones_pizzas = Combinacion_Pizza.objects.filter(combo=combo)
+            combinaciones_adicionales = Combinacion_Adicional.objects.filter(combo=combo)
+            combo_dict = {}
+            comb_pizza_dict = {}
+            comb_adic_dict = {}
+
+            for c in combinaciones_pizzas:
+                comb_pizza_dict[c.id] = {
+                    'NOMBRE' : c.pizza.nombre,
+                    'DESCRIPCION' : c.pizza.descripcion,
+                    'IMAGEN_URL' : c.pizza.img_url.url,
+                    'CANTIDAD' : c.cantidad
+                }
+            for c in combinaciones_adicionales: 
+                comb_adic_dict[c.id] = {
+                    'NOMBRE' : c.adicional.nombre,
+                    'DESCRIPCION' : c.adicional.descripcion,
+                    'IMAGEN_URL' : c.adicional.img_url.url,
+                    'CANTIDAD' : c.cantidad
+                }
+            if len(combinaciones_pizzas) > 0:
+                combo_dict['PIZZAS'] = comb_pizza_dict
+            if len(combinaciones_adicionales) > 0:
+                combo_dict['ADICIONALES'] = comb_adic_dict
+
+            paquete[combo.id] = combo_dict
+
+        return JsonResponse({
+                'STATUS' : 'OK',
+                'CODIGO' : 19,
+                'COMBOS' : paquete,
+                'DETALLE' : 'Solicitud correcta'
+                })         
+    return JsonResponse({
+        'STATUS' : 'ERROR',
+        'CODIGO' : 15,
+        'DETALLE' : 'Error de solicitud'
+        })
+
+# def ver_combo_promocional(request):
+#     token = request.GET.get('TOKEN', None)
+#     combo_id = request.GET.get('COMBO_ID', None)
+#     if request.method == "GET" and utils.verificarToken(token) and combo_id:
+#         try:
+#             paquete = {}
+#             combo = Combos_Promocionales.objects.get(pk=combo_id)
+#             combinaciones_pizzas = Combinacion_Pizza.objects.filter(combo=combo)
+#             combinaciones_adicionales = Combinacion_Adicional.objects.filter(combo=combo)
+#         except:
+#             return JsonResponse({
+#                 'STATUS' : 'ERROR',
+#                 'CODIGO' : 20,
+#                 'DETALLE' : 'El combo promocional no existe'
+#                 })
+
+#     return JsonResponse({
+#         'STATUS' : 'ERROR',
+#         'CODIGO' : 15,
+#         'DETALLE' : 'Error de solicitud'
+#         })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

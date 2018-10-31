@@ -283,5 +283,33 @@ class Tamano_Ingrediente(models.Model):
     def __str__(self):
         return self.ingrediente.nombre + " | " + self.tamano.nombre + ": $" + str(self.costo)
 
+## COMBINACIONES
+class Combos_Promocionales(models.Model):
+    nombre = models.CharField(max_length=30)
+    costo = models.FloatField()
+    img_url = models.ImageField()
+    descripcion = models.TextField(max_length=255, blank=True)
+    fecha_inicio = models.DateField(blank=True)
+    fecha_fin = models.DateField(blank=True)
+
+    def __str__(self):
+        return self.nombre + " $" + str(self.costo)
+
+class Combinacion_Pizza(models.Model):
+    combo = models.ForeignKey("Combos_Promocionales", on_delete=models.CASCADE)
+    tamano =  models.ForeignKey("Tamano", on_delete=models.CASCADE)
+    pizza = models.ForeignKey("Pizza", on_delete=models.CASCADE)
+    cantidad = models.IntegerField()
+
+    def __str__(self):
+        return self.pizza.nombre + " | COMBO: " + self.combo.nombre + " | CANT: " + str(self.cantidad)
+
+class Combinacion_Adicional(models.Model):
+    combo = models.ForeignKey("Combos_Promocionales", on_delete=models.CASCADE)
+    adicional =  models.ForeignKey("Componente", on_delete=models.CASCADE)
+    cantidad = models.IntegerField()
+
+    def __str__(self):
+        return self.adicional.nombre + " | COMBO: " + self.combo.nombre + " | CANT: " + str(self.cantidad)
 
 
