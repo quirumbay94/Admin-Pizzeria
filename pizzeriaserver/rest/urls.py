@@ -21,4 +21,7 @@ urlpatterns = [
 
     ##COMBOS
     url(r'^combos_promocionales', views.combos_promocionales, name='combos_promocionales'),
+    
+    ##PROMOCION
+    url(r'^promociones', views.promociones, name='promociones'),
 ]

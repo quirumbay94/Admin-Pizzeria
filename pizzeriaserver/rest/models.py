@@ -313,3 +313,16 @@ class Combinacion_Adicional(models.Model):
         return self.adicional.nombre + " | COMBO: " + self.combo.nombre + " | CANT: " + str(self.cantidad)
 
 
+##PROMOCINO
+class Promocion(models.Model):
+    nombre = models.CharField(max_length=30)
+    descripcion = models.CharField(max_length=255)
+    img_url = models.ImageField()
+    fecha_inicio = models.DateField(blank=True)
+    fecha_fin = models.DateField(blank=True)
+
+    def __str__(self):
+        return self.nombre + " | INICIO: " + str(self.fecha_inicio) + " | FIN: " + str(self.fecha_fin)
+
+
+
