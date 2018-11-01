@@ -464,7 +464,8 @@ def promociones(request):
             paquete[p.id] = {
                 'NOMBRE' : p.nombre,
                 'DESCRIPCION' : p.descripcion,
-                'IMAGEN_URL' : p.img_url.url
+                'IMAGEN_URL' : p.img_url.url,
+                'COSTO' : "%.2f" % float(p.costo)
             }
         return JsonResponse({
                 'STATUS' : 'OK',

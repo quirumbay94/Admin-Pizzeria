@@ -317,6 +317,7 @@ class Combinacion_Adicional(models.Model):
 class Promocion(models.Model):
     nombre = models.CharField(max_length=30)
     descripcion = models.CharField(max_length=255)
+    costo = models.FloatField(default=0.00, blank=True)
     img_url = models.ImageField()
     fecha_inicio = models.DateField(blank=True)
     fecha_fin = models.DateField(blank=True)
