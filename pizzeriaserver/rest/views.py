@@ -418,6 +418,10 @@ def combos_promocionales(request):
                 combo_dict['ADICIONALES'] = comb_adic_dict
 
             paquete[combo.id] = combo_dict
+            paquete['NOMBRE'] = combo.nombre
+            paquete['DESCRIPCION'] = combo.descripcion
+            paquete['COSTO'] = "%.2f" % float(combo.costo)
+            paquete['IMAGEN_URL'] = combo.img_url.url
 
         return JsonResponse({
                 'STATUS' : 'OK',
