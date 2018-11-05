@@ -313,7 +313,7 @@ class Combinacion_Adicional(models.Model):
         return self.adicional.nombre + " | COMBO: " + self.combo.nombre + " | CANT: " + str(self.cantidad)
 
 
-##PROMOCINO
+##PROMOCION
 class Promocion(models.Model):
     nombre = models.CharField(max_length=30)
     descripcion = models.CharField(max_length=255)
