@@ -362,7 +362,7 @@ def tamano_ingrediente(request):
                 ingredientes[t_i.ingrediente.id] = {
                     'NOMBRE' : t_i.ingrediente.nombre,
                     'DESCRIPCION' : t_i.ingrediente.descripcion,
-                    'IMAGEN_URL' : t_i.ingrediente.img_url.url,
+                    'IMAGEN_URL' : IP + t_i.ingrediente.img_url.url,
                     'TAMANO' : t_i.tamano.nombre,
                     'COSTO' : "%.2f" % float(t_i.costo)
                 }
@@ -402,14 +402,14 @@ def combos_promocionales(request):
                 comb_pizza_dict[c.id] = {
                     'NOMBRE' : c.pizza.nombre,
                     'DESCRIPCION' : c.pizza.descripcion,
-                    'IMAGEN_URL' : c.pizza.img_url.url,
+                    'IMAGEN_URL' : IP + c.pizza.img_url.url,
                     'CANTIDAD' : c.cantidad
                 }
             for c in combinaciones_adicionales: 
                 comb_adic_dict[c.id] = {
                     'NOMBRE' : c.adicional.nombre,
                     'DESCRIPCION' : c.adicional.descripcion,
-                    'IMAGEN_URL' : c.adicional.img_url.url,
+                    'IMAGEN_URL' : IP + c.adicional.img_url.url,
                     'CANTIDAD' : c.cantidad
                 }
             if len(combinaciones_pizzas) > 0:
@@ -420,7 +420,7 @@ def combos_promocionales(request):
             combo_dict['NOMBRE'] = combo.nombre
             combo_dict['DESCRIPCION'] = combo.descripcion
             combo_dict['COSTO'] = "%.2f" % float(combo.costo)
-            combo_dict['IMAGEN_URL'] = combo.img_url.url
+            combo_dict['IMAGEN_URL'] = IP + combo.img_url.url
             
             paquete[combo.id] = combo_dict
            
@@ -470,7 +470,7 @@ def promociones(request):
             paquete[p.id] = {
                 'NOMBRE' : p.nombre,
                 'DESCRIPCION' : p.descripcion,
-                'IMAGEN_URL' : p.img_url.url,
+                'IMAGEN_URL' : IP + p.img_url.url,
                 'COSTO' : "%.2f" % float(p.costo)
             }
         return JsonResponse({
