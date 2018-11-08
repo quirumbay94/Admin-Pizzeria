@@ -5,7 +5,7 @@ from django.db import IntegrityError
 from django.views.decorators.csrf import csrf_exempt
 
 from .models import Usuario, Detalles_Personales, Pizza, Pizza_Tradicional, Sesion, Tamano, Tamano_Masa, Tamano_Borde, Tamano_Ingrediente
-from .models import Combos_Promocionales, Combinacion, Combinacion_Pizza, Combinacion_Adicional, Promocion, Componente, Pizza_Tamano_Ingrediente
+from .models import Combos_Promocionales, Combinacion, Combinacion_Pizza, Combinacion_Adicional, Promocion, Componente, Pizza_Tamano_Ingrediente, Porcion
 from rest import utils
 import json
 
@@ -578,9 +578,29 @@ def promociones(request):
         'DETALLE' : 'Error de solicitud'
         })
 
-
-
-
+## PORCION
+def porciones(request):
+    token = request.GET.get('TOKEN', None)
+    if request.method == "GET" and utils.verificarToken(token):
+        porciones = Porcion.objects.all()
+        paquete = []
+        for porcion in porciones:
+            paquete.append({
+                "ID" : porcion.id,
+                "NOMBRE" : porcion.nombre.capitalize(),
+                "VALOR" : porcion.valor
+                })
+        return JsonResponse({
+                'STATUS' : 'OK',
+                'CODIGO' : 19,
+                'PORCIONES' : paquete,
+                'DETALLE' : 'Solicitud correcta'
+                }) 
+    return JsonResponse({
+        'STATUS' : 'ERROR',
+        'CODIGO' : 15,
+        'DETALLE' : 'Error de solicitud'
+        })
 
 
 

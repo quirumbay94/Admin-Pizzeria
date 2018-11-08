@@ -363,5 +363,17 @@ class Promocion(models.Model):
     def __str__(self):
         return self.nombre + " | INICIO: " + str(self.fecha_inicio) + " | FIN: " + str(self.fecha_fin)
 
+## PORCION
+class Porcion(models.Model):
+    nombre = models.CharField(max_length=30)
+    valor = models.IntegerField()
+    estado = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.nombre + " | VALOR: " + str(self.valor)
+
+
+
+
 
 

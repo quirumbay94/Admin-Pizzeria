@@ -25,4 +25,8 @@ urlpatterns = [
     
     ##PROMOCION
     url(r'^promociones', views.promociones, name='promociones'),
+
+    ##PORCION
+    url(r'^porciones', views.porciones, name='porciones'),
+    
 ]
