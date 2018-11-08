@@ -4,8 +4,8 @@ from django.http import JsonResponse
 from django.db import IntegrityError
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import Usuario, Detalles_Personales, Pizza_Tradicional, Sesion, Tamano, Tamano_Masa, Tamano_Borde, Tamano_Ingrediente
-from .models import Combos_Promocionales, Combinacion_Pizza, Combinacion_Adicional, Promocion
+from .models import Usuario, Detalles_Personales, Pizza, Pizza_Tradicional, Sesion, Tamano, Tamano_Masa, Tamano_Borde, Tamano_Ingrediente
+from .models import Combos_Promocionales, Combinacion, Combinacion_Pizza, Combinacion_Adicional, Promocion, Componente, Pizza_Tamano_Ingrediente
 from rest import utils
 import json
 
@@ -282,6 +282,34 @@ def ver_pizzas_tradicionales(request):
         })
 
 ##TAMAÑOS
+def tamanos(request):
+    token = request.GET.get('TOKEN', None)
+    if request.method == "GET" and utils.verificarToken(token):
+        tamanos = Tamano.objects.all()
+        paquete = []
+        for tamano in tamanos:
+            nombre = tamano.nombre
+            if nombre == "PEQUENO":
+                nombre = "PEQUEÑA"
+            elif nombre == "MEDIANO":
+                nombre = "MEDIANA"
+            nombre = nombre.capitalize()
+            paquete.append({
+                "ID" : tamano.id,
+                "NOMBRE" : nombre
+                })
+        return JsonResponse({
+                'STATUS' : 'OK',
+                'CODIGO' : 19,
+                'TAMANOS' : paquete,
+                'DETALLE' : 'Solicitud correcta'
+                }) 
+    return JsonResponse({
+        'STATUS' : 'ERROR',
+        'CODIGO' : 15,
+        'DETALLE' : 'Error de solicitud'
+        })
+
 def tamano_masa(request):
     token = request.GET.get('TOKEN', None)
     tamano = request.GET.get('TAMANO', None)
@@ -291,7 +319,7 @@ def tamano_masa(request):
             tamanos_masas = Tamano_Masa.objects.filter(tamano=tamano_model)
             masas = {}
             for t_m in tamanos_masas:
-                masas[t_m.masa.id] = {
+                masas[t_m.id] = {
                     'NOMBRE' : t_m.masa.nombre,
                     'DESCRIPCION' : t_m.masa.descripcion,
                     'TAMANO' : t_m.tamano.nombre,
@@ -325,7 +353,7 @@ def tamano_borde(request):
             tamanos_bordes = Tamano_Borde.objects.filter(tamano=tamano_model)
             bordes = {}
             for t_b in tamanos_bordes:
-                bordes[t_b.borde.id] = {
+                bordes[t_b.id] = {
                     'NOMBRE' : t_b.borde.nombre,
                     'DESCRIPCION' : t_b.borde.descripcion,
                     'TAMANO' : t_b.tamano.nombre,
@@ -359,7 +387,7 @@ def tamano_ingrediente(request):
             tamanos_ingredientes = Tamano_Ingrediente.objects.filter(tamano=tamano_model)
             ingredientes = {}
             for t_i in tamanos_ingredientes:
-                ingredientes[t_i.ingrediente.id] = {
+                ingredientes[t_i.id] = {
                     'NOMBRE' : t_i.ingrediente.nombre,
                     'DESCRIPCION' : t_i.ingrediente.descripcion,
                     'IMAGEN_URL' : IP + t_i.ingrediente.img_url.url,
@@ -385,6 +413,70 @@ def tamano_ingrediente(request):
         'DETALLE' : 'Error de solicitud'
         })
 
+## COMBINACION ##
+def crear_combinacion(request):  ## ARREGLAR RESPUESTAS DE ERRORES
+
+    ## FALTA CREAR TABLA DE PIZZA_INGREDIENTE Y CREAR METODOS PARA CREAR OBJETOS
+
+    body = utils.request_todict(request)
+    token = body.get('TOKEN', None)
+    if request.method == "POST" and utils.verificarToken(token):
+        nombre = body.get('NOMBRE', None)
+        tamano = body.get('TAMANO', None)
+        borde_t_id = body.get('BORDE', None)
+        masa_t_id = body.get('MASA', None)
+        ingredientes = body.get('INGREDIENTES', None)
+        adicionales = body.get('ADICIONALES', None)
+
+        if nombre and tamano and borde_t_id and masa_t_id and ingredientes and adicionales:
+            try:
+                ## EXTRAYENDO OBJECTOS DE SUS IDS
+                borde_t = Tamano_Borde.objects.get(pk=borde_t_id)
+                masa_t = Tamano_Masa.objects.get(pk=masa_t_id)
+                ingredientes_lista = []
+                for diccionario in ingredientes:
+                    ingrediente_t_id = diccionario.get("ID",None)
+                    ingrediente_t = Tamano_Ingrediente.objects.get(pk=ingrediente_t_id)
+                    ingredientes_lista.append(ingrediente_t)
+
+                adicionales_lista = []
+                for diccionario in adicionales:
+                    adicional_id = diccionario.get("ID",None)
+                    adicional = Componente.objects.get(pk=adicional_id)
+                    adicionales_lista.append(adicional)
+
+                ## CREANDO COMBINACION
+                usuario = utils.getUsuarioConToken(token)
+                combinacion = Combinacion(nombre, usuario)
+
+                ## CREANDO PIZZA
+                pizza = Pizza().crear(tamano, masa_t_id, borde_t_id, nombre, None, None)
+
+                ## CREANDO PIZZAS_INGREDIENTES
+                for ingrediente in ingredientes_lista:
+                    ## Pizza_Tamano_Ingrediente().crear(self, pizza, tamano_ingrediente)
+                    print("")
+                return JsonResponse({
+                    'STATUS' : 'ERROR',
+                    'CODIGO' : 15,
+                    'DETALLE' : 'Error de solicitud'
+                    })
+
+            except:
+                return JsonResponse({
+                    'STATUS' : 'ERROR',
+                    'CODIGO' : 15,
+                    'DETALLE' : 'Error de solicitud'
+                    })
+        else: 
+            return JsonResponse({
+                'STATUS' : 'ERROR',
+                'CODIGO' : 15,
+                'DETALLE' : 'Error de solicitud'
+                })
+
+
+
 ##COMBOS PROMOCIONALES
 def combos_promocionales(request):
     token = request.GET.get('TOKEN', None)
@@ -392,8 +484,8 @@ def combos_promocionales(request):
         combos = Combos_Promocionales.objects.all()
         paquete = {}
         for combo in combos:
-            combinaciones_pizzas = Combinacion_Pizza.objects.filter(combo=combo)
-            combinaciones_adicionales = Combinacion_Adicional.objects.filter(combo=combo)
+            combinaciones_pizzas = Combinacion_Pizza.objects.filter(combinacion=combo.combinacion)
+            combinaciones_adicionales = Combinacion_Adicional.objects.filter(combinacion=combo.combinacion)
             combo_dict = {}
             comb_pizza_dict = {}
             comb_adic_dict = {}

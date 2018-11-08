@@ -25,3 +25,10 @@ def getUsuarioIdConToken(token):
         return sesion.usuario.id
     except:
         return False
+
+def getUsuarioConToken(token):
+    try:
+        sesion = Sesion.objects.get(token=token)
+        return sesion.usuario
+    except:
+        return False

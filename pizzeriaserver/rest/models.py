@@ -180,10 +180,11 @@ class Borde(models.Model):
 
 ##PIZZA
 class Pizza(models.Model):
-    masa = models.ForeignKey("Masa", on_delete=models.CASCADE)
-    borde = models.ForeignKey("Borde", on_delete=models.CASCADE)
+    tamano =  models.CharField(max_length=30)
+    masa = models.ForeignKey("Tamano_Masa", on_delete=models.CASCADE)
+    borde = models.ForeignKey("Tamano_Borde", on_delete=models.CASCADE)
     nombre = models.CharField(max_length=50)
-    descripcion = models.CharField(max_length=255)
+    descripcion = models.CharField(max_length=255, blank=True)
     img_url = models.ImageField(blank=True)
     estado = models.BooleanField(default=True)
 
@@ -193,11 +194,12 @@ class Pizza(models.Model):
             estadoStr = "Inactivo"
         return self.nombre + " | " + estadoStr
 
-    def crear(self, masa, borde, nombre, descripcion, img_url):
+    def crear(self, tamano, masa, borde, nombre, descripcion, img_url):
         try: 
             p = Pizza()
-            p.masa = Masa.objects.get(pk=masa)
-            p.borde = Borde.objects.get(pk=borde)
+            p.tamano = tamano
+            p.masa = Tamano_Masa.objects.get(pk=masa)
+            p.borde = Tamano_Borde.objects.get(pk=borde)
             p.nombre = nombre
             p.descripcion = descripcion
             p.img_url = img_url
@@ -220,6 +222,20 @@ class Pizza(models.Model):
             return p
         except:
             return None
+
+class Pizza_Tamano_Ingrediente(models.Model):
+    pizza = models.ForeignKey("Pizza", on_delete=models.CASCADE)
+    tamano_ingrediente = models.ForeignKey("Tamano_Ingrediente", on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.pizza.nombre + " | " + self.tamano_ingrediente.ingrediente.nombre
+
+    def crear(self, pizza, tamano_ingrediente):
+        pizza_t_ingrediente = Pizza_Tamano_Ingrediente()
+        pizza_t_ingrediente.pizza = pizza
+        pizza_t_ingrediente.tamano_ingrediente = tamano_ingrediente
+        pizza_t_ingrediente.save()
+        return pizza_t_ingrediente
 
 ##SELECCION DE PIZZAS TRADICIONALES
 class Pizza_Tradicional(models.Model):
@@ -284,7 +300,30 @@ class Tamano_Ingrediente(models.Model):
         return self.ingrediente.nombre + " | " + self.tamano.nombre + ": $" + str(self.costo)
 
 ## COMBINACIONES
+class Combinacion(models.Model):
+    nombre = models.CharField(max_length=50, blank=True)
+    usuario = models.ForeignKey("Usuario", on_delete=models.CASCADE)
+    fecha = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        nombre_ = "Combinacion"
+        if self.nombre:
+            nombre_ = self.nombre
+        return nombre_ + " | CREADO POR: " + self.usuario.username
+
+    def crear(self, nombre, usuario):
+        nombre_ = "Combinacion"
+        if nombre:
+            nombre_ = nombre
+
+        combinacion = Combinacion()
+        combinacion.nombre = nombre_
+        combinacion.usuario = usuario
+        combinacion.save()
+        return combinacion
+
 class Combos_Promocionales(models.Model):
+    combinacion = models.ForeignKey("Combinacion", on_delete=models.CASCADE, default=None)
     nombre = models.CharField(max_length=30)
     costo = models.FloatField()
     img_url = models.ImageField()
@@ -296,21 +335,20 @@ class Combos_Promocionales(models.Model):
         return self.nombre + " $" + str(self.costo)
 
 class Combinacion_Pizza(models.Model):
-    combo = models.ForeignKey("Combos_Promocionales", on_delete=models.CASCADE)
-    tamano =  models.ForeignKey("Tamano", on_delete=models.CASCADE)
+    combinacion = models.ForeignKey("Combinacion", on_delete=models.CASCADE, default=None)
     pizza = models.ForeignKey("Pizza", on_delete=models.CASCADE)
     cantidad = models.IntegerField()
 
     def __str__(self):
-        return self.pizza.nombre + " | COMBO: " + self.combo.nombre + " | CANT: " + str(self.cantidad)
+        return self.pizza.nombre + " | COMBINACION: " + self.combinacion.nombre + " | CANT: " + str(self.cantidad)
 
 class Combinacion_Adicional(models.Model):
-    combo = models.ForeignKey("Combos_Promocionales", on_delete=models.CASCADE)
+    combinacion = models.ForeignKey("Combinacion", on_delete=models.CASCADE, default=None)
     adicional =  models.ForeignKey("Componente", on_delete=models.CASCADE)
     cantidad = models.IntegerField()
 
     def __str__(self):
-        return self.adicional.nombre + " | COMBO: " + self.combo.nombre + " | CANT: " + str(self.cantidad)
+        return self.adicional.nombre + " | COMBINACION: " + self.combinacion.nombre + " | CANT: " + str(self.cantidad)
 
 
 ##PROMOCION
