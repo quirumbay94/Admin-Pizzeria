@@ -194,12 +194,12 @@ class Pizza(models.Model):
             estadoStr = "Inactivo"
         return self.nombre + " | " + estadoStr
 
-    def crear(self, tamano, masa, borde, nombre, descripcion, img_url):
+    def crear(self, tamano, masa_t_id, borde_t_id, nombre, descripcion, img_url):
         try: 
             p = Pizza()
             p.tamano = tamano
-            p.masa = Tamano_Masa.objects.get(pk=masa)
-            p.borde = Tamano_Borde.objects.get(pk=borde)
+            p.masa = Tamano_Masa.objects.get(pk=masa_t_id)
+            p.borde = Tamano_Borde.objects.get(pk=borde_t_id)
             p.nombre = nombre
             p.descripcion = descripcion
             p.img_url = img_url
@@ -208,6 +208,20 @@ class Pizza(models.Model):
             return p
         except:
             return None
+
+    def crear_simple(self, tamano, masa_t_id, borde_t_id, nombre):
+        try: 
+            p = Pizza()
+            p.tamano = tamano
+            p.masa = Tamano_Masa.objects.get(pk=masa_t_id)
+            p.borde = Tamano_Borde.objects.get(pk=borde_t_id)
+            p.nombre = nombre
+            p.estado = True
+            p.save()
+            return p
+        except:
+            return None
+            
     def editar(self, pizza_id, masa, borde, nombre, descripcion, img_url, estado):
         try: 
             p = Pizza.objects.get(pk=pizza_id)
@@ -302,7 +316,7 @@ class Tamano_Ingrediente(models.Model):
 ## COMBINACIONES
 class Combinacion(models.Model):
     nombre = models.CharField(max_length=50, blank=True)
-    usuario = models.ForeignKey("Usuario", on_delete=models.CASCADE)
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     fecha = models.DateField(auto_now_add=True)
 
     def __str__(self):
@@ -341,6 +355,14 @@ class Combinacion_Pizza(models.Model):
 
     def __str__(self):
         return self.pizza.nombre + " | COMBINACION: " + self.combinacion.nombre + " | CANT: " + str(self.cantidad)
+
+    def crear(self, combinacion, pizza, cantidad):
+        c = Combinacion_Pizza()
+        c.combinacion = combinacion
+        c.pizza = pizza
+        c.cantidad = cantidad
+        c.save()
+        return c
 
 class Combinacion_Adicional(models.Model):
     combinacion = models.ForeignKey("Combinacion", on_delete=models.CASCADE, default=None)

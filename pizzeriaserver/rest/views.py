@@ -415,29 +415,67 @@ def tamano_ingrediente(request):
         })
 
 ## COMBINACION ##
+@csrf_exempt
 def crear_combinacion(request):  ## ARREGLAR RESPUESTAS DE ERRORES
-
-    ## FALTA CREAR TABLA DE PIZZA_INGREDIENTE Y CREAR METODOS PARA CREAR OBJETOS
 
     body = utils.request_todict(request)
     token = body.get('TOKEN', None)
     if request.method == "POST" and utils.verificarToken(token):
+
         pizzas = body.get('PIZZAS', None)
         adicionales = body.get('ADICIONALES', None)
 
+        ##CREANDO COMBINACION
+        usuario = utils.getUsuarioConToken(token)
+        combinacion = Combinacion().crear(None, usuario)
+
+
+        ##ITERANDO LISTA DE PIZZAS PARA CREARLAS
         for pizza in pizzas:
+            nombre = pizza.get("NOMBRE", None)
             tamano = pizza.get("TAMANO", None)
             masa_t_id = pizza.get("MASA", None)
+            borde_t_id = pizza.get("BORDE", None)
+            ingredientes = pizza.get("INGREDIENTES", None)
 
+            ##CREANDO PIZZA
+            pizza_obj = Pizza().crear_simple(tamano, masa_t_id, borde_t_id, nombre)
 
-            crear(self, tamano, masa, borde, nombre, descripcion, img_url)
+            print("PIZZA")
+            print(pizza_obj)
+            print("")
 
-        else: 
-            return JsonResponse({
-                'STATUS' : 'ERROR',
-                'CODIGO' : 15,
-                'DETALLE' : 'Error de solicitud'
-                })
+            ##CREANDO COMBINACION CON PIZZA
+            Combinacion_Pizza().crear(combinacion, pizza_obj, 1)
+
+            for diccionario in ingredientes:
+                ##CREANDO PIZZA_TAMANO_INGREDIENTE
+                t_ingrediente = diccionario.get("ID", None)
+                t_ingrediente = Tamano_Ingrediente.objects.get(pk=t_ingrediente)
+                pizza_t_ingrediente = Pizza_Tamano_Ingrediente().crear(pizza_obj, t_ingrediente)
+
+        ##ITERANDO LISTA DE ADICIONALES 
+        for diccionario in adicionales:
+            adicional = diccionario.get("ID", None)
+            cantidad = diccionario.get("CANTIDAD", None)
+
+            adicional = Componente.objects.get(pk=adicional)
+
+            ##CREANDO COMBINACION_ADICIONAL
+            Combinacion_Adicional().crear(combinacion, adicional, cantidad)
+
+        return JsonResponse({
+                'STATUS' : 'OK',
+                'CODIGO' : 19,
+                'DETALLE' : 'Solicitud correcta'
+                }) 
+
+    else: 
+        return JsonResponse({
+            'STATUS' : 'ERROR',
+            'CODIGO' : 15,
+            'DETALLE' : 'Error de solicitud'
+            })
 
 
 
