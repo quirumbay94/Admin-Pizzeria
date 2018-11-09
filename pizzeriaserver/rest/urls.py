@@ -28,5 +28,8 @@ urlpatterns = [
 
     ##PORCION
     url(r'^porciones', views.porciones, name='porciones'),
-    
+
+    ## ADICIONALES
+    url(r'^adicionales', views.adicionales, name='adicionales'),
+
 ]

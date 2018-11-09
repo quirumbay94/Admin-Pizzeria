@@ -350,6 +350,16 @@ class Combinacion_Adicional(models.Model):
     def __str__(self):
         return self.adicional.nombre + " | COMBINACION: " + self.combinacion.nombre + " | CANT: " + str(self.cantidad)
 
+    def crear(self, combinacion, adicional, cantidad):
+        try: 
+            c_a = Combinacion_Adicional()
+            c_a.combinacion = combinacion
+            c_a.adicional = adicional
+            c_a.cantidad = cantidad
+            c_a.save()
+            return c_a
+        except:
+            return None
 
 ##PROMOCION
 class Promocion(models.Model):

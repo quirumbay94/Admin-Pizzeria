@@ -258,7 +258,7 @@ def ver_pizzas_tradicionales(request):
                     "NOMBRE" : pizza.pizza.nombre,
                     "IMAGEN_URL" : IP + pizza.pizza.img_url.url,
                     "DESCRIPCION" : pizza.pizza.descripcion,
-                    "COSTO" : "%.2f" % float(pizza.costo)
+                    "COSTO" : "%.2f" % float(pizza.costo),
                 }
                 paquete[pizza.id] = pizza_tradicional
 
@@ -296,7 +296,8 @@ def tamanos(request):
             nombre = nombre.capitalize()
             paquete.append({
                 "ID" : tamano.id,
-                "NOMBRE" : nombre
+                "NOMBRE" : nombre,
+                "NOMBRE_BASE" : tamano.nombre
                 })
         return JsonResponse({
                 'STATUS' : 'OK',
@@ -421,53 +422,16 @@ def crear_combinacion(request):  ## ARREGLAR RESPUESTAS DE ERRORES
     body = utils.request_todict(request)
     token = body.get('TOKEN', None)
     if request.method == "POST" and utils.verificarToken(token):
-        nombre = body.get('NOMBRE', None)
-        tamano = body.get('TAMANO', None)
-        borde_t_id = body.get('BORDE', None)
-        masa_t_id = body.get('MASA', None)
-        ingredientes = body.get('INGREDIENTES', None)
+        pizzas = body.get('PIZZAS', None)
         adicionales = body.get('ADICIONALES', None)
 
-        if nombre and tamano and borde_t_id and masa_t_id and ingredientes and adicionales:
-            try:
-                ## EXTRAYENDO OBJECTOS DE SUS IDS
-                borde_t = Tamano_Borde.objects.get(pk=borde_t_id)
-                masa_t = Tamano_Masa.objects.get(pk=masa_t_id)
-                ingredientes_lista = []
-                for diccionario in ingredientes:
-                    ingrediente_t_id = diccionario.get("ID",None)
-                    ingrediente_t = Tamano_Ingrediente.objects.get(pk=ingrediente_t_id)
-                    ingredientes_lista.append(ingrediente_t)
+        for pizza in pizzas:
+            tamano = pizza.get("TAMANO", None)
+            masa_t_id = pizza.get("MASA", None)
 
-                adicionales_lista = []
-                for diccionario in adicionales:
-                    adicional_id = diccionario.get("ID",None)
-                    adicional = Componente.objects.get(pk=adicional_id)
-                    adicionales_lista.append(adicional)
 
-                ## CREANDO COMBINACION
-                usuario = utils.getUsuarioConToken(token)
-                combinacion = Combinacion(nombre, usuario)
+            crear(self, tamano, masa, borde, nombre, descripcion, img_url)
 
-                ## CREANDO PIZZA
-                pizza = Pizza().crear(tamano, masa_t_id, borde_t_id, nombre, None, None)
-
-                ## CREANDO PIZZAS_INGREDIENTES
-                for ingrediente in ingredientes_lista:
-                    ## Pizza_Tamano_Ingrediente().crear(self, pizza, tamano_ingrediente)
-                    print("")
-                return JsonResponse({
-                    'STATUS' : 'ERROR',
-                    'CODIGO' : 15,
-                    'DETALLE' : 'Error de solicitud'
-                    })
-
-            except:
-                return JsonResponse({
-                    'STATUS' : 'ERROR',
-                    'CODIGO' : 15,
-                    'DETALLE' : 'Error de solicitud'
-                    })
         else: 
             return JsonResponse({
                 'STATUS' : 'ERROR',
@@ -601,6 +565,40 @@ def porciones(request):
         'CODIGO' : 15,
         'DETALLE' : 'Error de solicitud'
         })
+
+##  ADICIONALES
+def adicionales(request):
+    token = request.GET.get('TOKEN', None)
+    tipo = request.GET.get('TIPO', None)
+    if request.method == "GET" and utils.verificarToken(token) and tipo:
+        adicionales = Componente.objects.filter(tipo=tipo)
+        if len(adicionales) > 0:
+            paquete = []
+            for adicional in adicionales:
+                paquete.append({
+                    "ID" : adicional.id,
+                    "NOMBRE" : adicional.nombre.capitalize(),
+                    "COSTO" : "%.2f" % float(adicional.costo),
+                    "IMAGEN_URL" : IP + adicional.img_url.url
+                    })
+            return JsonResponse({
+                    'STATUS' : 'OK',
+                    'CODIGO' : 19,
+                    'PORCIONES' : paquete,
+                    'DETALLE' : 'Solicitud correcta'
+                    }) 
+        else:
+            return JsonResponse({
+                'STATUS' : 'ERROR',
+                'CODIGO' : 21,
+                'DETALLE' : 'Tipo de adicional incorrecto'
+                })
+    return JsonResponse({
+        'STATUS' : 'ERROR',
+        'CODIGO' : 15,
+        'DETALLE' : 'Error de solicitud'
+        })    
+
 
 
 
