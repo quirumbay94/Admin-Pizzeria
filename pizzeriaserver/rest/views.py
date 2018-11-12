@@ -432,26 +432,37 @@ def crear_combinacion(request):  ## ARREGLAR RESPUESTAS DE ERRORES
         usuario = utils.getUsuarioConToken(token)
         combinacion = Combinacion().crear(None, usuario)
 
-
         ##ITERANDO LISTA DE PIZZAS PARA CREARLAS
         for pizza in pizzas:
-            nombre = pizza.get("NOMBRE", None)
-            tamano = pizza.get("TAMANO", None)
-            masa_t_id = pizza.get("MASA", None)
-            borde_t_id = pizza.get("BORDE", None)
-            ingredientes = pizza.get("INGREDIENTES", None)
+            id_pizza = pizza.get("ID", None)
+            cantidad = pizza.get("CANTIDAD", None)
+            if id_pizza and cantidad:
+                ##OBTENIENDO OBJETO DE PIZZA
+                pizza_obj = Pizza.objects.get(pk=id_pizza)
 
-            ##CREANDO PIZZA
-            pizza_obj = Pizza().crear_simple(tamano, masa_t_id, borde_t_id, nombre)
+                ##CREANDO COMBINACION CON PIZZA
+                Combinacion_Pizza().crear(combinacion, pizza_obj, cantidad)
+            else:
+                nombre = pizza.get("NOMBRE", None)
+                tamano = pizza.get("TAMANO", None)
+                masa_t_id = pizza.get("MASA", None)
+                borde_t_id = pizza.get("BORDE", None)
+                cantidad = pizza.get("CANTIDAD", None)
+                ingredientes = pizza.get("INGREDIENTES", None)
 
-            ##CREANDO COMBINACION CON PIZZA
-            Combinacion_Pizza().crear(combinacion, pizza_obj, 1)
+                ##CREANDO PIZZA
+                pizza_obj = Pizza().crear_simple(tamano, masa_t_id, borde_t_id, nombre)
 
-            for diccionario in ingredientes:
-                ##CREANDO PIZZA_TAMANO_INGREDIENTE
-                t_ingrediente = diccionario.get("ID", None)
-                t_ingrediente = Tamano_Ingrediente.objects.get(pk=t_ingrediente)
-                pizza_t_ingrediente = Pizza_Tamano_Ingrediente().crear(pizza_obj, t_ingrediente)
+
+                ##CREANDO COMBINACION CON PIZZA
+                Combinacion_Pizza().crear(combinacion, pizza_obj, cantidad)
+
+                for diccionario in ingredientes:
+                    ##CREANDO PIZZA_TAMANO_INGREDIENTE
+                    t_ingrediente = diccionario.get("ID", None)
+                    t_ingrediente = Tamano_Ingrediente.objects.get(pk=t_ingrediente)
+                    porcion = diccionario.get("PORCION", None)
+                    pizza_t_ingrediente = Pizza_Tamano_Ingrediente().crear(pizza_obj, t_ingrediente, porcion)
 
         ##ITERANDO LISTA DE ADICIONALES 
         for diccionario in adicionales:

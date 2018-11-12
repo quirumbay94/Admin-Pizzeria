@@ -178,6 +178,15 @@ class Borde(models.Model):
         except:
             return None
 
+## PORCION
+class Porcion(models.Model):
+    nombre = models.CharField(max_length=30)
+    valor = models.IntegerField()
+    estado = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.nombre + " | VALOR: " + str(self.valor)
+
 ##PIZZA
 class Pizza(models.Model):
     tamano =  models.ForeignKey("Tamano", on_delete=models.CASCADE, default=None) 
@@ -209,10 +218,10 @@ class Pizza(models.Model):
         except:
             return None
 
-    def crear_simple(self, tamano, masa_t_id, borde_t_id, nombre):
+    def crear_simple(self, tamano_id, masa_t_id, borde_t_id, nombre):
         try: 
             p = Pizza()
-            p.tamano = tamano
+            p.tamano = Tamano.objects.get(pk=tamano_id)
             p.masa = Tamano_Masa.objects.get(pk=masa_t_id)
             p.borde = Tamano_Borde.objects.get(pk=borde_t_id)
             p.nombre = nombre
@@ -240,14 +249,16 @@ class Pizza(models.Model):
 class Pizza_Tamano_Ingrediente(models.Model):
     pizza = models.ForeignKey("Pizza", on_delete=models.CASCADE)
     tamano_ingrediente = models.ForeignKey("Tamano_Ingrediente", on_delete=models.CASCADE)
+    porcion = models.ForeignKey("Porcion", on_delete=models.CASCADE, default=None)
 
     def __str__(self):
         return self.pizza.nombre + " | " + self.tamano_ingrediente.ingrediente.nombre
 
-    def crear(self, pizza, tamano_ingrediente):
+    def crear(self, pizza, tamano_ingrediente, porcion_id):
         pizza_t_ingrediente = Pizza_Tamano_Ingrediente()
         pizza_t_ingrediente.pizza = pizza
         pizza_t_ingrediente.tamano_ingrediente = tamano_ingrediente
+        pizza_t_ingrediente.porcion = Porcion.objects.get(pk=porcion_id)
         pizza_t_ingrediente.save()
         return pizza_t_ingrediente
 
@@ -395,14 +406,6 @@ class Promocion(models.Model):
     def __str__(self):
         return self.nombre + " | INICIO: " + str(self.fecha_inicio) + " | FIN: " + str(self.fecha_fin)
 
-## PORCION
-class Porcion(models.Model):
-    nombre = models.CharField(max_length=30)
-    valor = models.IntegerField()
-    estado = models.BooleanField(default=True)
-
-    def __str__(self):
-        return self.nombre + " | VALOR: " + str(self.valor)
 
 
 
