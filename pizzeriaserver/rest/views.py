@@ -316,16 +316,17 @@ def tamano_masa(request):
     tamano = request.GET.get('TAMANO', None)
     if request.method == "GET" and utils.verificarToken(token) and tamano:
         try:
-            tamano_model = Tamano.objects.get(nombre=tamano)
+            tamano_model = Tamano.objects.get(pk=tamano)
             tamanos_masas = Tamano_Masa.objects.filter(tamano=tamano_model)
-            masas = {}
+            masas = []
             for t_m in tamanos_masas:
-                masas[t_m.id] = {
+                masas.append({
+                    'ID' : t_m.id,
                     'NOMBRE' : t_m.masa.nombre,
                     'DESCRIPCION' : t_m.masa.descripcion,
                     'TAMANO' : t_m.tamano.nombre,
                     'COSTO' : "%.2f" % float(t_m.costo )
-                }
+            }) 
             return JsonResponse({
                 'STATUS' : 'OK',
                 'CODIGO' : 19,
@@ -350,16 +351,17 @@ def tamano_borde(request):
     tamano = request.GET.get('TAMANO', None)
     if request.method == "GET" and utils.verificarToken(token) and tamano:
         try:
-            tamano_model = Tamano.objects.get(nombre=tamano)
+            tamano_model = Tamano.objects.get(pk=tamano)
             tamanos_bordes = Tamano_Borde.objects.filter(tamano=tamano_model)
-            bordes = {}
+            bordes = []
             for t_b in tamanos_bordes:
-                bordes[t_b.id] = {
+                bordes.append({
+                    'ID' : t_b.id,
                     'NOMBRE' : t_b.borde.nombre,
                     'DESCRIPCION' : t_b.borde.descripcion,
                     'TAMANO' : t_b.tamano.nombre,
                     'COSTO' : "%.2f" % float(t_b.costo )
-                }
+                })
             return JsonResponse({
                 'STATUS' : 'OK',
                 'CODIGO' : 19,
@@ -384,17 +386,18 @@ def tamano_ingrediente(request):
     tamano = request.GET.get('TAMANO', None)
     if request.method == "GET" and utils.verificarToken(token) and tamano:
         try:
-            tamano_model = Tamano.objects.get(nombre=tamano)
+            tamano_model = Tamano.objects.get(pk=tamano)
             tamanos_ingredientes = Tamano_Ingrediente.objects.filter(tamano=tamano_model)
-            ingredientes = {}
+            ingredientes = []
             for t_i in tamanos_ingredientes:
-                ingredientes[t_i.id] = {
+                ingredientes.append({
+                    'ID' : t_i.id,
                     'NOMBRE' : t_i.ingrediente.nombre,
                     'DESCRIPCION' : t_i.ingrediente.descripcion,
                     'IMAGEN_URL' : IP + t_i.ingrediente.img_url.url,
                     'TAMANO' : t_i.tamano.nombre,
                     'COSTO' : "%.2f" % float(t_i.costo)
-                }
+                })
             return JsonResponse({
                 'STATUS' : 'OK',
                 'CODIGO' : 19,
@@ -440,10 +443,6 @@ def crear_combinacion(request):  ## ARREGLAR RESPUESTAS DE ERRORES
 
             ##CREANDO PIZZA
             pizza_obj = Pizza().crear_simple(tamano, masa_t_id, borde_t_id, nombre)
-
-            print("PIZZA")
-            print(pizza_obj)
-            print("")
 
             ##CREANDO COMBINACION CON PIZZA
             Combinacion_Pizza().crear(combinacion, pizza_obj, 1)
@@ -609,20 +608,20 @@ def adicionales(request):
     token = request.GET.get('TOKEN', None)
     tipo = request.GET.get('TIPO', None)
     if request.method == "GET" and utils.verificarToken(token) and tipo:
-        adicionales = Componente.objects.filter(tipo=tipo)
-        if len(adicionales) > 0:
+        objectos = Componente.objects.filter(tipo=tipo)
+        if len(objectos) > 0:
             paquete = []
-            for adicional in adicionales:
+            for objeto in objectos:
                 paquete.append({
-                    "ID" : adicional.id,
-                    "NOMBRE" : adicional.nombre.capitalize(),
-                    "COSTO" : "%.2f" % float(adicional.costo),
-                    "IMAGEN_URL" : IP + adicional.img_url.url
+                    "ID" : objeto.id,
+                    "NOMBRE" : objeto.nombre.capitalize(),
+                    "COSTO" : "%.2f" % float(objeto.costo),
+                    "IMAGEN_URL" : IP + objeto.img_url.url
                     })
             return JsonResponse({
                     'STATUS' : 'OK',
                     'CODIGO' : 19,
-                    'PORCIONES' : paquete,
+                    'ADICIONALES' : paquete,
                     'DETALLE' : 'Solicitud correcta'
                     }) 
         else:

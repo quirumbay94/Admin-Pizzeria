@@ -180,7 +180,7 @@ class Borde(models.Model):
 
 ##PIZZA
 class Pizza(models.Model):
-    tamano =  models.CharField(max_length=30)
+    tamano =  models.ForeignKey("Tamano", on_delete=models.CASCADE, default=None) 
     masa = models.ForeignKey("Tamano_Masa", on_delete=models.CASCADE)
     borde = models.ForeignKey("Tamano_Borde", on_delete=models.CASCADE)
     nombre = models.CharField(max_length=50)
@@ -194,10 +194,10 @@ class Pizza(models.Model):
             estadoStr = "Inactivo"
         return self.nombre + " | " + estadoStr
 
-    def crear(self, tamano, masa_t_id, borde_t_id, nombre, descripcion, img_url):
+    def crear(self, tamano_id, masa_t_id, borde_t_id, nombre, descripcion, img_url):
         try: 
             p = Pizza()
-            p.tamano = tamano
+            p.tamano = Tamano.objects.get(pk=tamano_id)
             p.masa = Tamano_Masa.objects.get(pk=masa_t_id)
             p.borde = Tamano_Borde.objects.get(pk=borde_t_id)
             p.nombre = nombre
