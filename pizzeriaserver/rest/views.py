@@ -246,6 +246,45 @@ def editar_usuario(request):
             'DETALLE' : 'Error de solicitud'
             })
 
+## PIZZAS FAVORITAS ##
+def pizzas_favoritas(request):
+    token = request.GET.get('TOKEN', None)
+    if request.method == "GET" and utils.verificarToken(token):
+        usuario = utils.getUsuarioConToken(token)
+        combinacion = Combinacion.objects.get(usuario=usuario)
+        combinacion_pizza = Combinacion_Pizza.objects.filter(combinacion=combinacion)
+        paquete = []
+        if len(combinacion_pizza) > 0:
+            for c in combinacion_pizza:
+                img_url = None
+                if c.pizza.img_url:
+                    img_url = IP + c.pizza.img_url.url
+                paquete.append({
+                    "PIZZA_ID" : c.pizza.id,
+                    "NOMBRE" : c.pizza.nombre,
+                    "IMAGEN_URL" : img_url
+                    })
+            return JsonResponse({
+                    'STATUS' : 'OK',
+                    'CODIGO' : 19,
+                    'PIZZAS_FAVORITAS' : paquete,
+                    'DETALLE' : 'Solicitud correcta'
+                })
+        else:
+            return JsonResponse({
+                    'STATUS' : 'OK',
+                    'CODIGO' : 22,
+                    'DETALLE' : 'No existen pizzas favoritas para este usuario'
+                })
+    return JsonResponse({
+        'STATUS' : 'ERROR',
+        'CODIGO' : 15,
+        'DETALLE' : 'Error de solicitud'
+        })
+
+
+
+
 ## PIZZAS TRADICIONALES ##
 def ver_pizzas_tradicionales(request):
     token = request.GET.get('TOKEN', None)
@@ -258,7 +297,7 @@ def ver_pizzas_tradicionales(request):
                     "NOMBRE" : pizza.pizza.nombre,
                     "IMAGEN_URL" : IP + pizza.pizza.img_url.url,
                     "DESCRIPCION" : pizza.pizza.descripcion,
-                    "COSTO" : "%.2f" % float(pizza.costo),
+                    "COSTO" : "%.2f" % float(pizza.costo)
                 }
                 paquete[pizza.id] = pizza_tradicional
 
