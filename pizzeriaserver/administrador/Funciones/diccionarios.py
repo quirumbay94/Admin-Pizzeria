@@ -1,5 +1,5 @@
 from rest.models import Detalles_Personales, Componente, Pizza_Tradicional, Masa, Borde, Tamano, Tamano_Masa, Tamano_Borde, Tamano_Ingrediente
-
+from rest.models import Porcion
 ##			GENERAL 		##
 ##DICCIONARIO CON DATOS PERSONALES PARA BARRA DE NAV
 def diccionarioBarraNav(request, paquete):
@@ -75,6 +75,7 @@ def diccionarioMasasBordesIngredientes(paquete):
 	paquete_["MASAS"] = Tamano_Masa.objects.all()
 	paquete_["BORDES"] = Tamano_Borde.objects.all()
 	paquete_["INGREDIENTES"] = Tamano_Ingrediente.objects.all()
+	paquete_["PORCIONES"] = Porcion.objects.all()
 	return paquete_
 
 

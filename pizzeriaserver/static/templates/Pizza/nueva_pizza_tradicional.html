@@ -27,10 +27,6 @@
 				<h4>Imagen</h4>
 				<input type="file" class="form-control input" name="IMAGEN">
 			</div>
-			<div class="btn-container">
-				<button type="button" class="btn btn-formulario" id="limpiarCampos-btn">Limpiar Campos</button>
-				<button type="button" class="btn btn-formulario btn-guardar" id="guardar-btn">Guardar</button>
-			</div>
 		</div>
 		<div class="input-main-container" style="margin-top: 30px;">
 			<div class="input-container">
@@ -59,6 +55,38 @@
 					{% endfor %}
 				</select>
 			</div>
+			<div class="input-container">
+				<div class="subtitle-anadir-container">
+					<h4>Ingredientes</h4>
+					<button class="btn btn-primary" id="anadir_ingrediente">+</button>
+				</div>
+				<div class="select-wrapper">
+					<div class ="select-ingrediente-container">
+						<h6>Ingrediente: </h6>
+						<select class="form-control input" name="INGREDIENTE" id="ingrediente-select">
+							<option value="">Seleccione un ingrediente</option>
+							{% for ingrediente in INGREDIENTES %}
+								<option value="{{ ingrediente.id }}" class="pizza-bordes pizza-componente-seleccion-bloqueado" tipo="{{ ingrediente.tamano.nombre}}">{{ ingrediente.ingrediente.nombre }}</option>
+							{% endfor %}
+						</select>
+					</div>
+					<div class ="select-porcion-container">
+						<h6>Porcion: </h6>
+						<select class="form-control input" name="PORCION" id="porcion-select">
+							<option value="">Seleccione la porcion</option>
+							{% for porcion in PORCIONES %}
+								<option value="{{ porcion.id }}" class="pizza-bordes pizza-componente-seleccion-bloqueado" tipo="{{ porcion.nombre}}">{{ porcion.nombre }}</option>
+							{% endfor %}
+						</select>
+					</div>
+					<button class="btn btn-danger remover_ingrediente_btn">X</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="btn-container">
+			<button type="button" class="btn btn-formulario" id="limpiarCampos-btn">Limpiar Campos</button>
+			<button type="button" class="btn btn-formulario btn-guardar" id="guardar-btn">Guardar</button>
 		</div>
 	</form>
 </div>

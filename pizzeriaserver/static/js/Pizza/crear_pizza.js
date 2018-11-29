@@ -2,6 +2,10 @@ $("#tamano-select").change(function() {
 	var nombre = $(this).val()
 	habilitarMasas(nombre)
 	habilitarBordes(nombre)
+
+	//CAMBIANDO LOS SELECTS A VALORES INICIALES
+	$("#masa-select").val("")
+	$("#borde-select").val("")
 })
 
 function habilitarMasas(nombre) {
