@@ -35,3 +35,9 @@
 .btn-guardar {
 	margin: 0px 0px 0px auto;
 }
+.pizza-componente-seleccion-disponible {
+	display: block;
+}
+.pizza-componente-seleccion-bloqueado {
+	display: none;
+}

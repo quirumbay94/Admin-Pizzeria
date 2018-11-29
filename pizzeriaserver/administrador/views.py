@@ -95,10 +95,10 @@ def componentes(request, tipo):
 		paquete = diccionarios.diccionarioBarraNav(request,{})
 
 		if tipo == "INGREDIENTES":
-			ingredientes = Componente.objects.filter(tipo="INGREDIENTES").order_by('nombre')
+			ingredientes = Componente.objects.filter(tipo="INGREDIENTE").order_by('nombre')
 			paquete["INGREDIENTES"] = ingredientes
 		elif tipo == "ADICIONALES":
-			adicionales = Componente.objects.filter(tipo="ADICIONALES").order_by('nombre')
+			adicionales = Componente.objects.filter(tipo="ADICIONAL").order_by('nombre')
 			paquete["ADICIONALES"] = adicionales
 		paquete["TIPO"] = tipo.capitalize()
 		return render(request,"Componente/componentes.html", paquete)
@@ -200,7 +200,7 @@ def nueva_pizza_tradicional(request):
 		paquete = diccionarios.diccionarioDatosSubBarraPizza_T(paquete)
 
 		##RECOLECTANDO TIPOS DE MASAS Y BORDES 
-		paquete = diccionarios.diccionarioMasasyBordes(paquete)
+		paquete = diccionarios.diccionarioMasasBordesIngredientes(paquete)
 
 		if request.method == "POST":
 			nombre = request.POST.get("NOMBRE",None)

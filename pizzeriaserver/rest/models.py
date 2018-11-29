@@ -51,6 +51,8 @@ class Sesion(models.Model):
             return s
         except:
             return None
+    def __str__ (self):
+        return self.usuario.username
 
 
 ##DATOS PERSONALES DE CADA USUARIO
@@ -228,7 +230,8 @@ class Pizza(models.Model):
             p.estado = True
             p.save()
             return p
-        except:
+        except Exception as e:
+            print(e)
             return None
             
     def editar(self, pizza_id, masa, borde, nombre, descripcion, img_url, estado):
@@ -257,7 +260,7 @@ class Pizza_Tamano_Ingrediente(models.Model):
     def crear(self, pizza, tamano_ingrediente, porcion_id):
         pizza_t_ingrediente = Pizza_Tamano_Ingrediente()
         pizza_t_ingrediente.pizza = pizza
-        pizza_t_ingrediente.tamano_ingrediente = tamano_ingrediente
+        pizza_t_ingrediente.tamano_ingrediente = Tamano_Ingrediente.objects.get(pk=tamano_ingrediente)
         pizza_t_ingrediente.porcion = Porcion.objects.get(pk=porcion_id)
         pizza_t_ingrediente.save()
         return pizza_t_ingrediente

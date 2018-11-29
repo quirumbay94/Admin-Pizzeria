@@ -251,19 +251,25 @@ def pizzas_favoritas(request):
     token = request.GET.get('TOKEN', None)
     if request.method == "GET" and utils.verificarToken(token):
         usuario = utils.getUsuarioConToken(token)
-        combinacion = Combinacion.objects.get(usuario=usuario)
-        combinacion_pizza = Combinacion_Pizza.objects.filter(combinacion=combinacion)
+        combinaciones = Combinacion.objects.filter(usuario=usuario)
+        combinaciones_list = []
+        for combinacion in combinaciones:
+            combinacion_obj = Combinacion_Pizza.objects.filter(combinacion=combinacion)
+            combinaciones_list.append(combinacion_obj)
+
         paquete = []
-        if len(combinacion_pizza) > 0:
-            for c in combinacion_pizza:
-                img_url = None
-                if c.pizza.img_url:
-                    img_url = IP + c.pizza.img_url.url
-                paquete.append({
-                    "PIZZA_ID" : c.pizza.id,
-                    "NOMBRE" : c.pizza.nombre,
-                    "IMAGEN_URL" : img_url
-                    })
+        if len(combinaciones_list) > 0:
+            for combinacion_pizza in combinaciones_list:
+                if len(combinacion_pizza) > 0:
+                    for c in combinacion_pizza:
+                        img_url = None
+                        if c.pizza.img_url:
+                            img_url = IP + c.pizza.img_url.url
+                        paquete.append({
+                            "PIZZA_ID" : c.pizza.id,
+                            "NOMBRE" : c.pizza.nombre,
+                            "IMAGEN_URL" : img_url
+                            })
             return JsonResponse({
                     'STATUS' : 'OK',
                     'CODIGO' : 19,
@@ -281,6 +287,50 @@ def pizzas_favoritas(request):
         'CODIGO' : 15,
         'DETALLE' : 'Error de solicitud'
         })
+
+@csrf_exempt
+def crear_pizza_favorita(request):
+    body = utils.request_todict(request)
+    token = body.get('TOKEN', None)
+    if request.method == "POST" and utils.verificarToken(token):
+        pizza = body.get('PIZZA', None)
+        nombre = body.get('NOMBRE', None)
+
+        ##CREANDO COMBINACION
+        usuario = utils.getUsuarioConToken(token)
+        combinacion = Combinacion().crear(nombre, usuario)
+
+        ##OBTENIENDO INFO DE LA PIZZA
+        tamano = pizza.get("TAMANO", None)
+        masa_t_id = pizza.get("MASA", None)
+        borde_t_id = pizza.get("BORDE", None)
+        cantidad = 1
+        ingredientes = pizza.get("INGREDIENTES", None)
+
+        ##CREANDO PIZZA
+        pizza_obj = Pizza().crear_simple(tamano, masa_t_id, borde_t_id, nombre)
+
+        ##CREANDO COMBINACION CON PIZZA
+        Combinacion_Pizza().crear(combinacion, pizza_obj, cantidad)
+
+        for diccionario in ingredientes:
+            ##CREANDO PIZZA_TAMANO_INGREDIENTE
+            t_ingrediente = diccionario.get("ID", None)
+            porcion = diccionario.get("PORCION", None)
+            pizza_t_ingrediente = Pizza_Tamano_Ingrediente().crear(pizza_obj, t_ingrediente, porcion)
+        
+        return JsonResponse({
+                'STATUS' : 'OK',
+                'CODIGO' : 19,
+                'DETALLE' : 'Solicitud correcta'
+                }) 
+
+    else: 
+        return JsonResponse({
+            'STATUS' : 'ERROR',
+            'CODIGO' : 15,
+            'DETALLE' : 'Error de solicitud'
+            })
 
 
 
@@ -459,7 +509,6 @@ def tamano_ingrediente(request):
 ## COMBINACION ##
 @csrf_exempt
 def crear_combinacion(request):  ## ARREGLAR RESPUESTAS DE ERRORES
-
     body = utils.request_todict(request)
     token = body.get('TOKEN', None)
     if request.method == "POST" and utils.verificarToken(token):
