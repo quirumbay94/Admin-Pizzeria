@@ -409,9 +409,49 @@ class Promocion(models.Model):
     def __str__(self):
         return self.nombre + " | INICIO: " + str(self.fecha_inicio) + " | FIN: " + str(self.fecha_fin)
 
+##DIRECCIONES DEL CLIENTE
+class Direccion_Cliente(models.Model):
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    nombre = models.CharField(max_length=50, default="Dirección")
+    descripcion = models.CharField(max_length=255, blank=True)
+    latitud = models.CharField(max_length=15)
+    longitud = models.CharField(max_length=15)
 
+    def __str__(self):
+        return self.usuario.username + " | " + self.nombre
 
-
+    def crear(self, usuario, nombre, descripcion, latitud, longitud):
+        try:
+            direccion = Direccion_Cliente()
+            direccion.usuario = usuario
+            direccion.nombre = nombre
+            direccion.latitud = latitud
+            direccion.longitud = longitud
+            if descripcion:
+                direccion.descripcion = descripcion
+            direccion.save()
+            return direccion
+        except:
+            return None
+    def borrar(self,direccion_id):
+        try:
+            direccion = Direccion_Cliente.objects.get(pk=direccion_id)
+            direccion.delete()
+            return True
+        except:
+            return False
+    def editar(self, direccion_id, usuario, nombre, descripcion, latitud, longitud):
+        try:
+            direccion = Direccion_Cliente.objects.get(pk=direccion_id)
+            direccion.usuario = usuario
+            direccion.nombre = nombre
+            direccion.descripcion = descripcion
+            direccion.latitud = latitud
+            direccion.longitud = longitud
+            direccion.save()
+            return direccion
+        except:
+            return None
 
 
 

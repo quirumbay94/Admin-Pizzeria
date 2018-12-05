@@ -55,31 +55,31 @@
 					{% endfor %}
 				</select>
 			</div>
-			<div class="input-container">
+			<div class="input-container" id="ingrediente-main-container">
 				<div class="subtitle-anadir-container">
 					<h4>Ingredientes</h4>
-					<button class="btn btn-primary" id="anadir_ingrediente">+</button>
+					<button class="btn btn-primary" type="button" onclick="agregarIngrediente()">+</button>
 				</div>
 				<div class="select-wrapper">
 					<div class ="select-ingrediente-container">
 						<h6>Ingrediente: </h6>
-						<select class="form-control input" name="INGREDIENTE" id="ingrediente-select">
+						<select class="form-control input ingrediente-select" name="INGREDIENTES[]">
 							<option value="">Seleccione un ingrediente</option>
 							{% for ingrediente in INGREDIENTES %}
-								<option value="{{ ingrediente.id }}" class="pizza-bordes pizza-componente-seleccion-bloqueado" tipo="{{ ingrediente.tamano.nombre}}">{{ ingrediente.ingrediente.nombre }}</option>
+								<option value="{{ ingrediente.id }}" class="pizza-ingredientes pizza-componente-seleccion-bloqueado" tipo="{{ ingrediente.tamano.nombre}}">{{ ingrediente.ingrediente.nombre }}</option>
 							{% endfor %}
 						</select>
 					</div>
 					<div class ="select-porcion-container">
 						<h6>Porcion: </h6>
-						<select class="form-control input" name="PORCION" id="porcion-select">
+						<select class="form-control input porcion-select" name="PORCIONES[]">
 							<option value="">Seleccione la porcion</option>
 							{% for porcion in PORCIONES %}
-								<option value="{{ porcion.id }}" class="pizza-bordes pizza-componente-seleccion-bloqueado" tipo="{{ porcion.nombre}}">{{ porcion.nombre }}</option>
+								<option value="{{ porcion.id }}" class="pizza-porciones pizza-componente-seleccion-bloqueado" tipo="{{ porcion.nombre}}">{{ porcion.nombre }}</option>
 							{% endfor %}
 						</select>
 					</div>
-					<button class="btn btn-danger remover_ingrediente_btn">X</button>
+					<button class="btn btn-danger remover_ingrediente_btn" type="button" onclick="removerIngrediente(this)">X</button>
 				</div>
 			</div>
 		</div>

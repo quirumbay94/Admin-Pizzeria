@@ -6,6 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from .models import Usuario, Detalles_Personales, Pizza, Pizza_Tradicional, Sesion, Tamano, Tamano_Masa, Tamano_Borde, Tamano_Ingrediente
 from .models import Combos_Promocionales, Combinacion, Combinacion_Pizza, Combinacion_Adicional, Promocion, Componente, Pizza_Tamano_Ingrediente, Porcion
+from .models import Direccion_Cliente
 from rest import utils
 import json
 
@@ -735,12 +736,87 @@ def adicionales(request):
         'DETALLE' : 'Error de solicitud'
         })    
 
+##DIRECCIONES DEL CLIENTE
+def direcciones_cliente(request):
+    token = request.GET.get('TOKEN', None)
+    if request.method == "GET" and utils.verificarToken(token):    
+        usuario = utils.getUsuarioConToken(token)
+        direcciones = Direccion_Cliente.objects.filter(usuario=usuario)
+        if len(direcciones)>0:
+            paquete = []
+            for direccion in direcciones:
+                descripcion = None
+                if direccion.descripcion:
+                    descripcion = direccion.descripcion
+                paquete.append({
+                    "ID" : direccion.id,
+                    "NOMBRE" : direccion.nombre,
+                    "DESCRIPCION" : descripcion,
+                    "LATITUD" : direccion.latitud,
+                    "LONGITUD" : direccion.longitud
+                    })
+            return JsonResponse({
+                        'STATUS' : 'OK',
+                        'CODIGO' : 19,
+                        'DIRECCIONES' : paquete,
+                        'DETALLE' : 'Solicitud correcta'
+                        }) 
+        else: 
+            return JsonResponse({
+                'STATUS' : 'ERROR',
+                'CODIGO' : 23,
+                'DETALLE' : 'El usuario no tiene direcciones registradas'
+                })
 
+    return JsonResponse({
+        'STATUS' : 'ERROR',
+        'CODIGO' : 15,
+        'DETALLE' : 'Error de solicitud'
+        }) 
 
+@csrf_exempt
+def crear_direccion_cliente(request):
+    body = utils.request_todict(request)
+    token = body.get('TOKEN', None)
+    if request.method == "POST" and utils.verificarToken(token):  
+        usuario = utils.getUsuarioConToken(token)
+        nombre = body.get('NOMBRE', None)
+        descripcion = body.get('DESCRIPCION', None)
+        latitud = body.get('LATITUD', None)
+        longitud = body.get('LONGITUD', None)
 
+        direccion = Direccion_Cliente().crear(usuario, nombre, descripcion, latitud, longitud)
+        if direccion:
+            return JsonResponse({
+                        'STATUS' : 'OK',
+                        'CODIGO' : 19,
+                        'DETALLE' : 'Solicitud correcta'
+                        }) 
 
+    return JsonResponse({
+        'STATUS' : 'ERROR',
+        'CODIGO' : 15,
+        'DETALLE' : 'Error de solicitud'
+        }) 
+@csrf_exempt
+def borrar_direccion_cliente(request):
+    body = utils.request_todict(request)
+    token = body.get('TOKEN', None)
+    if request.method == "POST" and utils.verificarToken(token):
+        direccion_id = body.get('ID', None)
+        direccion = Direccion_Cliente().borrar(direccion_id)
+        if direccion:
+            return JsonResponse({
+                        'STATUS' : 'OK',
+                        'CODIGO' : 19,
+                        'DETALLE' : 'Solicitud correcta'
+                        }) 
 
-
+    return JsonResponse({
+        'STATUS' : 'ERROR',
+        'CODIGO' : 15,
+        'DETALLE' : 'Error de solicitud'
+        }) 
 
 
 

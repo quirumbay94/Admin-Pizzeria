@@ -203,6 +203,14 @@ def nueva_pizza_tradicional(request):
 		paquete = diccionarios.diccionarioMasasBordesIngredientes(paquete)
 
 		if request.method == "POST":
+
+			print("")
+			print("")
+			print("ELEMENTOS")
+			print(request.POST)
+			print("")
+			print("")
+
 			nombre = request.POST.get("NOMBRE",None)
 			masa = request.POST.get("MASA",None)
 			borde = request.POST.get("BORDE",None)
