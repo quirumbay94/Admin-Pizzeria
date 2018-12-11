@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from .models import Usuario, Detalles_Personales, Pizza, Pizza_Tradicional, Sesion, Tamano, Tamano_Masa, Tamano_Borde, Tamano_Ingrediente
 from .models import Combos_Promocionales, Combinacion, Combinacion_Pizza, Combinacion_Adicional, Promocion, Componente, Pizza_Tamano_Ingrediente, Porcion
-from .models import Direccion_Cliente
+from .models import Direccion_Cliente, Pizza_Favorita
 from rest import utils
 import json
 
@@ -294,32 +294,52 @@ def crear_pizza_favorita(request):
     body = utils.request_todict(request)
     token = body.get('TOKEN', None)
     if request.method == "POST" and utils.verificarToken(token):
-        pizza = body.get('PIZZA', None)
-        nombre = body.get('NOMBRE', None)
+        pizza_tradicional_id = body.get('PIZZA_ID', None)
+        if pizza_tradicional_id:
+            ##CREANDO PIZZA FAVORITA
+            pizza_favorita = Pizza_Favorita().crear_con_id(pizza_tradicional_id)
+            if not pizza_favorita:
+                return JsonResponse({
+                'STATUS' : 'ERROR',
+                'CODIGO' : 24,
+                'DETALLE' : 'Error guardando pizza favorita'
+                })
+        else: 
+            pizza = body.get('PIZZA', None)
+            nombre = body.get('NOMBRE', None)
 
-        ##CREANDO COMBINACION
-        usuario = utils.getUsuarioConToken(token)
-        combinacion = Combinacion().crear(nombre, usuario)
+            ##CREANDO COMBINACION
+            usuario = utils.getUsuarioConToken(token)
+            combinacion = Combinacion().crear(nombre, usuario)
 
-        ##OBTENIENDO INFO DE LA PIZZA
-        tamano = pizza.get("TAMANO", None)
-        masa_t_id = pizza.get("MASA", None)
-        borde_t_id = pizza.get("BORDE", None)
-        cantidad = 1
-        ingredientes = pizza.get("INGREDIENTES", None)
+            ##OBTENIENDO INFO DE LA PIZZA
+            tamano = pizza.get("TAMANO", None)
+            masa_t_id = pizza.get("MASA", None)
+            borde_t_id = pizza.get("BORDE", None)
+            cantidad = 1
+            ingredientes = pizza.get("INGREDIENTES", None)
 
-        ##CREANDO PIZZA
-        pizza_obj = Pizza().crear_simple(tamano, masa_t_id, borde_t_id, nombre)
+            ##CREANDO PIZZA
+            pizza_obj = Pizza().crear_simple(tamano, masa_t_id, borde_t_id, nombre)
 
-        ##CREANDO COMBINACION CON PIZZA
-        Combinacion_Pizza().crear(combinacion, pizza_obj, cantidad)
+            ##CREANDO COMBINACION CON PIZZA
+            Combinacion_Pizza().crear(combinacion, pizza_obj, cantidad)
 
-        for diccionario in ingredientes:
-            ##CREANDO PIZZA_TAMANO_INGREDIENTE
-            t_ingrediente = diccionario.get("ID", None)
-            porcion = diccionario.get("PORCION", None)
-            pizza_t_ingrediente = Pizza_Tamano_Ingrediente().crear(pizza_obj, t_ingrediente, porcion)
-        
+            for diccionario in ingredientes:
+                ##CREANDO PIZZA_TAMANO_INGREDIENTE
+                t_ingrediente = diccionario.get("ID", None)
+                porcion = diccionario.get("PORCION", None)
+                pizza_t_ingrediente = Pizza_Tamano_Ingrediente().crear(pizza_obj, t_ingrediente, porcion)
+            
+            ##CREANDO PIZZA FAVORITA
+            pizza_favorita = Pizza_Favorita().crear(pizza_obj)
+            if not pizza_favorita:
+                return JsonResponse({
+                'STATUS' : 'ERROR',
+                'CODIGO' : 24,
+                'DETALLE' : 'Error guardando pizza favorita'
+                })
+
         return JsonResponse({
                 'STATUS' : 'OK',
                 'CODIGO' : 19,

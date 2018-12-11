@@ -296,6 +296,40 @@ class Pizza_Tradicional(models.Model):
         except:
             return None
 
+class Pizza_Favorita(models.Model):
+    pizza = models.ForeignKey("Pizza", on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.pizza.nombre
+
+    def crear(self, pizza):
+        try:
+            pizza_fav = Pizza_Favorita()
+            pizza_fav.pizza = pizza
+            pizza_fav.save()
+            return pizza_fav
+        except:
+            return None
+
+    def crear_con_id(self, pizza_id):
+        try:
+            pizza_obj = Pizza.objects.get(pk=pizza_id)
+            pizza_fav = Pizza_Favorita()
+            pizza_fav.pizza = pizza_obj
+            pizza_fav.save()
+            return pizza_fav
+        except:
+            return None
+
+    def borrar(self, pizza_id):
+        try:
+            pizza_obj = Pizza.objects.get(pk=pizza_id)
+            pizza_fav = Pizza_Favorita.objects.get(pizza=pizza_obj)
+            pizza_fav.delete()
+            return True
+        except:
+            return False
+
 ##TAMAÑOS PARA MASAS Y BORDES
 class Tamano(models.Model):
     nombre = models.CharField(_("Tamaño"),max_length=15)
