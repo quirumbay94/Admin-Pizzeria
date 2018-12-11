@@ -207,8 +207,8 @@ def nueva_pizza_tradicional(request):
 			print("")
 			print("")
 			print("ELEMENTOS")
-			print(request.POST)
-			print("")
+			ingredientes = request.POST.get("INGREDIENTES[]", None)
+			print(ingredientes)
 			print("")
 
 			nombre = request.POST.get("NOMBRE",None)
