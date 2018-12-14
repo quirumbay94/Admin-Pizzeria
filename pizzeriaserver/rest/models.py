@@ -234,11 +234,12 @@ class Pizza(models.Model):
             print(e)
             return None
             
-    def editar(self, pizza_id, masa, borde, nombre, descripcion, img_url, estado):
+    def editar(self, pizza_id, tamano_id, masa_t_id, borde_t_id, nombre, descripcion, img_url, estado):
         try: 
             p = Pizza.objects.get(pk=pizza_id)
-            p.masa = Masa.objects.get(pk=masa)
-            p.borde = Borde.objects.get(pk=borde)
+            p.tamano = Tamano.objects.get(pk=tamano_id)
+            p.masa = Tamano_Masa.objects.get(pk=masa_t_id)
+            p.borde = Tamano_Borde.objects.get(pk=borde_t_id)
             p.nombre = nombre
             p.descripcion = descripcion
             p.estado = estado
@@ -298,24 +299,27 @@ class Pizza_Tradicional(models.Model):
 
 class Pizza_Favorita(models.Model):
     pizza = models.ForeignKey("Pizza", on_delete=models.CASCADE)
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, default=None)
 
     def __str__(self):
         return self.pizza.nombre
 
-    def crear(self, pizza):
+    def crear(self, pizza, usuario):
         try:
             pizza_fav = Pizza_Favorita()
             pizza_fav.pizza = pizza
+            pizza_fav.usuario = usuario
             pizza_fav.save()
             return pizza_fav
         except:
             return None
 
-    def crear_con_id(self, pizza_id):
+    def crear_con_id(self, pizza_id, usuario):
         try:
             pizza_obj = Pizza.objects.get(pk=pizza_id)
             pizza_fav = Pizza_Favorita()
             pizza_fav.pizza = pizza_obj
+            pizza_fav.usuario = usuario
             pizza_fav.save()
             return pizza_fav
         except:
@@ -383,6 +387,19 @@ class Combinacion(models.Model):
         combinacion.usuario = usuario
         combinacion.save()
         return combinacion
+
+    def editar(self, combinacion_id, nombre, usuario):
+        nombre_ = "Combinacion"
+        if nombre:
+            nombre_ = nombre
+        try:
+            combinacion = Combinacion.objects.get(pk=combinacion_id)
+            combinacion.nombre = nombre_
+            combinacion.usuario = usuario
+            combinacion.save()
+            return combinacion
+        except:
+            return None
 
 class Combos_Promocionales(models.Model):
     combinacion = models.ForeignKey("Combinacion", on_delete=models.CASCADE, default=None)

@@ -1,4 +1,4 @@
-from rest.models import Detalles_Personales, Componente, Pizza_Tradicional, Masa, Borde, Tamano, Tamano_Masa, Tamano_Borde, Tamano_Ingrediente
+from rest.models import Detalles_Personales, Componente, Pizza_Tradicional, Masa, Borde, Tamano, Tamano_Masa, Tamano_Borde, Tamano_Ingrediente, Pizza_Tamano_Ingrediente
 from rest.models import Porcion
 ##			GENERAL 		##
 ##DICCIONARIO CON DATOS PERSONALES PARA BARRA DE NAV
@@ -65,7 +65,12 @@ def diccionarioDatosSubBarraPizza_T(paquete):
 ##DICCIONARIO CON INFORMACION DE PIZZA TRADICIONAL
 def diccionarioDatoPizza_T(paquete, pizza_t_id):
 	paquete_ = paquete
-	paquete["PIZZA_T"] = Pizza_Tradicional.objects.get(pk=pizza_t_id)
+
+	##OBTENIENDO DATOS DE PIZZA
+	pizza_trad = Pizza_Tradicional.objects.get(pk=pizza_t_id)
+	ingrediente_porcion = Pizza_Tamano_Ingrediente.objects.filter(pizza=pizza_trad.pizza)
+	paquete_["PIZZA_T"] = pizza_trad
+	paquete_["INGREDIENTE_PORCION"] = ingrediente_porcion
 	return paquete_
 
 ##DICCIONARIO CON INFORMACION DE TIPOS DE MASAS Y BORDES

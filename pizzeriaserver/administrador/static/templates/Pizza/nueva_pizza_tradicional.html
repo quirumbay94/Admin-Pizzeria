@@ -34,7 +34,7 @@
 				<select class="form-control input" name="TAMANO" id="tamano-select">
 					<option value="">Seleccione tamaño de pizza</option>
 					{% for tamano in TAMANOS %}
-						<option value="{{ tamano.nombre }}">{{ tamano.nombre }}</option>
+						<option value="{{ tamano.id }}" tamano="{{ tamano.nombre }}">{{ tamano.nombre }}</option>
 					{% endfor %}
 				</select>
 			<div class="input-container">
@@ -42,7 +42,7 @@
 				<select class="form-control input" name="MASA" id="masa-select">
 					<option value="">Seleccione un tipo de masa</option>
 					{% for masa in MASAS %}
-						<option value="{{ masa.id }}" class="pizza-masas pizza-componente-seleccion-bloqueado" tipo="{{ masa.tamano.nombre}}">{{ masa.masa.nombre }}</option>
+						<option value="{{ masa.id }}" class="pizza-masas pizza-componente-seleccion-bloqueado" tipo="{{ masa.tamano.nombre}}">{{ masa.masa.nombre }} | {{ masa.tamano.nombre }}</option>
 					{% endfor %}
 				</select>
 			</div>
@@ -51,7 +51,7 @@
 				<select class="form-control input" name="BORDE" id="borde-select">
 					<option value="">Seleccione un tipo de borde</option>
 					{% for borde in BORDES %}
-						<option value="{{ borde.id }}" class="pizza-bordes pizza-componente-seleccion-bloqueado" tipo="{{ borde.tamano.nombre}}">{{ borde.borde.nombre }}</option>
+						<option value="{{ borde.id }}" class="pizza-bordes pizza-componente-seleccion-bloqueado" tipo="{{ borde.tamano.nombre}}">{{ borde.borde.nombre }} | {{ borde.tamano.nombre }}</option>
 					{% endfor %}
 				</select>
 			</div>
@@ -66,7 +66,7 @@
 						<select class="form-control input ingrediente-select" name="INGREDIENTES[]">
 							<option value="">Seleccione un ingrediente</option>
 							{% for ingrediente in INGREDIENTES %}
-								<option value="{{ ingrediente.id }}" class="pizza-ingredientes pizza-componente-seleccion-bloqueado" tipo="{{ ingrediente.tamano.nombre}}">{{ ingrediente.ingrediente.nombre }}</option>
+								<option value="{{ ingrediente.id }}" class="pizza-ingredientes pizza-componente-seleccion-bloqueado" tipo="{{ ingrediente.tamano.nombre}}">{{ ingrediente.ingrediente.nombre }} | {{ ingrediente.tamano.nombre }}</option>
 							{% endfor %}
 						</select>
 					</div>

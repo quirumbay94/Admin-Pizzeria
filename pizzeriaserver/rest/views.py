@@ -252,25 +252,24 @@ def pizzas_favoritas(request):
     token = request.GET.get('TOKEN', None)
     if request.method == "GET" and utils.verificarToken(token):
         usuario = utils.getUsuarioConToken(token)
-        combinaciones = Combinacion.objects.filter(usuario=usuario)
-        combinaciones_list = []
-        for combinacion in combinaciones:
-            combinacion_obj = Combinacion_Pizza.objects.filter(combinacion=combinacion)
-            combinaciones_list.append(combinacion_obj)
+        pizzas = Pizza_Favorita.objects.filter(usuario=usuario)
+        # combinaciones = Combinacion.objects.filter(usuario=usuario)
+        # combinaciones_list = []
+        # for combinacion in combinaciones:
+        #     combinacion_obj = Combinacion_Pizza.objects.filter(combinacion=combinacion)
+        #     combinaciones_list.append(combinacion_obj)
 
         paquete = []
-        if len(combinaciones_list) > 0:
-            for combinacion_pizza in combinaciones_list:
-                if len(combinacion_pizza) > 0:
-                    for c in combinacion_pizza:
-                        img_url = None
-                        if c.pizza.img_url:
-                            img_url = IP + c.pizza.img_url.url
-                        paquete.append({
-                            "PIZZA_ID" : c.pizza.id,
-                            "NOMBRE" : c.pizza.nombre,
-                            "IMAGEN_URL" : img_url
-                            })
+        if len(pizzas) > 0:
+            for pizza in pizzas:
+                img_url = None
+                if c.pizza.img_url:
+                    img_url = IP + c.pizza.img_url.url
+                paquete.append({
+                    "PIZZA_ID" : c.pizza.id,
+                    "NOMBRE" : c.pizza.nombre,
+                    "IMAGEN_URL" : img_url
+                    })
             return JsonResponse({
                     'STATUS' : 'OK',
                     'CODIGO' : 19,
@@ -294,10 +293,11 @@ def crear_pizza_favorita(request):
     body = utils.request_todict(request)
     token = body.get('TOKEN', None)
     if request.method == "POST" and utils.verificarToken(token):
+        usuario = utils.getUsuarioConToken(token)
         pizza_tradicional_id = body.get('PIZZA_ID', None)
         if pizza_tradicional_id:
             ##CREANDO PIZZA FAVORITA
-            pizza_favorita = Pizza_Favorita().crear_con_id(pizza_tradicional_id)
+            pizza_favorita = Pizza_Favorita().crear_con_id(pizza_tradicional_id, usuario)
             if not pizza_favorita:
                 return JsonResponse({
                 'STATUS' : 'ERROR',
@@ -332,7 +332,12 @@ def crear_pizza_favorita(request):
                 pizza_t_ingrediente = Pizza_Tamano_Ingrediente().crear(pizza_obj, t_ingrediente, porcion)
             
             ##CREANDO PIZZA FAVORITA
-            pizza_favorita = Pizza_Favorita().crear(pizza_obj)
+            pizza_favorita = Pizza_Favorita().crear(pizza_obj, usuario)
+
+            print("")
+            print("PIZZA FAVORITA")
+            print(pizza_favorita)
+            print("")
             if not pizza_favorita:
                 return JsonResponse({
                 'STATUS' : 'ERROR',

@@ -1,5 +1,5 @@
 $("#tamano-select").change(function() {
-	var tamano = $(this).val()
+	var tamano = $('option:selected', this).attr("tamano")
 	habilitarMasas(tamano)
 	habilitarBordes(tamano)
 	habilitarIngredientes(tamano)
@@ -54,14 +54,9 @@ function habilitarBordes(nombre) {
 function habilitarIngredientes(nombre) {
 	var ingredientes = document.getElementsByClassName("pizza-ingredientes")
 
-	console.log(ingredientes.length)
-
 	for (i=0; i < ingredientes.length; i++) {
 		var ingrediente = ingredientes[i]
 		var tipo = ingrediente.getAttribute("tipo")
-
-		console.log(ingrediente)
-		console.log(tipo)
 
 		if (nombre === tipo) {
 			ingrediente.classList.remove("pizza-componente-seleccion-bloqueado")
