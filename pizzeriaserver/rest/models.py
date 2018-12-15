@@ -316,13 +316,16 @@ class Pizza_Favorita(models.Model):
 
     def crear_con_id(self, pizza_id, usuario):
         try:
-            pizza_obj = Pizza.objects.get(pk=pizza_id)
             pizza_fav = Pizza_Favorita()
-            pizza_fav.pizza = pizza_obj
+            pizza_fav.pizza = Pizza.objects.get(pk=pizza_id)
             pizza_fav.usuario = usuario
             pizza_fav.save()
             return pizza_fav
-        except:
+        except Exception as e:
+            print("")
+            print("ERROR")
+            print(e)
+            print("")
             return None
 
     def borrar(self, pizza_id):

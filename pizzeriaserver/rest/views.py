@@ -253,12 +253,6 @@ def pizzas_favoritas(request):
     if request.method == "GET" and utils.verificarToken(token):
         usuario = utils.getUsuarioConToken(token)
         pizzas_fav = Pizza_Favorita.objects.filter(usuario=usuario)
-        # combinaciones = Combinacion.objects.filter(usuario=usuario)
-        # combinaciones_list = []
-        # for combinacion in combinaciones:
-        #     combinacion_obj = Combinacion_Pizza.objects.filter(combinacion=combinacion)
-        #     combinaciones_list.append(combinacion_obj)
-
         paquete = []
         if len(pizzas_fav) > 0:
             for pizza_f in pizzas_fav:
@@ -295,9 +289,13 @@ def crear_pizza_favorita(request):
     if request.method == "POST" and utils.verificarToken(token):
         usuario = utils.getUsuarioConToken(token)
         pizza_tradicional_id = body.get('PIZZA_ID', None)
+
         if pizza_tradicional_id:
+            ##RECUPERANDO ID DE PIZZA
+            pizza_id = Pizza_Tradicional.objects.get(pk=pizza_tradicional_id).pizza.id
+
             ##CREANDO PIZZA FAVORITA
-            pizza_favorita = Pizza_Favorita().crear_con_id(pizza_tradicional_id, usuario)
+            pizza_favorita = Pizza_Favorita().crear_con_id(pizza_id, usuario)
             if not pizza_favorita:
                 return JsonResponse({
                 'STATUS' : 'ERROR',
@@ -650,29 +648,6 @@ def combos_promocionales(request):
         'CODIGO' : 15,
         'DETALLE' : 'Error de solicitud'
         })
-
-# def ver_combo_promocional(request):
-#     token = request.GET.get('TOKEN', None)
-#     combo_id = request.GET.get('COMBO_ID', None)
-#     if request.method == "GET" and utils.verificarToken(token) and combo_id:
-#         try:
-#             paquete = {}
-#             combo = Combos_Promocionales.objects.get(pk=combo_id)
-#             combinaciones_pizzas = Combinacion_Pizza.objects.filter(combo=combo)
-#             combinaciones_adicionales = Combinacion_Adicional.objects.filter(combo=combo)
-#         except:
-#             return JsonResponse({
-#                 'STATUS' : 'ERROR',
-#                 'CODIGO' : 20,
-#                 'DETALLE' : 'El combo promocional no existe'
-#                 })
-
-#     return JsonResponse({
-#         'STATUS' : 'ERROR',
-#         'CODIGO' : 15,
-#         'DETALLE' : 'Error de solicitud'
-#         })
-
 
 ## PROMOCION
 def promociones(request):
