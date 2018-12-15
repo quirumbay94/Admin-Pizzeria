@@ -252,7 +252,7 @@ def pizzas_favoritas(request):
     token = request.GET.get('TOKEN', None)
     if request.method == "GET" and utils.verificarToken(token):
         usuario = utils.getUsuarioConToken(token)
-        pizzas = Pizza_Favorita.objects.filter(usuario=usuario)
+        pizzas_fav = Pizza_Favorita.objects.filter(usuario=usuario)
         # combinaciones = Combinacion.objects.filter(usuario=usuario)
         # combinaciones_list = []
         # for combinacion in combinaciones:
@@ -260,14 +260,14 @@ def pizzas_favoritas(request):
         #     combinaciones_list.append(combinacion_obj)
 
         paquete = []
-        if len(pizzas) > 0:
-            for pizza in pizzas:
+        if len(pizzas_fav) > 0:
+            for pizza_f in pizzas_fav:
                 img_url = None
-                if c.pizza.img_url:
-                    img_url = IP + c.pizza.img_url.url
+                if pizza_f.pizza.img_url:
+                    img_url = IP + pizza_f.pizza.img_url.url
                 paquete.append({
-                    "PIZZA_ID" : c.pizza.id,
-                    "NOMBRE" : c.pizza.nombre,
+                    "PIZZA_ID" : pizza_f.pizza.id,
+                    "NOMBRE" : pizza_f.pizza.nombre,
                     "IMAGEN_URL" : img_url
                     })
             return JsonResponse({
@@ -333,11 +333,7 @@ def crear_pizza_favorita(request):
             
             ##CREANDO PIZZA FAVORITA
             pizza_favorita = Pizza_Favorita().crear(pizza_obj, usuario)
-
-            print("")
-            print("PIZZA FAVORITA")
-            print(pizza_favorita)
-            print("")
+            
             if not pizza_favorita:
                 return JsonResponse({
                 'STATUS' : 'ERROR',

@@ -105,13 +105,13 @@ def ver_usuario(request, usuario_id):
 def componentes(request, tipo):
     if verificarSesion(request):
         paquete = diccionarios.diccionarioBarraNav(request,{})
-
-        if tipo == "INGREDIENTES":
+        
+        if tipo == "INGREDIENTE":
             ingredientes = Componente.objects.filter(tipo="INGREDIENTE").order_by('nombre')
-            paquete["INGREDIENTES"] = ingredientes
-        elif tipo == "ADICIONALES":
+            paquete["INGREDIENTE"] = ingredientes
+        elif tipo == "ADICIONAL":
             adicionales = Componente.objects.filter(tipo="ADICIONAL").order_by('nombre')
-            paquete["ADICIONALES"] = adicionales
+            paquete["ADICIONAL"] = adicionales
         paquete["TIPO"] = tipo.capitalize()
         return render(request,"Componente/componentes.html", paquete)
     return redirect("login")
