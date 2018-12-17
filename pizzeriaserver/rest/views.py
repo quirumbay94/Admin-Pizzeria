@@ -247,6 +247,64 @@ def editar_usuario(request):
             'DETALLE' : 'Error de solicitud'
             })
 
+## PIZZA ##
+def ver_pizza(request):
+    token = request.GET.get('TOKEN', None)
+    pizza_id = request.GET.get('PIZZA_ID', None)
+    print(pizza_id)
+    if request.method == "GET" and utils.verificarToken(token) and pizza_id:
+        try:
+            pizza = Pizza.objects.get(pk=pizza_id)
+            ingredientes = Pizza_Tamano_Ingrediente.objects.filter(pizza=pizza)
+            ingredientes_dic = []
+            for i in ingredientes:
+                ingredientes_dic.append({
+                    "ID" : i.tamano_ingrediente.id,
+                    "NOMBRE" : i.tamano_ingrediente.ingrediente.nombre,
+                    "DESCRIPCION" : i.tamano_ingrediente.ingrediente.descripcion,
+                    "IMAGEN_URL" :  IP + i.tamano_ingrediente.ingrediente.img_url.url,
+                    "TAMANO" : i.tamano_ingrediente.tamano.nombre,
+                    "PORCION" : i.porcion.nombre,
+                    "COSTO" : "%.2f" % float(i.tamano_ingrediente.costo)
+                    })
+            pizza_dic = {
+                "ID" : pizza.id,
+                "NOMBRE" : pizza.nombre,
+                "TAMANO" : pizza.tamano.nombre,
+                "MASA" : {
+                    "ID" : pizza.masa.masa.id,
+                    "NOMBRE" : pizza.masa.masa.nombre,
+                    "TAMANO" : pizza.masa.tamano.nombre,
+                    "COSTO" : "%.2f" % float(pizza.masa.costo)
+                },
+                "BORDE" : {
+                    "ID" : pizza.borde.borde.id,
+                    "NOMBRE" : pizza.borde.borde.nombre,
+                    "TAMANO" : pizza.borde.tamano.nombre,
+                    "COSTO" : "%.2f" % float(pizza.borde.costo)
+                },
+                "INGREDIENTES" : ingredientes_dic
+            }
+            return JsonResponse({
+                'STATUS' : 'OK',
+                'CODIGO' : 19,
+                'PIZZA' : pizza_dic,
+                'DETALLE' : 'Solicitud correcta'
+            })
+        except Exception as e:
+            print(e)
+            return JsonResponse({
+                'STATUS' : 'ERROR',
+                'CODIGO' : 14,
+                'DETALLE' : 'La pizza no existe'
+                })
+    return JsonResponse({
+        'STATUS' : 'ERROR',
+        'CODIGO' : 15,
+        'DETALLE' : 'Error de solicitud'
+        })
+
+
 ## PIZZAS FAVORITAS ##
 def pizzas_favoritas(request):
     token = request.GET.get('TOKEN', None)
@@ -262,6 +320,7 @@ def pizzas_favoritas(request):
                 paquete.append({
                     "PIZZA_ID" : pizza_f.pizza.id,
                     "NOMBRE" : pizza_f.pizza.nombre,
+                    "TAMANO" : pizza_f.pizza.tamano.nombre,
                     "IMAGEN_URL" : img_url
                     })
             return JsonResponse({
@@ -367,6 +426,7 @@ def ver_pizzas_tradicionales(request):
                     "NOMBRE" : pizza.pizza.nombre,
                     "IMAGEN_URL" : IP + pizza.pizza.img_url.url,
                     "DESCRIPCION" : pizza.pizza.descripcion,
+                    "TAMANO" : pizza.pizza.tamano.nombre.capitalize(),
                     "COSTO" : "%.2f" % float(pizza.costo)
                 }
                 paquete[pizza.id] = pizza_tradicional
@@ -758,11 +818,12 @@ def direcciones_cliente(request):
                         'DETALLE' : 'Solicitud correcta'
                         }) 
         else: 
-            return JsonResponse({
-                'STATUS' : 'ERROR',
-                'CODIGO' : 23,
-                'DETALLE' : 'El usuario no tiene direcciones registradas'
-                })
+            JsonResponse({
+                'STATUS' : 'OK',
+                'CODIGO' : 19,
+                'DIRECCIONES' : [],
+                'DETALLE' : 'Solicitud correcta'
+            }) 
 
     return JsonResponse({
         'STATUS' : 'ERROR',
