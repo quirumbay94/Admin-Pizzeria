@@ -348,68 +348,112 @@ def crear_pizza_favorita(request):
     if request.method == "POST" and utils.verificarToken(token):
         usuario = utils.getUsuarioConToken(token)
         pizza_tradicional_id = body.get('PIZZA_ID', None)
+        try:
+            if pizza_tradicional_id:
+                ##RECUPERANDO ID DE PIZZA
+                pizza_id = Pizza_Tradicional.objects.get(pk=pizza_tradicional_id).pizza.id
 
-        if pizza_tradicional_id:
-            ##RECUPERANDO ID DE PIZZA
-            pizza_id = Pizza_Tradicional.objects.get(pk=pizza_tradicional_id).pizza.id
+                ##CREANDO PIZZA FAVORITA
+                pizza_favorita = Pizza_Favorita().crear_con_id(pizza_id, usuario)
+                if not pizza_favorita:
+                    return JsonResponse({
+                    'STATUS' : 'ERROR',
+                    'CODIGO' : 24,
+                    'DETALLE' : 'Error guardando pizza favorita'
+                    })
+            else: 
+                pizza = body.get('PIZZA', None)
+                nombre = body.get('NOMBRE', None)
 
-            ##CREANDO PIZZA FAVORITA
-            pizza_favorita = Pizza_Favorita().crear_con_id(pizza_id, usuario)
-            if not pizza_favorita:
-                return JsonResponse({
+                ##CREANDO COMBINACION
+                usuario = utils.getUsuarioConToken(token)
+                combinacion = Combinacion().crear(nombre, usuario)
+
+                ##OBTENIENDO INFO DE LA PIZZA
+                tamano = pizza.get("TAMANO", None)
+                masa_t_id = pizza.get("MASA", None)
+                borde_t_id = pizza.get("BORDE", None)
+                cantidad = 1
+                ingredientes = pizza.get("INGREDIENTES", None)
+
+                ##CREANDO PIZZA
+                pizza_obj = Pizza().crear_simple(tamano, masa_t_id, borde_t_id, nombre)
+
+                ##CREANDO COMBINACION CON PIZZA
+                Combinacion_Pizza().crear(combinacion, pizza_obj, cantidad)
+
+                for diccionario in ingredientes:
+                    ##CREANDO PIZZA_TAMANO_INGREDIENTE
+                    t_ingrediente = diccionario.get("ID", None)
+                    porcion = diccionario.get("PORCION", None)
+                    pizza_t_ingrediente = Pizza_Tamano_Ingrediente().crear(pizza_obj, t_ingrediente, porcion)
+                
+                ##CREANDO PIZZA FAVORITA
+                pizza_favorita = Pizza_Favorita().crear(pizza_obj, usuario)
+                
+                if not pizza_favorita:
+                    return JsonResponse({
+                    'STATUS' : 'ERROR',
+                    'CODIGO' : 24,
+                    'DETALLE' : 'Error guardando pizza favorita'
+                    })
+
+            return JsonResponse({
+                    'STATUS' : 'OK',
+                    'CODIGO' : 19,
+                    'DETALLE' : 'Solicitud correcta'
+                    }) 
+        except Exception as e:
+            print(e)
+            return JsonResponse({
                 'STATUS' : 'ERROR',
-                'CODIGO' : 24,
-                'DETALLE' : 'Error guardando pizza favorita'
-                })
-        else: 
-            pizza = body.get('PIZZA', None)
-            nombre = body.get('NOMBRE', None)
-
-            ##CREANDO COMBINACION
-            usuario = utils.getUsuarioConToken(token)
-            combinacion = Combinacion().crear(nombre, usuario)
-
-            ##OBTENIENDO INFO DE LA PIZZA
-            tamano = pizza.get("TAMANO", None)
-            masa_t_id = pizza.get("MASA", None)
-            borde_t_id = pizza.get("BORDE", None)
-            cantidad = 1
-            ingredientes = pizza.get("INGREDIENTES", None)
-
-            ##CREANDO PIZZA
-            pizza_obj = Pizza().crear_simple(tamano, masa_t_id, borde_t_id, nombre)
-
-            ##CREANDO COMBINACION CON PIZZA
-            Combinacion_Pizza().crear(combinacion, pizza_obj, cantidad)
-
-            for diccionario in ingredientes:
-                ##CREANDO PIZZA_TAMANO_INGREDIENTE
-                t_ingrediente = diccionario.get("ID", None)
-                porcion = diccionario.get("PORCION", None)
-                pizza_t_ingrediente = Pizza_Tamano_Ingrediente().crear(pizza_obj, t_ingrediente, porcion)
-            
-            ##CREANDO PIZZA FAVORITA
-            pizza_favorita = Pizza_Favorita().crear(pizza_obj, usuario)
-            
-            if not pizza_favorita:
-                return JsonResponse({
-                'STATUS' : 'ERROR',
-                'CODIGO' : 24,
-                'DETALLE' : 'Error guardando pizza favorita'
-                })
-
-        return JsonResponse({
-                'STATUS' : 'OK',
-                'CODIGO' : 19,
-                'DETALLE' : 'Solicitud correcta'
-                }) 
-
+                'CODIGO' : 15,
+                'DETALLE' : 'Error de solicitud'
+            })
     else: 
         return JsonResponse({
             'STATUS' : 'ERROR',
             'CODIGO' : 15,
             'DETALLE' : 'Error de solicitud'
             })
+
+@csrf_exempt
+def borrar_pizza_favorita(request):
+    body = utils.request_todict(request)
+    token = body.get('TOKEN', None)
+    if request.method == "POST" and utils.verificarToken(token):
+        pizza_id = body.get('PIZZA_ID', None)
+        try:
+            pizza_obj = Pizza.objects.get(pk=pizza_id)
+            pizza_favorita = Pizza_Favorita.objects.get(pizza=pizza_obj)
+            pizzas_tracionales = Pizza_Tradicional.objects.filter(pizza=pizza_obj)
+
+            if len(pizzas_tracionales) > 0:
+                pizza_favorita.delete()
+            else:
+                pizza_obj.delete()
+            
+            return JsonResponse({
+                'STATUS' : 'OK',
+                'CODIGO' : 19,
+                'DETALLE' : 'Solicitud correcta'
+            }) 
+
+        except Exception as e:
+            print("")
+            print(e)
+
+            return JsonResponse({
+                'STATUS' : 'ERROR',
+                'CODIGO' : 15,
+                'DETALLE' : 'Error de solicitud'
+            })
+    return JsonResponse({
+        'STATUS' : 'ERROR',
+        'CODIGO' : 15,
+        'DETALLE' : 'Error de solicitud'
+    })
+
 
 
 

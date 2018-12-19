@@ -79,10 +79,6 @@ class Detalles_Personales(models.Model):
             p.save()
             return p
         except Exception as e:
-            print("")
-            print("ERROR")
-            print(e)
-            print("")
             return None
 
     def crear_simple(self, usuario, nombres, apellidos, correo):
@@ -103,20 +99,18 @@ class Componente(models.Model):
     nombre = models.CharField(max_length=50)
     descripcion = models.CharField(max_length=255)
     tipo = models.CharField(max_length=20)
-    costo = models.FloatField()
     img_url = models.ImageField(blank=True)
     estado = models.BooleanField(default=True)
 
     def __str__(self):
         return self.nombre + " | " + self.tipo
 
-    def crear(self, nombre, descripcion, tipo, costo, img_url, estado):
+    def crear(self, nombre, descripcion, tipo, img_url, estado):
         try: 
             c = Componente()
             c.nombre = nombre
             c.descripcion = descripcion
             c.tipo = tipo
-            c.costo = costo
             c.img_url = img_url
             c.estado = estado
             c.save()
@@ -124,13 +118,12 @@ class Componente(models.Model):
         except:
             return None
 
-    def editar(self, componente_id, nombre, descripcion, tipo, costo, img_url, estado):
+    def editar(self, componente_id, nombre, descripcion, tipo, img_url, estado):
         try:
             c = Componente.objects.get(pk=componente_id)
             c.nombre = nombre
             c.descripcion = descripcion
             c.tipo = tipo
-            c.costo = costo
             c.estado = estado
             if img_url:
                 c.img_url = img_url
@@ -250,6 +243,7 @@ class Pizza(models.Model):
         except:
             return None
 
+
 class Pizza_Tamano_Ingrediente(models.Model):
     pizza = models.ForeignKey("Pizza", on_delete=models.CASCADE)
     tamano_ingrediente = models.ForeignKey("Tamano_Ingrediente", on_delete=models.CASCADE)
@@ -322,20 +316,8 @@ class Pizza_Favorita(models.Model):
             pizza_fav.save()
             return pizza_fav
         except Exception as e:
-            print("")
-            print("ERROR")
-            print(e)
-            print("")
             return None
 
-    def borrar(self, pizza_id):
-        try:
-            pizza_obj = Pizza.objects.get(pk=pizza_id)
-            pizza_fav = Pizza_Favorita.objects.get(pizza=pizza_obj)
-            pizza_fav.delete()
-            return True
-        except:
-            return False
 
 ##TAMAÑOS PARA MASAS Y BORDES
 class Tamano(models.Model):
@@ -367,6 +349,36 @@ class Tamano_Ingrediente(models.Model):
 
     def __str__(self):
         return self.ingrediente.nombre + " | " + self.tamano.nombre + ": $" + str(self.costo)
+
+    def crear(self, tamano_id, ingrediente, costo):
+        try:
+            t_i = Tamano_Ingrediente()
+            t_i.tamano = Tamano.objects.get(pk=tamano_id)
+            t_i.ingrediente = ingrediente
+            t_i.costo = costo
+            t_i.save()
+            return t_i
+        except:
+            return None
+    def crear_default(self, ingrediente, costo):
+        try:
+            tamano_mediano = Tamano.objects.filter(nombre="MEDIANO")[0]
+            t_i = Tamano_Ingrediente()
+            t_i.tamano = tamano_mediano
+            t_i.ingrediente = ingrediente
+            t_i.costo = costo
+            t_i.save()
+            return t_i
+        except:
+            return None
+
+    def borrar_masivo(self, ingrediente_id):
+        try:
+            ingrediente = Componente.objects.get(pk=ingrediente_id)
+            Tamano_Ingrediente.objects.filter(ingrediente=ingrediente).delete()
+            return True
+        except:
+            return False
 
 ## COMBINACIONES
 class Combinacion(models.Model):

@@ -16,6 +16,7 @@ urlpatterns = [
     url(r'^pizzas_tradicionales$', views.ver_pizzas_tradicionales, name='ver_pizzas_tradicionales'),
     url(r'^pizzas_favoritas$', views.pizzas_favoritas, name='pizzas_favoritas'),
     url(r'^crear_pizza_favorita$', views.crear_pizza_favorita, name='crear_pizza_favorita'),
+    url(r'^borrar_pizza_favorita$', views.borrar_pizza_favorita, name='borrar_pizza_favorita'),
 
     ##TAMANOS
     url(r'^tamanos/$', views.tamanos, name='tamanos'),
