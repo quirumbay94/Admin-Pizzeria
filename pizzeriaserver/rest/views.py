@@ -812,10 +812,11 @@ def adicionales(request):
         if len(objectos) > 0:
             paquete = []
             for objeto in objectos:
+                tamano_componente = Tamano_Ingrediente.objects.filter(ingrediente=objeto)[0]
                 paquete.append({
                     "ID" : objeto.id,
                     "NOMBRE" : objeto.nombre.capitalize(),
-                    "COSTO" : "%.2f" % float(objeto.costo),
+                    "COSTO" : "%.2f" % float(tamano_componente.costo),
                     "IMAGEN_URL" : IP + objeto.img_url.url
                     })
             return JsonResponse({
