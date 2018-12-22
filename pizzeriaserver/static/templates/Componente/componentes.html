@@ -33,4 +33,11 @@
 			</button>
 		</a>
 	{% endfor %}
+	{% for bebida in BEBIDA %}
+		<a href="/menu/componentes/{{ TIPO }}/{{ bebida.id }}">
+			<button class="opcion-container-button">
+				<h3 class="opcion-tittle-h3">{{ bebida.nombre }}</h3>
+			</button>
+		</a>
+	{% endfor %}
 </div>

@@ -21,30 +21,25 @@
 				<h4>Descripción</h4>
 				<textarea class="form-control input" name="DESCRIPCION" row="3"></textarea>
 			</div>
-			<h4 style="margin: 20px 0px 0px;">Costos: </h4>
-			<div style="display: flex;">
-				<div class="input-container" style="margin-right: 10px;">
-					<h4>Pequeño</h4>
-					<div style="display: flex;">
-						<h5>$</h5>
-						<input type="number" class="form-control input" name="COSTO_PEQUENO" style="margin: 0px 50px 0px 15px; width: 60px;">
-					</div>
+			{% if TIPO == "INGREDIENTE" %}
+				<h4 style="margin: 20px 0px 0px;">Costos: </h4>
+				<div style="display: flex;">
+					{% for tamano in TAMANOS %}
+						<div class="input-container" style="margin-right: 10px;">
+							<h4 style="text-transform: lowercase;">{{ tamano.nombre }}</h4>
+							<div style="display: flex;">
+								<h5>$</h5>
+								<input type="number" class="form-control input" name="COSTO_{{ tamano.nombre }}" style="margin: 0px 50px 0px 15px; width: 60px;">
+							</div>
+						</div>
+					{% endfor %}
 				</div>
-				<div class="input-container" style="margin-right: 10px;">
-					<h4>Mediano</h4>
-					<div style="display: flex;">
-						<h5>$</h5>
-						<input type="number" class="form-control input" name="COSTO_MEDIANO" style="margin: 0px 50px 0px 15px; width: 60px;">
-					</div>
-				</div>
+			{% else %}
 				<div class="input-container">
-					<h4>Grande</h4>
-					<div style="display: flex;">
-						<h5>$</h5>
-						<input type="number" class="form-control input" name="COSTO_GRANDE" style="margin: 0px 50px 0px 15px; width: 60px;">
-					</div>
+					<h4>Costo</h4>
+					<input type="number" class="form-control input" name="COSTO">
 				</div>
-			</div>
+			{% endif %}
 			<div class="input-container">
 				<h4>Imagen</h4>
 				<input type="file" class="form-control input" name="IMAGEN">

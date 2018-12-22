@@ -44,7 +44,9 @@ def diccionarioDatosComponente(paquete, componente_id):
 	paquete_ = paquete
 	##BUSCANDO COMPONENTE
 	componente = Componente.objects.get(pk=componente_id)
+	t_i = Tamano_Ingrediente.objects.filter(ingrediente=componente)
 	paquete_['COMPONENTE'] = componente
+	paquete_['COSTOS'] = t_i
 	return paquete_
 
 ##			PIZZAS TRADICIONALES		##
@@ -83,6 +85,11 @@ def diccionarioMasasBordesIngredientes(paquete):
 	paquete_["PORCIONES"] = Porcion.objects.all()
 	return paquete_
 
+##DICCIONARIO CON TODOS LOS TAMANOS EN DB
+def diccionarioTamanos(paquete):
+	paquete_ = paquete
+	paquete_["TAMANOS"] = Tamano.objects.all()
+	return paquete_
 
 
 

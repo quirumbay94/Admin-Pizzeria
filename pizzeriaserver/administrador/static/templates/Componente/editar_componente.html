@@ -4,7 +4,7 @@
 {% include 'General/subbarra.html' %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/General/formulario.css' %}">
 <div class="title-container">
-	<h1 class="title-h1">Crear</h1>
+	<h1 class="title-h1">Editar</h1>
 	<small>{{ MENSAJE }}</small>
 </div>
 <div class="wrapper">
@@ -21,10 +21,27 @@
 				<h4>Descripción</h4>
 				<textarea class="form-control input" name="DESCRIPCION" row="3">{{ COMPONENTE.descripcion }}</textarea>
 			</div>
-			<div class="input-container">
-				<h4>Costo</h4>
-				<input type="number" class="form-control input" name="COSTO" value="{{ COMPONENTE.costo }}">
-			</div>
+			{% if TIPO == "INGREDIENTE" %}
+				<h4 style="margin: 20px 0px 0px;">Costos: </h4>
+				<div style="display: flex;">
+					{% for costo in COSTOS %}
+						<div class="input-container" style="margin-right: 10px;">
+							<h4 style="text-transform: lowercase;">{{ costo.tamano.nombre }}</h4>
+							<div style="display: flex;">
+								<h5>$</h5>
+								<input type="number" class="form-control input" name="COSTO_{{ costo.tamano.nombre }}" style="margin: 0px 50px 0px 15px; width: 70px;" value = "{{ costo.costo }}">
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+			{% else %}
+				<div class="input-container">
+					<h4>Costo</h4>
+					{% for costo in COSTOS %}
+						<input type="number" class="form-control input" name="COSTO" value="{{ costo.costo }}">
+					{% endfor %}
+				</div>
+			{% endif %}
 			<div class="input-container">
 				<h4>Imagen</h4>
 				<img src="{{ COMPONENTE.img_url.url }}">
@@ -43,6 +60,9 @@
 				</select>
 			</div>
 			<div class="btn-container">
+				<a href="/menu/componentes/{{ TIPO }}/{{ COMPONENTE.id }}">
+					<button class="btn btn-formulario" type="button">Regresar</button>
+				</a>
 				<button type="button" class="btn btn-formulario btn-guardar" id="guardar-btn">Guardar</button>
 			</div>
 		</form>

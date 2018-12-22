@@ -23,8 +23,25 @@
 			<h5>{{ COMPONENTE.descripcion }}</h5>
 		</div>
 		<div class="sub2-container">
-			<h4>Costo</h4>
-			<h5>{{ COMPONENTE.costo }}</h5>
+			{% if TIPO == "INGREDIENTE" %}
+				<h4>Costos:</h4>
+				<div style="display: flex;">
+					{% for costo in COSTOS %}
+						<div class="input-container" style="margin-right: 40px;">
+							<h4 style="text-transform: lowercase;">{{ costo.tamano.nombre }}</h4>
+							<div style="display: flex;">
+								<h5>$</h5>
+								<h5>{{ costo.costo }}</h5>
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+			{% else %}
+				<h4>Costo: </h4>
+				{% for costo in COSTOS %}
+					<h5>${{ costo.costo }}</h5>
+				{% endfor %}
+			{% endif %}
 		</div>
 		<div class="sub2-container">
 			<h4>Imagen</h4>

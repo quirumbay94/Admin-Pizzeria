@@ -112,6 +112,9 @@ def componentes(request, tipo):
         elif tipo == "ADICIONAL":
             adicionales = Componente.objects.filter(tipo="ADICIONAL").order_by('nombre')
             paquete["ADICIONAL"] = adicionales
+        elif tipo == "BEBIDA":
+            bebidas = Componente.objects.filter(tipo="BEBIDA").order_by('nombre')
+            paquete["BEBIDA"] = bebidas
         paquete["TIPO"] = tipo.capitalize()
         return render(request,"Componente/componentes.html", paquete)
     return redirect("login")
@@ -121,21 +124,42 @@ def nuevo_componente(request, tipo):
         ##DETALLES PARA LA SUBBARRA DE NAVEGACION
         paquete = diccionarios.diccionarioBarraNav(request,{})
         paquete = diccionarios.diccionarioDatosSubBarraComponente(paquete, tipo)
+        paquete = diccionarios.diccionarioTamanos(paquete)
 
         if request.method == "POST":
             tipo = request.POST.get("TIPO",None)
             nombre = request.POST.get("NOMBRE",None)
             descripcion = request.POST.get("DESCRIPCION",None)
-            costo = request.POST.get("COSTO",None)
             imagen = request.FILES.get("IMAGEN",None)
             estado = True
 
             ##CREANDO COMPONENTE
-            componente = Componente().crear(nombre, descripcion, tipo, costo, imagen, estado)
-            if componente:
-                paquete = diccionarios.diccionarioMensaje(paquete, "Componente creado con exito.")
-            else: 
-                paquete = diccionarios.diccionarioMensaje(paquete, "Error creando componente.")
+            componente = Componente().crear(nombre, descripcion, tipo, imagen, estado)
+
+            if tipo == "INGREDIENTE":
+                tamanos = paquete["TAMANOS"]
+                costos = []
+                for tamano in tamanos:
+                    costo = request.POST.get("COSTO_" + tamano.nombre, None)
+                    costos.append({"TAMANO_ID" : tamano.id, "COSTO" : costo})
+                
+                verificador_TI_creado = True
+                for costo in costos:
+                    t_i = Tamano_Ingrediente().crear(costo["TAMANO_ID"], componente, costo["COSTO"])
+                    if not t_i:
+                        verificador_TI_creado = False
+                        break
+                if componente and verificador_TI_creado:
+                    paquete = diccionarios.diccionarioMensaje(paquete, "Componente creado con exito.")
+                else: 
+                    paquete = diccionarios.diccionarioMensaje(paquete, "Error creando componente.")
+            else:
+                costo = request.POST.get("COSTO",None) 
+                t_i = Tamano_Ingrediente().crear_default(componente, costo)
+                if componente and t_i:
+                    paquete = diccionarios.diccionarioMensaje(paquete, "Componente creado con exito.")
+                else: 
+                    paquete = diccionarios.diccionarioMensaje(paquete, "Error creando componente.")
         
         return render(request, "Componente/nuevo_componente.html", paquete)
     return redirect("login")
@@ -161,7 +185,6 @@ def editar_componente(request, tipo, componente_id):
             tipo = request.POST.get("TIPO",None)
             nombre = request.POST.get("NOMBRE",None)
             descripcion = request.POST.get("DESCRIPCION",None)
-            costo = request.POST.get("COSTO",None)
             imagen = request.FILES.get("IMAGEN",None)
             estado = request.POST.get("ESTADO",None)
             if estado in ["True", "true"]:
@@ -170,11 +193,38 @@ def editar_componente(request, tipo, componente_id):
                 estado = False
 
             ##EDITANDO COMPONENTE
-            componente = Componente().editar(componente_id, nombre, descripcion, tipo, costo, imagen, estado)
-            if componente:
-                paquete = diccionarios.diccionarioMensaje(paquete, "Componente editado con exito.")
-            else: 
-                paquete = diccionarios.diccionarioMensaje(paquete, "Error editando componente.")
+            componente = Componente().editar(componente_id, nombre, descripcion, tipo, imagen, estado)
+            if tipo == "INGREDIENTE":
+                tamanos = Tamano.objects.all()
+                costos = []
+                if Tamano_Ingrediente().borrar_masivo(componente_id):
+                    for tamano in tamanos:
+                        costo = request.POST.get("COSTO_" + tamano.nombre, None)
+                        costos.append({"TAMANO_ID" : tamano.id, "COSTO" : costo})
+                    
+                    verificador_TI_creado = True
+                    for costo in costos:
+                        t_i = Tamano_Ingrediente().crear(costo["TAMANO_ID"], componente, costo["COSTO"])
+                        if not t_i:
+                            verificador_TI_creado = False
+                            break
+                    if componente and verificador_TI_creado:
+                        paquete = diccionarios.diccionarioMensaje(paquete, "Componente editado con exito.")
+                    else: 
+                        paquete = diccionarios.diccionarioMensaje(paquete, "Error editando componente.")
+                else: 
+                    paquete = diccionarios.diccionarioMensaje(paquete, "Error editando componente.")    
+            else:
+                costo = request.POST.get("COSTO",None) 
+                if Tamano_Ingrediente().borrar_masivo(componente_id):
+                    t_i = Tamano_Ingrediente().crear_default(componente, costo)
+                    if componente and t_i:
+                        paquete = diccionarios.diccionarioMensaje(paquete, "Componente editado con exito.")
+                    else: 
+                        paquete = diccionarios.diccionarioMensaje(paquete, "Error editando componente.")
+                else: 
+                    paquete = diccionarios.diccionarioMensaje(paquete, "Error editando componente.")
+
 
         ##DETALLES PARA LA SUBBARRA DE NAVEGACION
         paquete = diccionarios.diccionarioDatosSubBarraComponente(paquete, tipo)
