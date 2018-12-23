@@ -347,10 +347,16 @@ def crear_pizza_favorita(request):
     if request.method == "POST" and utils.verificarToken(token):
         usuario = utils.getUsuarioConToken(token)
         pizza_id = body.get('PIZZA_ID', None)
+
+
+
         try:
-            if pizza_tradicional_id:
+            if pizza_id:
                 ##RECUPERANDO ID DE PIZZA
-                pizza_obj = Pizza.objects.get(pk=pizza_id)
+                print("")
+                print("ID: ", pizza_id)
+                print("")
+                pizza_obj = Pizza.objects.get(pk=pizza_id).id
 
                 ##CREANDO PIZZA FAVORITA
                 pizza_favorita = Pizza_Favorita().crear_con_id(pizza_obj, usuario)
@@ -403,7 +409,10 @@ def crear_pizza_favorita(request):
                     'DETALLE' : 'Solicitud correcta'
                     }) 
         except Exception as e:
+            print("Error")
             print(e)
+            print("")
+            print("")
             return JsonResponse({
                 'STATUS' : 'ERROR',
                 'CODIGO' : 15,
