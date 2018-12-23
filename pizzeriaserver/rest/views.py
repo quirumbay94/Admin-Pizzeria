@@ -346,14 +346,14 @@ def crear_pizza_favorita(request):
     token = body.get('TOKEN', None)
     if request.method == "POST" and utils.verificarToken(token):
         usuario = utils.getUsuarioConToken(token)
-        pizza_tradicional_id = body.get('PIZZA_ID', None)
+        pizza_id = body.get('PIZZA_ID', None)
         try:
             if pizza_tradicional_id:
                 ##RECUPERANDO ID DE PIZZA
-                pizza_id = Pizza_Tradicional.objects.get(pk=pizza_tradicional_id).pizza.id
+                pizza_obj = Pizza.objects.get(pk=pizza_id)
 
                 ##CREANDO PIZZA FAVORITA
-                pizza_favorita = Pizza_Favorita().crear_con_id(pizza_id, usuario)
+                pizza_favorita = Pizza_Favorita().crear_con_id(pizza_obj, usuario)
                 if not pizza_favorita:
                     return JsonResponse({
                     'STATUS' : 'ERROR',
