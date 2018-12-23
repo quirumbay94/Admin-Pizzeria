@@ -348,14 +348,9 @@ def crear_pizza_favorita(request):
         usuario = utils.getUsuarioConToken(token)
         pizza_id = body.get('PIZZA_ID', None)
 
-
-
         try:
             if pizza_id:
                 ##RECUPERANDO ID DE PIZZA
-                print("")
-                print("ID: ", pizza_id)
-                print("")
                 pizza_obj = Pizza.objects.get(pk=pizza_id).id
 
                 ##CREANDO PIZZA FAVORITA
@@ -409,10 +404,6 @@ def crear_pizza_favorita(request):
                     'DETALLE' : 'Solicitud correcta'
                     }) 
         except Exception as e:
-            print("Error")
-            print(e)
-            print("")
-            print("")
             return JsonResponse({
                 'STATUS' : 'ERROR',
                 'CODIGO' : 15,
@@ -474,14 +465,17 @@ def ver_pizzas_tradicionales(request):
                 ##VERIFICANDO SI LA PIZZA ES FAVORITA DEL USUARIO
                 usuario = utils.getUsuarioConToken(token)
                 pizza_fav = Pizza_Favorita.objects.filter(usuario=usuario).filter(pizza=pizza.pizza)
-
+                es_fav = 0
+                if len(pizza_fav) > 0:
+                    es_fav = 1
                 paquete.append({
                     "ID" : pizza.pizza.id,
                     "NOMBRE" : pizza.pizza.nombre,
                     "IMAGEN_URL" : IP + pizza.pizza.img_url.url,
                     "DESCRIPCION" : pizza.pizza.descripcion,
                     "TAMANO" : pizza.pizza.tamano.nombre.capitalize(),
-                    "COSTO" : "%.2f" % float(pizza.costo)
+                    "COSTO" : "%.2f" % float(pizza.costo),
+                    "FAVORITA" : es_fav
                 })
 
             return JsonResponse({
