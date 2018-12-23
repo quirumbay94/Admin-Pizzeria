@@ -251,7 +251,6 @@ def editar_usuario(request):
 def ver_pizza(request):
     token = request.GET.get('TOKEN', None)
     pizza_id = request.GET.get('PIZZA_ID', None)
-    print(pizza_id)
     if request.method == "GET" and utils.verificarToken(token) and pizza_id:
         try:
             pizza = Pizza.objects.get(pk=pizza_id)
@@ -440,9 +439,6 @@ def borrar_pizza_favorita(request):
             }) 
 
         except Exception as e:
-            print("")
-            print(e)
-
             return JsonResponse({
                 'STATUS' : 'ERROR',
                 'CODIGO' : 15,
@@ -463,17 +459,21 @@ def ver_pizzas_tradicionales(request):
     token = request.GET.get('TOKEN', None)
     if request.method == "GET" and utils.verificarToken(token):
         pizzas = Pizza_Tradicional.objects.all()
-        paquete = {}
+        paquete = []
         if len(pizzas) > 0:
             for pizza in pizzas:
-                pizza_tradicional = {
+                ##VERIFICANDO SI LA PIZZA ES FAVORITA DEL USUARIO
+                usuario = utils.getUsuarioConToken(token)
+                pizza_fav = Pizza_Favorita.objects.filter(usuario=usuario).filter(pizza=pizza.pizza)
+
+                paquete.append({
+                    "ID" : pizza.pizza.id,
                     "NOMBRE" : pizza.pizza.nombre,
                     "IMAGEN_URL" : IP + pizza.pizza.img_url.url,
                     "DESCRIPCION" : pizza.pizza.descripcion,
                     "TAMANO" : pizza.pizza.tamano.nombre.capitalize(),
                     "COSTO" : "%.2f" % float(pizza.costo)
-                }
-                paquete[pizza.id] = pizza_tradicional
+                })
 
             return JsonResponse({
                     'STATUS' : 'OK',
