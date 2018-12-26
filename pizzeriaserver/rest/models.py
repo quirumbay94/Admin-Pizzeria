@@ -252,10 +252,10 @@ class Pizza_Tamano_Ingrediente(models.Model):
     def __str__(self):
         return self.pizza.nombre + " | " + self.tamano_ingrediente.ingrediente.nombre
 
-    def crear(self, pizza, tamano_ingrediente, porcion_id):
+    def crear(self, pizza, tamano_ingrediente_id, porcion_id):
         pizza_t_ingrediente = Pizza_Tamano_Ingrediente()
         pizza_t_ingrediente.pizza = pizza
-        pizza_t_ingrediente.tamano_ingrediente = Tamano_Ingrediente.objects.get(pk=tamano_ingrediente)
+        pizza_t_ingrediente.tamano_ingrediente = Tamano_Ingrediente.objects.get(pk=tamano_ingrediente_id)
         pizza_t_ingrediente.porcion = Porcion.objects.get(pk=porcion_id)
         pizza_t_ingrediente.save()
         return pizza_t_ingrediente
@@ -518,6 +518,44 @@ class Direccion_Cliente(models.Model):
             return direccion
         except:
             return None
+
+class Carrito(models.Model):
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    estado = models.BooleanField()
+
+    def __str__(self):
+        return self.usuario.username + " | " + str(self.estado)
+
+    def crear(self, usuario_id):
+        try: 
+            usuario = Usuario.objects.get(pk=usuario_id)
+            carrito = Carrito()
+            carrito.usuario = usuario
+            carrito.estado = True
+            carrito.save()
+            return carrito
+        except:
+            return None
+
+class DetalleCarrito(models.Model):
+    combinacion = models.ForeignKey("Combinacion", on_delete=models.CASCADE, default=None)
+    carrito = models.ForeignKey("Carrito", on_delete=models.CASCADE, default=None)
+
+    def crear(self, combinacion, carrito):
+        try:
+            detalle = DetalleCarrito()
+            detalle.combinacion = combinacion
+            detalle.carrito = carrito
+            detalle.save()
+            return detalle
+        except:
+            return None
+
+
+
+
+
+
 
 
 

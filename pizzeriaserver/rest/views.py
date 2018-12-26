@@ -4,9 +4,7 @@ from django.http import JsonResponse
 from django.db import IntegrityError
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import Usuario, Detalles_Personales, Pizza, Pizza_Tradicional, Sesion, Tamano, Tamano_Masa, Tamano_Borde, Tamano_Ingrediente
-from .models import Combos_Promocionales, Combinacion, Combinacion_Pizza, Combinacion_Adicional, Promocion, Componente, Pizza_Tamano_Ingrediente, Porcion
-from .models import Direccion_Cliente, Pizza_Favorita
+from .models import *
 from rest import utils
 import json
 
@@ -424,11 +422,12 @@ def borrar_pizza_favorita(request):
         pizza_id = body.get('PIZZA_ID', None)
         try:
             pizza_obj = Pizza.objects.get(pk=pizza_id)
-            pizza_favorita = Pizza_Favorita.objects.get(pizza=pizza_obj)
+            pizzas_favoritas = Pizza_Favorita.objects.filter(pizza=pizza_obj)
             pizzas_tracionales = Pizza_Tradicional.objects.filter(pizza=pizza_obj)
 
             if len(pizzas_tracionales) > 0:
-                pizza_favorita.delete()
+                for p in pizzas_favoritas:
+                    p.delete()
             else:
                 pizza_obj.delete()
             
@@ -639,61 +638,74 @@ def crear_combinacion(request):  ## ARREGLAR RESPUESTAS DE ERRORES
     body = utils.request_todict(request)
     token = body.get('TOKEN', None)
     if request.method == "POST" and utils.verificarToken(token):
+        try: 
+            pizzas = body.get('PIZZAS', None)
+            adicionales = body.get('ADICIONALES', None)
 
-        pizzas = body.get('PIZZAS', None)
-        adicionales = body.get('ADICIONALES', None)
+            ##CREANDO COMBINACION
+            usuario = utils.getUsuarioConToken(token)
+            combinacion = Combinacion().crear(None, usuario)
 
-        ##CREANDO COMBINACION
-        usuario = utils.getUsuarioConToken(token)
-        combinacion = Combinacion().crear(None, usuario)
-
-        ##ITERANDO LISTA DE PIZZAS PARA CREARLAS
-        for pizza in pizzas:
-            id_pizza = pizza.get("ID", None)
-            cantidad = pizza.get("CANTIDAD", None)
-            if id_pizza and cantidad:
-                ##OBTENIENDO OBJETO DE PIZZA
-                pizza_obj = Pizza.objects.get(pk=id_pizza)
-
-                ##CREANDO COMBINACION CON PIZZA
-                Combinacion_Pizza().crear(combinacion, pizza_obj, cantidad)
-            else:
-                nombre = pizza.get("NOMBRE", None)
-                tamano = pizza.get("TAMANO", None)
-                masa_t_id = pizza.get("MASA", None)
-                borde_t_id = pizza.get("BORDE", None)
+            ##ITERANDO LISTA DE PIZZAS PARA CREARLAS
+            for pizza in pizzas:
+                id_pizza = pizza.get("ID", None)
                 cantidad = pizza.get("CANTIDAD", None)
-                ingredientes = pizza.get("INGREDIENTES", None)
+                if id_pizza and cantidad:
+                    ##OBTENIENDO OBJETO DE PIZZA
+                    pizza_obj = Pizza.objects.get(pk=id_pizza)
 
-                ##CREANDO PIZZA
-                pizza_obj = Pizza().crear_simple(tamano, masa_t_id, borde_t_id, nombre)
+                    ##CREANDO COMBINACION CON PIZZA
+                    Combinacion_Pizza().crear(combinacion, pizza_obj, cantidad)
+                else:
+                    nombre = pizza.get("NOMBRE", "Pizza")
+                    tamano = pizza.get("TAMANO", None)
+                    masa_t_id = pizza.get("MASA", None)
+                    borde_t_id = pizza.get("BORDE", None)
+                    cantidad = pizza.get("CANTIDAD", None)
+                    ingredientes = pizza.get("INGREDIENTES", None)
+
+                    ##CREANDO PIZZA
+                    pizza_obj = Pizza().crear_simple(tamano, masa_t_id, borde_t_id, nombre)
 
 
-                ##CREANDO COMBINACION CON PIZZA
-                Combinacion_Pizza().crear(combinacion, pizza_obj, cantidad)
+                    ##CREANDO COMBINACION CON PIZZA
+                    Combinacion_Pizza().crear(combinacion, pizza_obj, cantidad)
 
-                for diccionario in ingredientes:
-                    ##CREANDO PIZZA_TAMANO_INGREDIENTE
-                    t_ingrediente = diccionario.get("ID", None)
-                    t_ingrediente = Tamano_Ingrediente.objects.get(pk=t_ingrediente)
-                    porcion = diccionario.get("PORCION", None)
-                    pizza_t_ingrediente = Pizza_Tamano_Ingrediente().crear(pizza_obj, t_ingrediente, porcion)
+                    for diccionario in ingredientes:
+                        ##CREANDO PIZZA_TAMANO_INGREDIENTE
+                        t_ingrediente = diccionario.get("ID", None)
+                        porcion = diccionario.get("PORCION", None)
+                        pizza_t_ingrediente = Pizza_Tamano_Ingrediente().crear(pizza_obj, t_ingrediente, porcion)
 
-        ##ITERANDO LISTA DE ADICIONALES 
-        for diccionario in adicionales:
-            adicional = diccionario.get("ID", None)
-            cantidad = diccionario.get("CANTIDAD", None)
+            ##ITERANDO LISTA DE ADICIONALES 
+            for diccionario in adicionales:
+                adicional = diccionario.get("ID", None)
+                cantidad = diccionario.get("CANTIDAD", None)
 
-            adicional = Componente.objects.get(pk=adicional)
+                adicional = Componente.objects.get(pk=adicional)
 
-            ##CREANDO COMBINACION_ADICIONAL
-            Combinacion_Adicional().crear(combinacion, adicional, cantidad)
+                ##CREANDO COMBINACION_ADICIONAL
+                Combinacion_Adicional().crear(combinacion, adicional, cantidad)
 
-        return JsonResponse({
-                'STATUS' : 'OK',
-                'CODIGO' : 19,
-                'DETALLE' : 'Solicitud correcta'
-                }) 
+            ##AÑANDIENDO ARTICULOS AL CARRITO
+            carrito = getCarritoConToken(token)
+            DetalleCarrito().crear(combinacion, carrito)
+
+
+            return JsonResponse({
+                    'STATUS' : 'OK',
+                    'CODIGO' : 19,
+                    'DETALLE' : 'Solicitud correcta'
+                    }) 
+        except Exception as e:
+            print("")
+            print(e)
+            print("")
+            return JsonResponse({
+                'STATUS' : 'ERROR',
+                'CODIGO' : 25,
+                'DETALLE' : 'Error creando combinacion'
+            })
 
     else: 
         return JsonResponse({

@@ -1,5 +1,5 @@
 import json
-from rest.models import Sesion
+from rest.models import Sesion, Carrito
 
 ## TRANSFORMANDO REQUEST EN DICCIONARIO
 def request_todict(request):
@@ -32,3 +32,17 @@ def getUsuarioConToken(token):
         return sesion.usuario
     except:
         return False
+
+def getCarritoConToken(token):
+    try:
+        sesion = Sesion.objects.get(token=token)
+        usuario = sesion.usuario
+        carrito = Carrito.objects.filter(usuario=usuario)[0]
+        return carrito
+    except:
+        return None
+
+
+
+
+
