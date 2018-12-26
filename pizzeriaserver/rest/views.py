@@ -698,9 +698,6 @@ def crear_combinacion(request):  ## ARREGLAR RESPUESTAS DE ERRORES
                     'DETALLE' : 'Solicitud correcta'
                     }) 
         except Exception as e:
-            print("")
-            print(e)
-            print("")
             return JsonResponse({
                 'STATUS' : 'ERROR',
                 'CODIGO' : 25,
@@ -715,6 +712,67 @@ def crear_combinacion(request):  ## ARREGLAR RESPUESTAS DE ERRORES
             'DETALLE' : 'Error de solicitud'
             })
 
+## DETALLE DE CARRITO
+def getCarrito(request):
+    token = request.GET.get('TOKEN', None)
+    if request.method == "GET" and utils.verificarToken(token):
+        carrito = utils.getCarritoConToken(token)
+        detalles = DetalleCarrito.objects.filter(carrito=carrito)
+        pizzas_ARR = []
+        adicionales_ARR = []
+        for detalle in detalles:
+            pizzas = Combinacion_Pizza.objects.filter(combinacion=detalle.combinacion)
+            adicionales = Combinacion_Adicional.objects.filter(combinacion=detalle.combinacion)
+
+            ##ITERANDO PIZZAS
+            for pizza in pizzas:
+                ## ESTIMANDO COSTO DE MASA Y BORDE
+                costo = 0
+                costo += pizza.pizza.masa.costo
+                costo += pizza.pizza.borde.costo
+
+                ingredientes_ARR = []
+                ingredientes = Pizza_Tamano_Ingrediente.objects.filter(pizza=pizza.pizza)
+                for ingrediente in ingredientes:
+                    ## ESTIMANDO COSTO DE INGREDIENTES
+                    costo += (ingrediente.tamano_ingrediente.costo * ingrediente.porcion.valor)
+                    ingredientes_ARR.append(ingrediente.tamano_ingrediente.ingrediente.nombre.capitalize() + " " + utils.porcionToString(ingrediente.porcion))
+                pizzas_ARR.append({
+                    "NOMBRE" : pizza.pizza.nombre,
+                    "TAMANO" : pizza.pizza.tamano.nombre,
+                    "CANTIDAD" : pizza.cantidad,
+                    "INGREDIENTES" : ingredientes_ARR,
+                    "COSTO" : "%.2f" % float(costo)
+                    })
+            
+            for adicional in adicionales:
+                tamano_adicional = Tamano_Ingrediente.objects.filter(ingrediente=adicional.adicional)[0]
+                costo = 0
+                if tamano_adicional:
+                    costo += (tamano_adicional.costo * adicional.cantidad)
+                adicionales_ARR.append({
+                    "NOMBRE" : adicional.adicional.nombre,
+                    "CANTIDAD" : adicional.cantidad,
+                    "IMAGEN_URL" : IP + adicional.adicional.img_url.url,
+                    "COSTO" : "%.2f" % float(costo)
+                    })
+
+        paquete = {
+            "PIZZAS" : pizzas_ARR,
+            "ADICIONALES" : adicionales_ARR
+        }
+        return JsonResponse({
+            'STATUS' : 'OK',
+            'CODIGO' : 19,
+            'CARRITO' : paquete,
+            'DETALLE' : 'Solicitud correcta'
+        }) 
+    
+    return JsonResponse({
+        'STATUS' : 'ERROR',
+        'CODIGO' : 15,
+        'DETALLE' : 'Error de solicitud'
+        })
 
 
 ##COMBOS PROMOCIONALES

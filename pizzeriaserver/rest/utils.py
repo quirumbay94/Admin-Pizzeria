@@ -42,6 +42,8 @@ def getCarritoConToken(token):
     except:
         return None
 
+def porcionToString(porcion):
+    return "X" + str(porcion.valor)
 
 
 
