@@ -688,7 +688,7 @@ def crear_combinacion(request):  ## ARREGLAR RESPUESTAS DE ERRORES
                 Combinacion_Adicional().crear(combinacion, adicional, cantidad)
 
             ##AÑANDIENDO ARTICULOS AL CARRITO
-            carrito = getCarritoConToken(token)
+            carrito = utils.getCarritoConToken(token)
             DetalleCarrito().crear(combinacion, carrito)
 
 
