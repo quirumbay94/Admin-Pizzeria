@@ -704,7 +704,8 @@ def crear_combinacion(request):  ## ARREGLAR RESPUESTAS DE ERRORES
             return JsonResponse({
                 'STATUS' : 'ERROR',
                 'CODIGO' : 25,
-                'DETALLE' : 'Error creando combinacion'
+                'DETALLE' : e,
+                'BODY' : body
             })
 
     else: 
