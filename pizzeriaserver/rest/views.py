@@ -740,7 +740,7 @@ def getCarrito(request):
                 pizzas_ARR.append({
                     "ID" : pizza.id,
                     "NOMBRE" : pizza.pizza.nombre,
-                    "TAMANO" : pizza.pizza.tamano.nombre,
+                    "TAMANO" : pizza.pizza.tamano.nombre.capitalize(),
                     "CANTIDAD" : pizza.cantidad,
                     "INGREDIENTES" : ingredientes_ARR,
                     "COSTO" : "%.2f" % float(costo),
