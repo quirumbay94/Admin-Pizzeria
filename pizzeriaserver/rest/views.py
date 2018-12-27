@@ -738,11 +738,13 @@ def getCarrito(request):
                     costo += (ingrediente.tamano_ingrediente.costo * ingrediente.porcion.valor)
                     ingredientes_ARR.append(ingrediente.tamano_ingrediente.ingrediente.nombre.capitalize() + " " + utils.porcionToString(ingrediente.porcion))
                 pizzas_ARR.append({
+                    "ID" : pizza.id,
                     "NOMBRE" : pizza.pizza.nombre,
                     "TAMANO" : pizza.pizza.tamano.nombre,
                     "CANTIDAD" : pizza.cantidad,
                     "INGREDIENTES" : ingredientes_ARR,
-                    "COSTO" : "%.2f" % float(costo)
+                    "COSTO" : "%.2f" % float(costo),
+                    "TIPO" : "PIZZA"
                     })
             
             for adicional in adicionales:
@@ -751,10 +753,12 @@ def getCarrito(request):
                 if tamano_adicional:
                     costo += (tamano_adicional.costo * adicional.cantidad)
                 adicionales_ARR.append({
+                    "ID" : adicional.id,
                     "NOMBRE" : adicional.adicional.nombre,
                     "CANTIDAD" : adicional.cantidad,
                     "IMAGEN_URL" : IP + adicional.adicional.img_url.url,
-                    "COSTO" : "%.2f" % float(costo)
+                    "COSTO" : "%.2f" % float(costo),
+                    "TIPO" : "ADICIONAL"
                     })
 
         paquete = {
@@ -773,6 +777,45 @@ def getCarrito(request):
         'CODIGO' : 15,
         'DETALLE' : 'Error de solicitud'
         })
+
+@csrf_exempt
+def borrarDetalleCarrito(request):
+    body = utils.request_todict(request)
+    token = body.get('TOKEN', None)
+    tipo = body.get('TIPO', None)
+    elemento_id = body.get('ID', None)
+    if request.method == "POST" and utils.verificarToken(token) and tipo and elemento_id:
+        try:
+            if tipo == "PIZZA" or tipo == "ADICIONAL":
+                if tipo == "PIZZA":
+                    pizza = Combinacion_Pizza.objects.get(pk=elemento_id)
+                    pizza.delete()
+                elif tipo == "ADICIONAL":
+                    adicional = Combinacion_Adicional.objects.get(pk=elemento_id)
+                    adicional.delete()
+                return JsonResponse({
+                    'STATUS' : 'OK',
+                    'CODIGO' : 19,
+                    'DETALLE' : 'Solicitud correcta'
+                })
+            else: ##TIPO DE OBJETO INCORRECTO
+                return JsonResponse({
+                    'STATUS' : 'ERROR',
+                    'CODIGO' : 15,
+                    'DETALLE' : 'Error de solicitud'
+                })
+        except:
+            return JsonResponse({
+                'STATUS' : 'ERROR',
+                'CODIGO' : 27,
+                'DETALLE' : 'Error eliminando objeto del carrito'
+            })
+    return JsonResponse({
+        'STATUS' : 'ERROR',
+        'CODIGO' : 15,
+        'DETALLE' : 'Error de solicitud'
+    })
+        ##BUSCANDO PERTENENCIA
 
 
 ##COMBOS PROMOCIONALES
