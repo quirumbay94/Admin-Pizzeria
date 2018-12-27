@@ -45,6 +45,13 @@ def getCarritoConToken(token):
 def porcionToString(porcion):
     return "X" + str(porcion.valor)
 
+def tamanoToFemeninoCapitalize(tamano):
+    if tamano == "PEQUEÑO":
+        return "Pequeña"
+    elif tamano == "MEDIANO":
+        return "Mediana"
+    return tamano.capitalize()
+
 
 
 

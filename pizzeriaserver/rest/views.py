@@ -701,8 +701,7 @@ def crear_combinacion(request):  ## ARREGLAR RESPUESTAS DE ERRORES
             return JsonResponse({
                 'STATUS' : 'ERROR',
                 'CODIGO' : 25,
-                'DETALLE' : e,
-                'BODY' : body
+                'DETALLE' : e
             })
 
     else: 
@@ -740,7 +739,7 @@ def getCarrito(request):
                 pizzas_ARR.append({
                     "ID" : pizza.id,
                     "NOMBRE" : pizza.pizza.nombre,
-                    "TAMANO" : pizza.pizza.tamano.nombre.capitalize(),
+                    "TAMANO" : utils.tamanoToFemeninoCapitalize(pizza.pizza.tamano.nombre),
                     "CANTIDAD" : pizza.cantidad,
                     "INGREDIENTES" : ingredientes_ARR,
                     "COSTO" : "%.2f" % float(costo),
