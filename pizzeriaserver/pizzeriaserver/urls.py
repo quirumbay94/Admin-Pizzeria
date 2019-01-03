@@ -19,7 +19,7 @@ from django.contrib import admin
 from django.conf.urls.static import static
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
+    url(r'^admin', admin.site.urls),
     url(r'^rest/', include('rest.urls')),
     url(r'^', include('administrador.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

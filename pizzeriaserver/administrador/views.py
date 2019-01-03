@@ -291,6 +291,9 @@ def nueva_pizza_tradicional(request):
 
             ##CREANDO PIZZA
             pizza_obj = Pizza().crear(tamano_id, masa_t_id, borde_t_id, nombre, descripcion, img_url)
+            ##DECLARANDO QUE LA PIZZA FUE CREADA POR ADMIN
+            pizza_obj.de_admin = True
+            pizza_obj.save()
             if not pizza_obj:
                 paquete = diccionarios.diccionarioMensaje(paquete, "Error creando pizza.")
                 return render(request, "Pizza/nueva_pizza_tradicional.html",paquete)
@@ -392,8 +395,22 @@ def editar_pizza_tradicional(request, pizza_t_id):
         return render(request, "Pizza/editar_pizza_tradicional.html",paquete)
     return redirect("login")
 
+## COMBOS PROMOCIONALES
+def combos_promocionales(request):
+    if verificarSesion(request):
+        paquete = diccionarios.diccionarioBarraNav(request,{})
+        paquete = diccionarios.diccionarioCombosPromocionales(paquete)
+        return render(request, "CombosPromocionales/combos_promocionales.html",paquete)
+    return redirect("login")
 
+def nuevo_combo_promocional(request):
+    if verificarSesion(request):
+        ##DETALLES PARA LA SUBBARRA DE NAVEGACION
+        paquete = diccionarios.diccionarioBarraNav(request,{})
+        paquete = diccionarios.diccionarioOpcionesParaComboPromocional(paquete)
 
+        return render(request, "CombosPromocionales/nuevo_combo_promocional.html",paquete)
+    return redirect("login")
 
 
 

@@ -26,4 +26,8 @@ urlpatterns = [
     url(r'^menu/pizzas_tradicionales/ver/(?P<pizza_t_id>\d+)$', views.ver_pizza_tradicional, name='ver_pizza_tradicional'),
     url(r'^menu/pizzas_tradicionales/nueva_pizza_tradicional$', views.nueva_pizza_tradicional, name='nueva_pizza_tradicional'),
     url(r'^menu/pizzas_tradicionales/editar/(?P<pizza_t_id>\d+)$', views.editar_pizza_tradicional, name='editar_pizza_tradicional'),
+
+    ## COMBOS PROMOCIONALES
+    url(r'^menu/combos_promocionales$', views.combos_promocionales, name='combos_promocionales'),
+    url(r'^menu/combos_promocionales/crear$', views.nuevo_combo_promocional, name='nuevo_combo_promocional'),
 ]

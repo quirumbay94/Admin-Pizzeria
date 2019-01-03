@@ -741,6 +741,8 @@ def getCarrito(request):
                     "NOMBRE" : pizza.pizza.nombre,
                     "TAMANO" : utils.tamanoToFemeninoCapitalize(pizza.pizza.tamano.nombre),
                     "CANTIDAD" : pizza.cantidad,
+                    "MASA" : pizza.pizza.masa.masa.nombre.capitalize(),
+                    "BORDE" : pizza.pizza.borde.borde.nombre.capitalize(),
                     "INGREDIENTES" : ingredientes_ARR,
                     "COSTO" : "%.2f" % float(costo),
                     "TIPO" : "PIZZA"
@@ -750,7 +752,7 @@ def getCarrito(request):
                 tamano_adicional = Tamano_Ingrediente.objects.filter(ingrediente=adicional.adicional)[0]
                 costo = 0
                 if tamano_adicional:
-                    costo += (tamano_adicional.costo * adicional.cantidad)
+                    costo += tamano_adicional.costo
                 adicionales_ARR.append({
                     "ID" : adicional.id,
                     "NOMBRE" : adicional.adicional.nombre,

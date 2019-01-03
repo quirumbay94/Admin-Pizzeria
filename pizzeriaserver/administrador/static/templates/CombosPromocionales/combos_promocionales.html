@@ -1,0 +1,23 @@
+{% load static %}
+{% include 'General/header.html' %}
+{% include 'General/navbar.html' %}
+{% include 'General/subbarra.html' %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/Menu/menu.css' %}">
+<div class="title-container">
+	<h1 class="title-h1">Combos</h1>
+</div>
+<div class="opcion-wrapper">
+	<form method="GET" action="/menu/combos_promocionales/crear">
+		<button class="opcion-container-button">
+			<h3 class="opcion-aumentar-h3">+</h3>
+			<h3> </h3>
+		</button>
+	</form>
+	{% for combo in COMBOS %}
+		<a href="/menu/combos_promocionales/ver/{{ combo.id }}">
+			<button class="opcion-container-button">
+				<h3 class="opcion-tittle-h3">{{ combo.nombre }}</h3>
+			</button>
+		</a>
+	{% endfor %}
+</div>

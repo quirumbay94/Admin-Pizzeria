@@ -1,5 +1,4 @@
-from rest.models import Detalles_Personales, Componente, Pizza_Tradicional, Masa, Borde, Tamano, Tamano_Masa, Tamano_Borde, Tamano_Ingrediente, Pizza_Tamano_Ingrediente
-from rest.models import Porcion
+from rest.models import *
 ##			GENERAL 		##
 ##DICCIONARIO CON DATOS PERSONALES PARA BARRA DE NAV
 def diccionarioBarraNav(request, paquete):
@@ -91,8 +90,25 @@ def diccionarioTamanos(paquete):
 	paquete_["TAMANOS"] = Tamano.objects.all()
 	return paquete_
 
+##DICCIONARIO CON COMBOS PROMOCIONALES
+def diccionarioCombosPromocionales(paquete):
+	paquete_ = paquete
+	paquete_["COMBOS"] = Combos_Promocionales.objects.all()
+	return paquete_
+def diccionarioOpcionesParaComboPromocional(paquete):
+	paquete_ = paquete
+	##COLECTANDO BEBIDAS
+	bebidas = Componente.objects.filter(tipo="BEBIDA")
+	paquete_["BEBIDAS"] = Tamano_Ingrediente.objects.filter(ingrediente__in=bebidas)
 
+	##COLECTANDO ADICIONALES
+	adicionales = Componente.objects.filter(tipo="ADICIONAL")
+	paquete_["ADICIONALES"] = Tamano_Ingrediente.objects.filter(ingrediente__in=adicionales)
 
+	##COLECTANDO PIZZAS
+	paquete_["PIZZAS"] = Pizza.objects.filter(de_admin=True)
+
+	return paquete_	
 
 
 

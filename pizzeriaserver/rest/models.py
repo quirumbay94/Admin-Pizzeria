@@ -191,6 +191,7 @@ class Pizza(models.Model):
     descripcion = models.CharField(max_length=255, blank=True)
     img_url = models.ImageField(blank=True)
     estado = models.BooleanField(default=True)
+    de_admin = models.BooleanField(default=False)
 
     def __str__(self):
         estadoStr = "Activo"
