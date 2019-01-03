@@ -30,4 +30,6 @@ urlpatterns = [
     ## COMBOS PROMOCIONALES
     url(r'^menu/combos_promocionales$', views.combos_promocionales, name='combos_promocionales'),
     url(r'^menu/combos_promocionales/crear$', views.nuevo_combo_promocional, name='nuevo_combo_promocional'),
+    url(r'^menu/combos_promocionales/ver/(?P<combo_id>\d+)$', views.ver_combo_promocional, name='ver_combo_promocional'),
+    url(r'^menu/combos_promocionales/editar/(?P<combo_id>\d+)$', views.editar_combo_promocional, name='editar_combo_promocional'),
 ]

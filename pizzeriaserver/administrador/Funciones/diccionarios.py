@@ -91,6 +91,12 @@ def diccionarioTamanos(paquete):
 	return paquete_
 
 ##DICCIONARIO CON COMBOS PROMOCIONALES
+def diccionarioDatosSubBarraCombosPromocionales(paquete):
+	paquete_ = paquete
+	paquete_['URL'] = "combos_promocionales"
+	paquete_['TITULO'] = "COMBOS PROMOCIONALES"
+	return paquete_
+
 def diccionarioCombosPromocionales(paquete):
 	paquete_ = paquete
 	paquete_["COMBOS"] = Combos_Promocionales.objects.all()
@@ -98,20 +104,43 @@ def diccionarioCombosPromocionales(paquete):
 def diccionarioOpcionesParaComboPromocional(paquete):
 	paquete_ = paquete
 	##COLECTANDO BEBIDAS
-	bebidas = Componente.objects.filter(tipo="BEBIDA")
-	paquete_["BEBIDAS"] = Tamano_Ingrediente.objects.filter(ingrediente__in=bebidas)
+	paquete_["BEBIDAS"] = Componente.objects.filter(tipo="BEBIDA")
 
 	##COLECTANDO ADICIONALES
-	adicionales = Componente.objects.filter(tipo="ADICIONAL")
-	paquete_["ADICIONALES"] = Tamano_Ingrediente.objects.filter(ingrediente__in=adicionales)
+	paquete_["ADICIONALES"] = Componente.objects.filter(tipo="ADICIONAL")
 
 	##COLECTANDO PIZZAS
 	paquete_["PIZZAS"] = Pizza.objects.filter(de_admin=True)
 
 	return paquete_	
 
+def diccionarioComboPromocional(paquete, combo_id):
+	paquete_ = paquete
+	paquete_["COMBO"] = Combos_Promocionales.objects.get(pk=combo_id)
+	return paquete_
 
+def diccionarioDatosComboPromocional(paquete, combo_id):
+	paquete_ = paquete
+	combo = Combos_Promocionales.objects.get(pk=combo_id)
+	
+	pizzas = Combinacion_Pizza.objects.filter(combinacion=combo.combinacion)
+	paquete_["PIZZAS_SELEC"] = pizzas
 
+	adicionales_list = []
+	bebidas_list = []
+	adicionales = Combinacion_Adicional.objects.filter(combinacion=combo.combinacion)
+	for adicional in adicionales:
+		if adicional.adicional.tipo == "ADICIONAL":
+			adicionales_list.append(adicional)
+		elif adicional.adicional.tipo == "BEBIDA":
+			bebidas_list.append(adicional)
+
+	paquete_["BEBIDAS_SELEC"] = bebidas_list
+	paquete_["ADICIONALES_SELEC"] = adicionales_list
+	paquete_["COMBO"] = combo
+
+	print(paquete_)
+	return paquete_
 
 
 

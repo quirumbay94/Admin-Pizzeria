@@ -224,8 +224,7 @@ class Pizza(models.Model):
             p.estado = True
             p.save()
             return p
-        except Exception as e:
-            print(e)
+        except:
             return None
             
     def editar(self, pizza_id, tamano_id, masa_t_id, borde_t_id, nombre, descripcion, img_url, estado):
@@ -394,15 +393,18 @@ class Combinacion(models.Model):
         return nombre_ + " | CREADO POR: " + self.usuario.username
 
     def crear(self, nombre, usuario):
-        nombre_ = "Combinacion"
-        if nombre:
-            nombre_ = nombre
+        try:
+            nombre_ = "Combinacion"
+            if nombre:
+                nombre_ = nombre
 
-        combinacion = Combinacion()
-        combinacion.nombre = nombre_
-        combinacion.usuario = usuario
-        combinacion.save()
-        return combinacion
+            combinacion = Combinacion()
+            combinacion.nombre = nombre_
+            combinacion.usuario = usuario
+            combinacion.save()
+            return combinacion
+        except:
+            return None
 
     def editar(self, combinacion_id, nombre, usuario):
         nombre_ = "Combinacion"
@@ -423,11 +425,24 @@ class Combos_Promocionales(models.Model):
     costo = models.FloatField()
     img_url = models.ImageField()
     descripcion = models.TextField(max_length=255, blank=True)
-    fecha_inicio = models.DateField(blank=True)
-    fecha_fin = models.DateField(blank=True)
+    fecha_inicio = models.DateField(auto_now_add=True)
+    fecha_fin = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return self.nombre + " $" + str(self.costo)
+
+    def crear(self, combinacion, nombre, costo, img_url, descripcion):
+        try:
+            c = Combos_Promocionales()
+            c.combinacion = combinacion
+            c.nombre = nombre
+            c.costo = costo
+            c.img_url = img_url
+            c.descripcion = descripcion
+            c.save()
+            return c
+        except:
+            return None
 
 class Combinacion_Pizza(models.Model):
     combinacion = models.ForeignKey("Combinacion", on_delete=models.CASCADE, default=None)
@@ -438,12 +453,15 @@ class Combinacion_Pizza(models.Model):
         return self.pizza.nombre + " | COMBINACION: " + self.combinacion.nombre + " | CANT: " + str(self.cantidad)
 
     def crear(self, combinacion, pizza, cantidad):
-        c = Combinacion_Pizza()
-        c.combinacion = combinacion
-        c.pizza = pizza
-        c.cantidad = cantidad
-        c.save()
-        return c
+        try:
+            c = Combinacion_Pizza()
+            c.combinacion = combinacion
+            c.pizza = pizza
+            c.cantidad = cantidad
+            c.save()
+            return c
+        except:
+            return None
 
 class Combinacion_Adicional(models.Model):
     combinacion = models.ForeignKey("Combinacion", on_delete=models.CASCADE, default=None)

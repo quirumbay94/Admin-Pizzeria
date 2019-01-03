@@ -1,0 +1,32 @@
+{% load static %}
+{% include 'General/header.html' %}
+{% include 'General/navbar.html' %}
+{% include 'General/subbarra.html' %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/Menu/menu.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/General/ver_formulario.css' %}">
+
+<div class="main-container">
+	<div class="sub-container">
+		<div class="editar-container">
+			<a href="/menu/combos_promocionales/editar/{{ COMBO.id }}">
+				<button class="btn btn-secondary">Editar</button>
+			</a>
+		</div>
+		<div class="sub2-container">
+			<h4>Nombre</h4>
+			<h5>{{ COMBO.nombre }}</h5>
+		</div>
+		<div class="sub2-container">
+			<h4>Descripción</h4>
+			<h5>{{ COMBO.descripcion }}</h5>
+		</div>
+		<div class="sub2-container">
+			<h4>Costo</h4>
+			<h5>{{ COMBO.costo }}</h5>
+		</div>
+		<div class="sub2-container">
+			<h4>Imagen</h4>
+			<img src="{{ COMBO.img_url.url }}">
+		</div>
+	</div>
+</div>

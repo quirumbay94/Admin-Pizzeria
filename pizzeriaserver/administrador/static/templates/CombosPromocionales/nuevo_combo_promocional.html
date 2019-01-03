@@ -60,7 +60,7 @@
 					<select class="form-control input adicional-select" name="ADICIONALES[]" id="adicional-select" style="margin-bottom: 10px;">
 						<option value="">Seleccione un adicional</option>
 						{% for adicional in ADICIONALES %}
-							<option value="{{ adicional.id }}">{{ adicional.ingrediente.nombre }}</option>
+							<option value="{{ adicional.id }}">{{ adicional.nombre }}</option>
 						{% endfor %}
 					</select>
 				</div>
@@ -74,7 +74,7 @@
 					<select class="form-control input bebida-select" name="BEBIDAS[]" id="bebida-select"  style="margin-bottom: 10px;">
 						<option value="">Seleccione una bebida</option>
 						{% for bebida in BEBIDAS %}
-							<option value="{{ bebida.id }}">{{ bebida.ingrediente.nombre }}</option>
+							<option value="{{ bebida.id }}">{{ bebida.nombre }}</option>
 						{% endfor %}
 					</select>
 				</div>

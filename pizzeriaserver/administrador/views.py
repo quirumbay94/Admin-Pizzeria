@@ -409,9 +409,157 @@ def nuevo_combo_promocional(request):
         paquete = diccionarios.diccionarioBarraNav(request,{})
         paquete = diccionarios.diccionarioOpcionesParaComboPromocional(paquete)
 
+        if request.method == "POST":
+            try:
+                usuario = getUserBySesion(request)
+                if not usuario:
+                    paquete = diccionarios.diccionarioMensaje(paquete, "Error obteniendo credenciales de usuario, inicie sesion nuevamente.")
+                    return render(request, "CombosPromocionales/nuevo_combo_promocional.html",paquete)
+
+                ##DATOS PARA COMBO PROMOCIONAL
+                nombre = request.POST.get("NOMBRE",None)
+                descripcion = request.POST.get("DESCRIPCION",None)
+                costo = request.POST.get("COSTO",None)
+                img_url = request.FILES.get("IMAGEN",None)
+                ##DATOS PARA COMBINACIONES
+                pizzas = request.POST.getlist("PIZZAS[]", None)
+                adicionales = request.POST.getlist("ADICIONALES[]", None)
+                bebidas = request.POST.getlist("BEBIDAS[]", None)
+
+                ##CREANDO COMBINACION
+                combinacion = Combinacion().crear(nombre, usuario)
+                if not combinacion:
+                    paquete = diccionarios.diccionarioMensaje(paquete, "Error creando combinacion.")
+                    return render(request, "CombosPromocionales/nuevo_combo_promocional.html",paquete)
+
+                ##CREANDO COMBINACION DE PIZZAS
+                for pizza_id in pizzas:
+                    pizza_obj = Pizza.objects.get(pk=pizza_id)
+                    c_p = Combinacion_Pizza().crear(combinacion, pizza_obj, 1)
+                    if not c_p:
+                        paquete = diccionarios.diccionarioMensaje(paquete, "Error creando combinacion de pizza.")
+                        return render(request, "CombosPromocionales/nuevo_combo_promocional.html",paquete)
+                ##CREANDO COMBINACION DE ADICIONALES
+                for adicional_id in adicionales:
+                    adicional = Componente.objects.get(pk=adicional_id)
+                    c_a = Combinacion_Adicional().crear(combinacion, adicional, 1)
+                    if not c_a:
+                        paquete = diccionarios.diccionarioMensaje(paquete, "Error creando combinacion de adicional.")
+                        return render(request, "CombosPromocionales/nuevo_combo_promocional.html",paquete)
+
+                ##CREANDO COMBINACION DE BEBIDAS
+                for bebida_id in bebidas:
+                    bebida = Componente.objects.get(pk=bebida_id)
+                    c_a = Combinacion_Adicional().crear(combinacion, bebida, 1)
+                    if not c_a:
+                        paquete = diccionarios.diccionarioMensaje(paquete, "Error creando combinacion de adicional.")
+                        return render(request, "CombosPromocionales/nuevo_combo_promocional.html",paquete)
+
+                ##CREANDO COMBO PROMOCIONAL
+                combo = Combos_Promocionales().crear(combinacion, nombre, costo, img_url, descripcion)
+                if not combo:
+                    paquete = diccionarios.diccionarioMensaje(paquete, "Error creando combo promocional.")
+                    return render(request, "CombosPromocionales/nuevo_combo_promocional.html",paquete)
+
+                paquete = diccionarios.diccionarioMensaje(paquete, "Combo promocional creado con éxito.")
+                return render(request, "CombosPromocionales/nuevo_combo_promocional.html",paquete)
+
+            except:
+                paquete = diccionarios.diccionarioMensaje(paquete, "Error de solicitud.")
+                return render(request, "CombosPromocionales/nuevo_combo_promocional.html",paquete)
+
         return render(request, "CombosPromocionales/nuevo_combo_promocional.html",paquete)
     return redirect("login")
 
+def ver_combo_promocional(request, combo_id):
+    if verificarSesion(request):
+        ##DETALLES PARA LA SUBBARRA DE NAVEGACION
+        paquete = diccionarios.diccionarioBarraNav(request,{})
+        paquete = diccionarios.diccionarioDatosSubBarraCombosPromocionales(paquete)
+
+        ##INFORMACION DE PIZZA TRADICIONAL SELECCIONADA
+        paquete = diccionarios.diccionarioComboPromocional(paquete, combo_id)
+
+        return render(request, "CombosPromocionales/ver_combo_promocional.html",paquete)
+    return redirect("login")
+
+def editar_combo_promocional(request, combo_id):
+    if verificarSesion(request):
+        ##DETALLES PARA LA SUBBARRA DE NAVEGACION
+        paquete = diccionarios.diccionarioBarraNav(request,{})
+        paquete = diccionarios.diccionarioDatosSubBarraCombosPromocionales(paquete)
+        paquete = diccionarios.diccionarioOpcionesParaComboPromocional(paquete)
+
+        if request.method == "POST":
+            try:
+                usuario = getUserBySesion(request)
+                if not usuario:
+                    paquete = diccionarios.diccionarioMensaje(paquete, "Error obteniendo credenciales de usuario, inicie sesion nuevamente.")
+                    return render(request, "CombosPromocionales/editar_combo_promocional.html",paquete)
+
+                ##DATOS PARA COMBO PROMOCIONAL
+                nombre = request.POST.get("NOMBRE",None)
+                descripcion = request.POST.get("DESCRIPCION",None)
+                costo = request.POST.get("COSTO",None)
+                img_url = request.FILES.get("IMAGEN",None)
+                ##DATOS PARA COMBINACIONES
+                pizzas = request.POST.getlist("PIZZAS[]", None)
+                adicionales = request.POST.getlist("ADICIONALES[]", None)
+                bebidas = request.POST.getlist("BEBIDAS[]", None)
+
+                ##ELIMINANDO COMBINACION
+                combo = Combos_Promocionales.objects.get(pk=combo_id)
+                if not img_url:
+                    img_url = combo.img_url
+                combo.combinacion.delete()
+
+                ##CREANDO COMBINACION
+                combinacion = Combinacion().crear(nombre, usuario)
+                if not combinacion:
+                    paquete = diccionarios.diccionarioMensaje(paquete, "Error creando combinacion.")
+                    return render(request, "CombosPromocionales/editar_combo_promocional.html",paquete)
+
+                ##CREANDO COMBINACION DE PIZZAS
+                for pizza_id in pizzas:
+                    pizza_obj = Pizza.objects.get(pk=pizza_id)
+                    c_p = Combinacion_Pizza().crear(combinacion, pizza_obj, 1)
+                    if not c_p:
+                        paquete = diccionarios.diccionarioMensaje(paquete, "Error creando combinacion de pizza.")
+                        return render(request, "CombosPromocionales/editar_combo_promocional.html",paquete)
+                ##CREANDO COMBINACION DE ADICIONALES
+                for adicional_id in adicionales:
+                    adicional = Componente.objects.get(pk=adicional_id)
+                    c_a = Combinacion_Adicional().crear(combinacion, adicional, 1)
+                    if not c_a:
+                        paquete = diccionarios.diccionarioMensaje(paquete, "Error creando combinacion de adicional.")
+                        return render(request, "CombosPromocionales/editar_combo_promocional.html",paquete)
+
+                ##CREANDO COMBINACION DE BEBIDAS
+                for bebida_id in bebidas:
+                    bebida = Componente.objects.get(pk=bebida_id)
+                    c_a = Combinacion_Adicional().crear(combinacion, bebida, 1)
+                    if not c_a:
+                        paquete = diccionarios.diccionarioMensaje(paquete, "Error creando combinacion de adicional.")
+                        return render(request, "CombosPromocionales/editar_combo_promocional.html",paquete)
+
+                ##CREANDO COMBO PROMOCIONAL
+                combo = Combos_Promocionales().crear(combinacion, nombre, costo, img_url, descripcion)
+                if not combo:
+                    paquete = diccionarios.diccionarioMensaje(paquete, "Error creando combo promocional.")
+                    return render(request, "CombosPromocionales/editar_combo_promocional.html",paquete)
+
+                paquete = diccionarios.diccionarioMensaje(paquete, "Combo promocional editado con éxito.")
+                paquete = diccionarios.diccionarioDatosComboPromocional(paquete, combo.id)
+                return render(request, "CombosPromocionales/editar_combo_promocional.html",paquete)
+
+            except Exception as e:
+                print(e)
+                paquete = diccionarios.diccionarioMensaje(paquete, "Error de solicitud.")
+                return render(request, "CombosPromocionales/editar_combo_promocional.html",paquete)
+
+        paquete = diccionarios.diccionarioDatosComboPromocional(paquete, combo_id)
+        return render(request, "CombosPromocionales/editar_combo_promocional.html",paquete)
+    return redirect("login")    
 
 
 
