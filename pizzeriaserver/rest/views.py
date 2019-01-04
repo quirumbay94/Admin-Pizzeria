@@ -345,7 +345,7 @@ def crear_pizza_favorita(request):
     if request.method == "POST" and utils.verificarToken(token):
         usuario = utils.getUsuarioConToken(token)
         pizza_id = body.get('PIZZA_ID', None)
-
+        pizza_id_para_retornar = None
         try:
             if pizza_id:
                 ##RECUPERANDO ID DE PIZZA
@@ -388,7 +388,7 @@ def crear_pizza_favorita(request):
                 
                 ##CREANDO PIZZA FAVORITA
                 pizza_favorita = Pizza_Favorita().crear(pizza_obj, usuario)
-                
+                pizza_id_para_retornar = pizza_favorita.pizza.id
                 if not pizza_favorita:
                     return JsonResponse({
                     'STATUS' : 'ERROR',
@@ -399,7 +399,8 @@ def crear_pizza_favorita(request):
             return JsonResponse({
                     'STATUS' : 'OK',
                     'CODIGO' : 19,
-                    'DETALLE' : 'Solicitud correcta'
+                    'DETALLE' : 'Solicitud correcta',
+                    'ID' : pizza_id_para_retornar
                     }) 
         except Exception as e:
             return JsonResponse({
