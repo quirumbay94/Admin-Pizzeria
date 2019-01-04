@@ -29,6 +29,7 @@ urlpatterns = [
     url(r'^combos_promocionales/$', views.combos_promocionales, name='combos_promocionales'),
     url(r'^carrito/$', views.getCarrito, name='getCarrito'),
     url(r'^carrito/borrar_elemento/$', views.borrarDetalleCarrito, name='borrarDetalleCarrito'),
+    url(r'^carrito/editar_cantidad/$', views.editarCantidadCarrito, name='editarCantidadCarrito'),
     
 
     ##PROMOCION

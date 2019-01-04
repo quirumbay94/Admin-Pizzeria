@@ -818,6 +818,40 @@ def borrarDetalleCarrito(request):
     })
         ##BUSCANDO PERTENENCIA
 
+@csrf_exempt
+def editarCantidadCarrito(request):
+    body = utils.request_todict(request)
+    token = body.get('TOKEN', None)
+    cantidad = body.get('CANTIDAD', None)
+    tipo = body.get('TIPO', None)
+    elemento_id = body.get('ID', None)
+    if request.method == "POST" and utils.verificarToken(token) and cantidad and elemento_id and tipo:
+        try:
+            if tipo == "PIZZAS":
+                pizza_combinacion = Combinacion_Pizza.objects.get(pk=elemento_id)
+                pizza_combinacion.cantidad = cantidad
+                pizza_combinacion.save()
+            elif (tipo == "BEBIDAS") or (tipo == "ADICIONALES"):
+                adicional_combinacion = Combinacion_Adicional.objects.get(pk=elemento_id)
+                adicional_combinacion.cantidad = cantidad
+                adicional_combinacion.save()
+            return JsonResponse({
+                    'STATUS' : 'OK',
+                    'CODIGO' : 19,
+                    'DETALLE' : 'Solicitud correcta'
+                })
+        except Exception as e:
+            print(e)
+            return JsonResponse({
+                'STATUS' : 'ERROR',
+                'CODIGO' : 26,
+                'DETALLE' : 'Error alterando cantidad de objeto en carrito'
+            })  
+    return JsonResponse({
+        'STATUS' : 'ERROR',
+        'CODIGO' : 15,
+        'DETALLE' : 'Error de solicitud'
+    })
 
 ##COMBOS PROMOCIONALES
 def combos_promocionales(request):

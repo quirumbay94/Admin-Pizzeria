@@ -552,8 +552,7 @@ def editar_combo_promocional(request, combo_id):
                 paquete = diccionarios.diccionarioDatosComboPromocional(paquete, combo.id)
                 return render(request, "CombosPromocionales/editar_combo_promocional.html",paquete)
 
-            except Exception as e:
-                print(e)
+            except:
                 paquete = diccionarios.diccionarioMensaje(paquete, "Error de solicitud.")
                 return render(request, "CombosPromocionales/editar_combo_promocional.html",paquete)
 
