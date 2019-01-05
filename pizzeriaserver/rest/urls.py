@@ -45,6 +45,4 @@ urlpatterns = [
     url(r'^direccion_cliente/ver$', views.direcciones_cliente, name='direcciones_cliente'),
     url(r'^direccion_cliente/crear$', views.crear_direccion_cliente, name='crear_direccion_cliente'),   
     url(r'^direccion_cliente/borrar$', views.borrar_direccion_cliente, name='borrar_direccion_cliente'), 
-
-
 ]

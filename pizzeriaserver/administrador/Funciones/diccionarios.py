@@ -141,8 +141,10 @@ def diccionarioDatosComboPromocional(paquete, combo_id):
 
 	print(paquete_)
 	return paquete_
-
-
+def diccionarioCoordenadas(paquete):
+	paquete_ = paquete
+	paquete_["COORDENADAS"] = Coordenada.objects.all()
+	return paquete_
 
 
 

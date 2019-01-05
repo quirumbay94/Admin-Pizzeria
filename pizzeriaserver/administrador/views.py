@@ -560,6 +560,21 @@ def editar_combo_promocional(request, combo_id):
         return render(request, "CombosPromocionales/editar_combo_promocional.html",paquete)
     return redirect("login")    
 
+def cobertura(request):
+    if verificarSesion(request):
+        paquete = diccionarios.diccionarioBarraNav(request,{})
+        if request.method == "POST":
+            posiciones = request.POST.getlist("POSICION[]",None)
+            if utils.crearPosiciones(posiciones):
+                paquete = diccionarios.diccionarioMensaje(paquete, "Coordenadas guardadas con éxito.")
+            else:
+                paquete = diccionarios.diccionarioMensaje(paquete, "Error guardando coordenadas.")
+        paquete = diccionarios.diccionarioCoordenadas(paquete)
+        return render(request, "Cobertura/cobertura.html",paquete) 
+    return redirect("login")   
+
+
+
 
 
 

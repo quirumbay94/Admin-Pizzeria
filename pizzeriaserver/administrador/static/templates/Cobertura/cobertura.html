@@ -1,0 +1,26 @@
+{% load static %}
+{% include 'General/header.html' %}
+{% include 'General/navbar.html' %}
+{% include 'General/subbarra.html' %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/Menu/menu.css' %}">
+<div class="title-container">
+	<h1 class="title-h1">Cobertura de Entrega</h1>
+	<small>{{ MENSAJE }}</small>
+</div>
+<div class="opcion-wrapper">
+	<div style="margin-bottom: 20px;">
+		<button type="button" class="btn btn-danger" onClick="undo();">Deshacer</button>
+		<input type="hidden" class="position_sample_obj" name="POSICION[]">
+		<form method="POST" id="guardarForm">
+			{% csrf_token %}
+			<button type="submit" class="btn btn-primary">Guardar</button>
+			{% for coordenada in COORDENADAS %}
+			<input type="hidden" class="position_sample_obj" name="POSICION[]" value="{{ coordenada.latitud }}|{{ coordenada.longitud }}">
+			{% endfor %}
+		</form>
+	</div>
+	<div id="map" style="height: 100%;">
+	</div>
+</div>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCbXSHu8u2uiu7O13orG95evbkL0PN_v1Q&callback=initMap"></script>
+<script type="text/javascript" src="{% static 'js/Cobertura/cobertura.js' %}"></script>

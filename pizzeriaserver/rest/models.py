@@ -570,6 +570,19 @@ class DetalleCarrito(models.Model):
         except:
             return None
 
+class Coordenada(models.Model):
+    latitud = models.FloatField()
+    longitud = models.FloatField()
+
+    def crear(self, latitud, longitud):
+        try:
+            c = Coordenada()
+            c.latitud = latitud
+            c.longitud = longitud
+            c.save()
+            return c
+        except:
+            return None
 
 
 
