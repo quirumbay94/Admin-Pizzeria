@@ -175,15 +175,15 @@ def ver_usuario(request):
             } 
 
             if usuario.imagen:
-                paquete['IMAGEN'] = IP + imagen.url
+                paquete['IMAGEN'] = IP + usuario.imagen.url
 
             return JsonResponse(paquete)
 
-        except Exception as e:
+        except:
             return JsonResponse({
                 'STATUS' : 'ERROR',
                 'CODIGO' : 8,
-                'DETALLE' : 'El usuario no existe' + str(e)
+                'DETALLE' : 'El usuario no existe'
             })
     return JsonResponse({
             'STATUS' : 'ERROR',
