@@ -179,11 +179,11 @@ def ver_usuario(request):
 
             return JsonResponse(paquete)
 
-        except:
+        except Exception as e:
             return JsonResponse({
                 'STATUS' : 'ERROR',
                 'CODIGO' : 8,
-                'DETALLE' : 'El usuario no existe'
+                'DETALLE' : 'El usuario no existe' + str(e)
             })
     return JsonResponse({
             'STATUS' : 'ERROR',
