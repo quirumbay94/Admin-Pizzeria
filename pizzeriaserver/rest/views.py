@@ -162,10 +162,8 @@ def ver_usuario(request):
         try:
             usuario = Usuario.objects.get(pk=usuario_id)
             usuario = Detalles_Personales.objects.get(usuario=usuario)
-            imagen = None
-            if usuario.imagen:
-                imagen = usuario.imagen
-            return JsonResponse({
+            
+            paquete = {
                 'STATUS' : 'OK',
                 'CODIGO' : 7,
                 'NOMBRES' : usuario.nombres,
@@ -173,9 +171,15 @@ def ver_usuario(request):
                 'CORREO' : usuario.correo,
                 'TELEFONO' : usuario.telefono,
                 'CEDULA' : usuario.cedula,
-                'IMAGEN' : IP + imagen.url,
                 'DETALLE' : 'Usuario valido'
-            })
+            } 
+
+            if usuario.imagen:
+                paquete['IMAGEN'] = IP + imagen.url
+            else:
+                paquete['IMAGEN'] = None
+
+            return JsonResponse(paquete)
 
         except:
             return JsonResponse({
