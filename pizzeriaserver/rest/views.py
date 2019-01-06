@@ -107,18 +107,20 @@ def logout(request):
 @csrf_exempt
 def registrar(request):
     if request.method == "POST":
-        body = utils.request_todict(request)
-        correo = body.get('CORREO', None)
-        contrasena = body.get('CONTRASENA', None)
-        nombres = body.get('NOMBRES', None)
-        apellidos = body.get('APELLIDOS', None)
-        cedula = body.get('CEDULA', None)
-        telefono = body.get('TELEFONO', None)
+        correo = request.POST.get('CORREO', None)
+        contrasena = request.POST.get('CONTRASENA', None)
+        nombres = request.POST.get('NOMBRES', None)
+        apellidos = request.POST.get('APELLIDOS', None)
+        cedula = request.POST.get('CEDULA', None)
+        telefono = request.POST.get('TELEFONO', None)
+        imagen = request.FILES.get('IMAGEN', None)
 
         try:
             if correo and contrasena and nombres and apellidos and cedula and telefono:  # EXITO
                 usuario = Usuario.objects.create_user(correo, correo, contrasena)
                 detalles_personales = Detalles_Personales().crear(usuario, nombres, apellidos, correo, cedula, telefono)
+                detalles_personales.imagen = imagen
+                detalles_personales.save()
                 if detalles_personales:
                     sesion = Sesion().crear(usuario)
                     return JsonResponse({
