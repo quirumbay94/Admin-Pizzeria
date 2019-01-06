@@ -173,7 +173,7 @@ def ver_usuario(request):
                 'CORREO' : usuario.correo,
                 'TELEFONO' : usuario.telefono,
                 'CEDULA' : usuario.cedula,
-                'IMAGEN' : imagen,
+                'IMAGEN' : IP + imagen.url,
                 'DETALLE' : 'Usuario valido'
             })
 
