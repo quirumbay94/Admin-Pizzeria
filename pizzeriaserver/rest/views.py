@@ -176,8 +176,6 @@ def ver_usuario(request):
 
             if usuario.imagen:
                 paquete['IMAGEN'] = IP + imagen.url
-            else:
-                paquete['IMAGEN'] = None
 
             return JsonResponse(paquete)
 
