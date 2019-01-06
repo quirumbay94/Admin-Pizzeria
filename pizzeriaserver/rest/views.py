@@ -162,6 +162,9 @@ def ver_usuario(request):
         try:
             usuario = Usuario.objects.get(pk=usuario_id)
             usuario = Detalles_Personales.objects.get(usuario=usuario)
+            imagen = None
+            if usuario.imagen:
+                imagen = usuario.imagen
             return JsonResponse({
                 'STATUS' : 'OK',
                 'CODIGO' : 7,
@@ -170,7 +173,7 @@ def ver_usuario(request):
                 'CORREO' : usuario.correo,
                 'TELEFONO' : usuario.telefono,
                 'CEDULA' : usuario.cedula,
-                'IMAGEN' : usuario.imagen,
+                'IMAGEN' : imagen,
                 'DETALLE' : 'Usuario valido'
             })
 
