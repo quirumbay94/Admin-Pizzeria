@@ -236,7 +236,8 @@ def editar_usuario(request):
             detalles.correo = correo
             detalles.telefono = telefono
             detalles.cedula = cedula
-            detalles.imagen = imagen
+            if imagen:
+                detalles.imagen = imagen
             detalles.save()
             
             return JsonResponse({
