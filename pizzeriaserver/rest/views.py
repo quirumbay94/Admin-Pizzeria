@@ -187,13 +187,13 @@ def ver_usuario(request):
 
 @csrf_exempt
 def editar_usuario(request):
-    body = utils.request_todict(request)
-    token = body.get('TOKEN', None)
-    nombres = body.get("NOMBRES",None)
-    apellidos = body.get("APELLIDOS",None)
-    correo = body.get("CORREO",None)
-    telefono = body.get("TELEFONO",None)
-    cedula = body.get("CEDULA",None)
+    token = request.POST.get('TOKEN', None)
+    nombres = request.POST.get("NOMBRES",None)
+    apellidos = request.POST.get("APELLIDOS",None)
+    correo = request.POST.get("CORREO",None)
+    telefono = request.POST.get("TELEFONO",None)
+    cedula = request.POST.get("CEDULA",None)
+    imagen = request.FILES.get('IMAGEN', None)
 
     usuario_id = utils.getUsuarioIdConToken(token)
 
@@ -228,6 +228,7 @@ def editar_usuario(request):
             detalles.correo = correo
             detalles.telefono = telefono
             detalles.cedula = cedula
+            detalles.imagen = imagen
             detalles.save()
             
             return JsonResponse({
