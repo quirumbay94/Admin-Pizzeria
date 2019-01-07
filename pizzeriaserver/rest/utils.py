@@ -1,5 +1,5 @@
 import json
-from rest.models import Sesion, Carrito
+from rest.models import Sesion, Carrito, Detalles_Personales
 
 ## TRANSFORMANDO REQUEST EN DICCIONARIO
 def request_todict(request):
@@ -52,6 +52,11 @@ def tamanoToFemeninoCapitalize(tamano):
         return "Mediana"
     return tamano.capitalize()
 
+def cedulaRepetida(cedula):
+    cedulas = Detalles_Personales.objects.filter(cedula=cedula)
+    if len(cedulas) > 0:
+        return True
+    return False
 
 
 

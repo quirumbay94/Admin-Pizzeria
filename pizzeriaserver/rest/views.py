@@ -210,19 +210,18 @@ def editar_usuario(request):
             detalles = Detalles_Personales.objects.get(usuario=usuario)
 
             ##VERIFICANDO SI EL USUARIO QUIERE CAMBIAR DE CORREO Y EL CORREO ESTA DISPONIBLE
-            if usuario.username != correo:
+            if correo and (usuario.username != correo):
                 if Usuario.objects.filter(username=correo).count() >= 1:
                     return JsonResponse({
                         'STATUS' : 'ERROR',
                         'CODIGO' : 5,
                         'DETALLE' : 'El correo ya se encuentra en uso'
                     })
-             
-            ##TODO ESTA BIEN PARA ALTERAR EL CORREO DEL USUARIO
-            if correo:
-                usuario.username = correo
-                usuario.email = correo
-                usuario.save()
+                else: ##TODO ESTA BIEN PARA ALTERAR EL CORREO DEL USUARIO
+                    usuario.username = correo
+                    usuario.email = correo
+                    usuario.save()
+            
                 
             ##EDITANDO DATOS DEL USUARIO
             if nombres:
@@ -256,7 +255,7 @@ def editar_usuario(request):
             return JsonResponse({
                 'STATUS' : 'ERROR',
                 'CODIGO' : 8,
-                'DETALLE' : 'El usuario no existe'
+                'DETALLE' : 'El usuario no existe' + str(e)
             })
     return JsonResponse({
             'STATUS' : 'ERROR',
