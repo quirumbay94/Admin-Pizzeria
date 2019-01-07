@@ -119,7 +119,8 @@ def registrar(request):
             if correo and contrasena and nombres and apellidos and cedula and telefono:  # EXITO
                 usuario = Usuario.objects.create_user(correo, correo, contrasena)
                 detalles_personales = Detalles_Personales().crear(usuario, nombres, apellidos, correo, cedula, telefono)
-                detalles_personales.imagen = imagen
+                if imagen:
+                    detalles_personales.imagen = imagen
                 detalles_personales.save()
                 if detalles_personales:
                     sesion = Sesion().crear(usuario)
@@ -203,13 +204,7 @@ def editar_usuario(request):
 
     usuario_id = utils.getUsuarioIdConToken(token)
 
-    if not token or not nombres or not apellidos or not correo or not telefono or not cedula:
-        return JsonResponse({
-            'STATUS' : 'ERROR',
-            'CODIGO' : 4,
-            'DETALLE' : 'El json no cumple la estructura'
-        })
-    elif request.method == "POST" and usuario_id:
+    if request.method == "POST" and usuario_id:
         try:
             usuario = Usuario.objects.get(pk=usuario_id)
             detalles = Detalles_Personales.objects.get(usuario=usuario)
@@ -224,16 +219,30 @@ def editar_usuario(request):
                     })
              
             ##TODO ESTA BIEN PARA ALTERAR EL CORREO DEL USUARIO
-            usuario.username = correo
-            usuario.email = correo
-            usuario.save()
+            if correo:
+                usuario.username = correo
+                usuario.email = correo
+                usuario.save()
                 
             ##EDITANDO DATOS DEL USUARIO
-            detalles.nombres = nombres
-            detalles.apellidos = apellidos
-            detalles.correo = correo
-            detalles.telefono = telefono
-            detalles.cedula = cedula
+            if nombres:
+                detalles.nombres = nombres
+            if apellidos:
+                detalles.apellidos = apellidos
+            if correo:
+                detalles.correo = correo
+            if telefono:
+                detalles.telefono = telefono
+            if cedula:
+                if utils.cedulaRepetida(cedula):
+                    return JsonResponse({
+                        'STATUS' : 'ERROR',
+                        'CODIGO' : 6,
+                        'DETALLE' : 'La cédula ya se encuentra registrada'
+                    })
+                else: 
+                    detalles.cedula = cedula
+
             if imagen:
                 detalles.imagen = imagen
             detalles.save()

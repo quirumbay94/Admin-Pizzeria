@@ -25,3 +25,9 @@ def crearPosiciones(posiciones):
 			exito = False
 			break
 	return exito
+
+def cedulaRepetida(cedula):
+	cedulas = Detalles_Personales.objects.filter(cedula=cedula)
+	if len(cedulas) > 1:
+		return True
+	return False
