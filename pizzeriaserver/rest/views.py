@@ -233,7 +233,7 @@ def editar_usuario(request):
             if telefono:
                 detalles.telefono = telefono
             if cedula:
-                if utils.cedulaRepetida(cedula):
+                if utils.cedulaRepetida(cedula, usuario):
                     return JsonResponse({
                         'STATUS' : 'ERROR',
                         'CODIGO' : 6,

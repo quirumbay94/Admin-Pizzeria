@@ -52,11 +52,17 @@ def tamanoToFemeninoCapitalize(tamano):
         return "Mediana"
     return tamano.capitalize()
 
-def cedulaRepetida(cedula):
+def cedulaRepetida(cedula, usuario):
     cedulas = Detalles_Personales.objects.filter(cedula=cedula)
-    if len(cedulas) > 0:
+    if len(cedulas) == 0:
+        return False
+    elif len(cedulas) == 1:
+        if usuario == cedulas[0].usuario:
+            return False
+        else:
+            return True
+    else:
         return True
-    return False
 
 
 
