@@ -122,6 +122,7 @@ def registrar(request):
 
                 if detalles_personales:
                     sesion = Sesion().crear(usuario)
+                    Carrito().crear(usuario.id)
                     return JsonResponse({
                         'STATUS' : 'OK',
                         'CODIGO' : 10,

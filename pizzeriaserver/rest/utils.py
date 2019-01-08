@@ -57,6 +57,8 @@ def cedulaRepetida(cedula, usuario):
     if len(cedulas) == 0:
         return False
     elif len(cedulas) == 1:
+        print(usuario)
+        print(cedulas[0].usuario)
         if usuario == cedulas[0].usuario:
             return False
         else:
