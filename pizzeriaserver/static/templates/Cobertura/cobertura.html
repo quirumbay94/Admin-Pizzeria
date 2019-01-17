@@ -19,8 +19,16 @@
 			{% endfor %}
 		</form>
 	</div>
-	<div id="map" style="height: 100%;">
+	<div style="display: flex;">
+		<div>
+			{% for local in LOCALES %}
+				<h4 style="color: {{ local.COLOR }}">{{ local.SECTOR }} - {{ local.CIUDAD }}</h4>
+			{% endfor %}
+		</div>
+		<div id="map" style="height: 100%; width: 100%;">
+		</div>
 	</div>
+		
 </div>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCbXSHu8u2uiu7O13orG95evbkL0PN_v1Q&callback=initMap"></script>
 <script type="text/javascript" src="{% static 'js/Cobertura/cobertura.js' %}"></script>

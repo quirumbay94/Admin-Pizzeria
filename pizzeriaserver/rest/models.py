@@ -1,5 +1,5 @@
 import secrets
-
+import random
 from django.db import models
 from rest import user_model
 from rest.user_model import AbstractBaseUser, PermissionsMixin, UsuarioManager
@@ -569,6 +569,78 @@ class DetalleCarrito(models.Model):
             detalle.save()
             return detalle
         except:
+            return None
+
+class Poligono(models.Model):
+    local = models.OneToOneField("Local", on_delete=models.CASCADE, unique=True, default=None)
+    color = models.CharField(max_length=10, default='#4286f4')
+
+    ##CASO ESPECIFICO DONDE SE CREA O SE ACTUALIZA EN EL MISMO METODO
+    def crear(self, local, coordenadas):
+        poligono = Poligono.objects.filter(local=local)
+        ##CREAR POLIGONO
+        if len(poligono) == 0:
+            try:
+                p = Poligono()
+                p.local = local
+
+                ##CREANDO COLOR ALEATORIO 
+                r = lambda: random.randint(0,255)
+                p.color = '#%02X%02X%02X' % (r(),r(),r())
+
+                p.save()
+                ##CREANDO COORDENADAS
+                for coordenada in coordenadas:
+                    c = Coordenada().crear(coordenada.split("|")[0], coordenada.split("|")[1])
+                    Coordenada_Poligono().crear(p, c)
+                return p
+            except:
+                return None
+        ##ACTUALIZAR POLIGONO
+        else:
+            try: 
+                poligono = poligono[0]
+                coordenadas_poligono = Coordenada_Poligono.objects.filter(poligono=poligono)
+                ##BORRANDO PREVIAS INSTANCIAS
+                for c in coordenadas_poligono:
+                    c.coordenada.delete()
+                 ##CREANDO COORDENADAS
+                for coordenada in coordenadas:
+                    c = Coordenada().crear(coordenada.split("|")[0], coordenada.split("|")[1])
+                    Coordenada_Poligono().crear(poligono, c)
+                return poligono
+            except:
+                return None
+
+
+    def getCoordenadas(self, local_id):
+        try:
+            local = Local.objects.get(pk=local_id)
+            poligono = Poligono.objects.get(local=local)
+            coordenadas_poligono = Coordenada_Poligono.objects.filter(poligono=poligono)
+            paquete = []
+            for c in coordenadas_poligono:
+                paquete.append(c.coordenada)
+            return paquete
+        except: 
+            return []
+
+    def __str__(self):
+        return self.local.sector + " | " + self.local.ciudad.upper()
+
+
+class Coordenada_Poligono(models.Model):
+    poligono = models.ForeignKey("Poligono", on_delete=models.CASCADE, default=None)
+    coordenada = models.ForeignKey("Coordenada", on_delete=models.CASCADE, default=None)
+
+    def crear(self, poligono, coordenada):
+        try:
+            c = Coordenada_Poligono()
+            c.poligono = poligono
+            c.coordenada = coordenada
+            c.save()
+            return c
+        except: 
             return None
 
 class Coordenada(models.Model):

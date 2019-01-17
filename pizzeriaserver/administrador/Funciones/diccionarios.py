@@ -146,6 +146,37 @@ def diccionarioCoordenadas(paquete, local_id):
 	paquete_["COORDENADAS"] = Poligono().getCoordenadas(local_id)
 	return paquete_
 
+def diccionarioTodosLocales(paquete):
+	paquete_ = paquete
+	locales = Local.objects.all()
+	poligonos = []
+	for local in locales:
+		if (len(Poligono.objects.filter(local=local)) > 0):
+			poligono_obj = Poligono.objects.get(local=local)
+			poligonos.append({
+				"COLOR" : poligono_obj.color,
+				"SECTOR" : local.sector,
+				"CIUDAD" : local.ciudad
+			})
+	paquete_["LOCALES"] = poligonos
+	return paquete_
+
+def diccionarioCoordenadasTodosLocales():
+	locales = Local.objects.all()
+	poligonos = []
+	for local in locales:
+		if (len(Poligono.objects.filter(local=local)) > 0):
+			poligono_obj = Poligono.objects.get(local=local)
+			coordenadas = Poligono().getCoordenadas(local.id)
+			coordenadas_list = []
+			for c in coordenadas:
+				coordenadas_list.append([c.latitud, c.longitud])
+			poligonos.append({
+				"COLOR" : poligono_obj.color,
+				"COORDENADAS" : coordenadas_list
+			})
+	return poligonos
+
 
 ##DICCIONARIO CON TODOS LOS LOCALES
 def diccionarioLocales(paquete):

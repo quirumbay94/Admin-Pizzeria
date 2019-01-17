@@ -1,18 +1,16 @@
 var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 var labelIndex = 0;
-var coordenadas_poligono = [];
-var poligono;
+var poligonos = [];
+var poligonos_objs = [];
 var map;
 var markers = [];
 
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 13,
+        zoom: 12,
         center: {lat: -2.169366, lng: -79.919217},
         mapTypeId: 'terrain'
     }); 
-
-    crearPoligonoInicial();
 
     google.maps.event.addListener(map, 'click', function(event) {
         //AGREGANDO COORDENADA A LISTA
@@ -21,35 +19,53 @@ function initMap() {
         anadirPosicionEnHtml(event.latLng.lat(), event.latLng.lng());
         addMarker(event.latLng, map);
     });
+
+    makeRequest("http://127.0.0.1:8000/menu/cobertura/get_poligonos");
 }
 
-function crearPoligonoInicial() {
-    var posiciones = document.getElementsByClassName("position_sample_obj");
-    for (var i = 1; i < posiciones.length; i++) {
-        var coordenada = posiciones[i].value.split("|");
-        var location = {lat: parseFloat(coordenada[0]), lng: parseFloat(coordenada[1])}
-        coordenadas_poligono.push(location); 
-        addMarker(location, map);   
-    }
+function crearPoligonoInicial(posiciones) {
+    posiciones.forEach(function(element) {
+        var color = element["COLOR"]
+        var coordenadas = element["COORDENADAS"]
+        var coordenadas_poligono = [];
+        coordenadas.forEach(function(coordenada) {
+            var location = {lat: parseFloat(coordenada[0]), lng: parseFloat(coordenada[1])}
+            coordenadas_poligono.push(location);
+        });
+        poligonos.push({
+            "COLOR" : color,
+            "COORDENADAS" : coordenadas_poligono
+        })
+
+    });
     crearPoligono();
 }
 
 function crearPoligono() {
     //BORRANDO PREVIO POLIGONO
-    if (poligono) {
-        poligono.setMap(null);
+    if (poligonos_objs.length > 0) {
+        poligonos_objs.forEach(function(element) {
+            element.setMap(null);
+        });
     }
 
-    //COSTRUYENDO POLIGONO
-    poligono = new google.maps.Polygon({
-        paths: coordenadas_poligono,
-        strokeColor: '#FF0000',
-        strokeOpacity: 0.8,
-        strokeWeight: 2,
-        fillColor: '#FF0000',
-        fillOpacity: 0.35
+    console.log(poligonos_objs.length);
+
+    //COSTRUYENDO POLIGONOS
+    poligonos.forEach(function(element) {
+        poligono = new google.maps.Polygon({
+            paths: element["COORDENADAS"],
+            strokeColor: element["COLOR"],
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: element["COLOR"],
+            fillOpacity: 0.35
+        });
+        poligono.setMap(map);
+        poligonos_objs.push(poligono);
     });
-    poligono.setMap(map);
+
+    console.log(poligonos_objs);
 }
 
 // Adds a marker to the map.
@@ -96,5 +112,47 @@ function anadirPosicionEnHtml(lat, lng){
     document.getElementById("guardarForm").appendChild(nuevo_input);
 }
 
+function makeRequest(url) {
 
+        http_request = false;
+
+        if (window.XMLHttpRequest) { // Mozilla, Safari,...
+            http_request = new XMLHttpRequest();
+            if (http_request.overrideMimeType) {
+                http_request.overrideMimeType('text/xml');
+                // Ver nota sobre esta linea al final
+            }
+        } else if (window.ActiveXObject) { // IE
+            try {
+                http_request = new ActiveXObject("Msxml2.XMLHTTP");
+            } catch (e) {
+                try {
+                    http_request = new ActiveXObject("Microsoft.XMLHTTP");
+                } catch (e) {}
+            }
+        }
+
+        if (!http_request) {
+            alert('Falla :( No es posible crear una instancia XMLHTTP');
+            return false;
+        }
+        http_request.onreadystatechange = alertContents;
+        http_request.open('GET', url, true);
+        http_request.send();
+
+    }
+
+    function alertContents() {
+
+        if (http_request.readyState == 4) {
+            if (http_request.status == 200) {
+                var obj = JSON.parse(http_request.responseText);
+                crearPoligonoInicial(obj["RESPONSE"]);
+
+            } else {
+                alert('Hubo problemas con la petición.');
+            }
+        }
+
+    }
 

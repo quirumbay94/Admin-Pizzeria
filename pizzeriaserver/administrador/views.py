@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, logout
+from django.http import JsonResponse
 from django.contrib.auth.models import User
 from rest.models import *
 from administrador.Funciones import diccionarios, utils
@@ -621,7 +622,7 @@ def ver_local(request, local_id):
 
 def cobertura(request):
     if verificarSesion(request):
-        local = Local.objects.all()[0]
+        local = Local.objects.all()[1]
         paquete = diccionarios.diccionarioBarraNav(request,{})
         if request.method == "POST":
             posiciones = request.POST.getlist("POSICION[]",None)
@@ -631,12 +632,14 @@ def cobertura(request):
             else:
                 paquete = diccionarios.diccionarioMensaje(paquete, "Error creando cobertura.")
 
-        paquete = diccionarios.diccionarioCoordenadas(paquete, local.id)
+        paquete = diccionarios.diccionarioTodosLocales(paquete)
         return render(request, "Cobertura/cobertura.html",paquete) 
     return redirect("login")   
 
-
-
+def get_poligonos(request):   
+    return JsonResponse({
+        'RESPONSE' : diccionarios.diccionarioCoordenadasTodosLocales()
+    })
 
 
 
