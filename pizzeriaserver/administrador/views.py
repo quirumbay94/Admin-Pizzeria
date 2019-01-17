@@ -621,14 +621,17 @@ def ver_local(request, local_id):
 
 def cobertura(request):
     if verificarSesion(request):
+        local = Local.objects.all()[0]
         paquete = diccionarios.diccionarioBarraNav(request,{})
         if request.method == "POST":
             posiciones = request.POST.getlist("POSICION[]",None)
-            if utils.crearPosiciones(posiciones):
-                paquete = diccionarios.diccionarioMensaje(paquete, "Coordenadas guardadas con éxito.")
+            poligono = Poligono().crear(local, posiciones)
+            if poligono:
+                paquete = diccionarios.diccionarioMensaje(paquete, "Cobertura creada con éxito.")
             else:
-                paquete = diccionarios.diccionarioMensaje(paquete, "Error guardando coordenadas.")
-        paquete = diccionarios.diccionarioCoordenadas(paquete)
+                paquete = diccionarios.diccionarioMensaje(paquete, "Error creando cobertura.")
+
+        paquete = diccionarios.diccionarioCoordenadas(paquete, local.id)
         return render(request, "Cobertura/cobertura.html",paquete) 
     return redirect("login")   
 
