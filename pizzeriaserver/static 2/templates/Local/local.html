@@ -1,0 +1,23 @@
+{% load static %}
+{% include 'General/header.html' %}
+{% include 'General/navbar.html' %}
+{% include 'General/subbarra.html' %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/Menu/menu.css' %}">
+<div class="title-container">
+	<h1 class="title-h1">Locales</h1>
+</div>
+<div class="opcion-wrapper">
+	<form method="GET" action="/menu/local/crear">
+		<button class="opcion-container-button">
+			<h3 class="opcion-aumentar-h3">+</h3>
+			<h3> </h3>
+		</button>
+	</form>
+	{% for local in LOCALES %}
+		<a href="/menu/local/ver/{{ local.id }}">
+			<button class="opcion-container-button">
+				<h3 class="opcion-tittle-h3">{{ local.sector }}</h3>
+			</button>
+		</a>
+	{% endfor %}
+</div>

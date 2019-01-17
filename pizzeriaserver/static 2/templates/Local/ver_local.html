@@ -1,0 +1,51 @@
+{% load static %}
+{% include 'General/header.html' %}
+{% include 'General/navbar.html' %}
+{% include 'General/subbarra.html' %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/Menu/menu.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/General/ver_formulario.css' %}">
+<div class="title-container">
+	<h1 class="title-h1">{{ TIPO }}</h1>
+</div>
+<div class="main-container">
+	<div class="sub-container">
+		<div class="editar-container">
+			<a href="/menu/local/editar/{{ LOCAL.id }}">
+				<button class="btn btn-secondary">Editar</button>
+			</a>
+		</div>
+		<div class="sub2-container">
+			<h4>Sector</h4>
+			<h5>{{ LOCAL.sector }}</h5>
+		</div>
+		<div class="sub2-container">
+			<h4>Ciudad</h4>
+			<h5>{{ LOCAL.ciudad }}</h5>
+		</div>
+		<div class="sub2-container">
+			<h4>Hora de apertura</h4>
+			<h5>{{LOCAL.apertura|time:"g:iA"|lower}}</h5>
+		</div>
+		<div class="sub2-container">
+			<h4>Hora de cierre</h4>
+			<h5>{{LOCAL.cierre|time:"g:iA"|lower}}</h5>
+		</div>
+		<div class="input-container">
+				<h4>Ubicación</h4>
+				<input type="hidden" id="latitud" value="{{ LOCAL.coordenada.latitud }}">
+				<input type="hidden" id="longitud" value="{{ LOCAL.coordenada.longitud }}">
+				<div id="map" style="height: 70%;"></div>
+			</div>
+		<div class="sub2-container">
+			<h4>Imagen</h4>
+			<img src="{{ LOCAL.img_url.url }}">
+		</div>
+		<div class="sub2-container">
+			<h4>Estado</h4>
+			<h5>{% if LOCAL.estado %} Activo {% else %} Inactivo {% endif %}</h5>
+		</div>
+
+	</div>
+</div>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCbXSHu8u2uiu7O13orG95evbkL0PN_v1Q&callback=initMap"></script>
+<script type="text/javascript" src="{% static 'js/Local/marcador_inicial.js' %}"></script>

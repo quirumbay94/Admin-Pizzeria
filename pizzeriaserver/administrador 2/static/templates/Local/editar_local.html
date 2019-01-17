@@ -1,0 +1,51 @@
+{% load static %}
+{% include 'General/header.html' %}
+{% include 'General/navbar.html' %}
+{% include 'General/subbarra.html' %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/General/formulario.css' %}">
+<div class="title-container">
+	<h1 class="title-h1">Editar</h1>
+	<small>{{ MENSAJE }}</small>
+</div>
+<div class="wrapper">
+	<form action="" method="POST" id="form" enctype="multipart/form-data">
+		{% csrf_token %}
+		<div class="input-main-container">
+			<div class="input-container">
+				<h4>Sector</h4>
+				<input type="text" class="form-control input" name="SECTOR" value="{{ LOCAL.sector }}">
+			</div>
+			<div class="input-container">
+				<h4>Ciudad</h4>
+				<input type="text" class="form-control input" name="CIUDAD" value="{{ LOCAL.ciudad }}">
+			</div>
+			<div class="input-container">
+				<h4>Hora de apertura</h4>
+				<input type="time" class="form-control input" name="APERTURA" value="{{ LOCAL.apertura|time:'H:i'|lower }}">
+			</div>
+			<div class="input-container">
+				<h4>Hora de cierre</h4>
+				<input type="time" class="form-control input" name="CIERRE" value="{{ LOCAL.cierre|time:'H:i'|lower }}">
+			</div>
+			<div class="input-container">
+				<h4>Imagen</h4>
+				<img src="{{ LOCAL.img_url.url }}">
+				<input type="file" class="form-control" name="IMAGEN">
+			</div>		
+			<div class="input-container">
+				<h4>Ubicación</h4>
+				<input type="hidden" id="latitud" value="{{ LOCAL.coordenada.latitud }}">
+				<input type="hidden" id="longitud" value="{{ LOCAL.coordenada.longitud }}">
+				<input type="hidden" class="form-control" name="COORDENADAS" id="coordenada">
+				<div id="map" style="height: 100%;"></div>
+			</div>
+			<div class="btn-container">
+				<button type="button" class="btn btn-formulario" id="limpiarCampos-btn">Limpiar Campos</button>
+				<button type="button" class="btn btn-formulario btn-guardar" id="guardar-btn">Guardar</button>
+			</div>
+		</div>
+	</form>
+</div>
+<script type="text/javascript" src="{% static 'js/Formulario/formulario.js' %}"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCbXSHu8u2uiu7O13orG95evbkL0PN_v1Q&callback=initMap"></script>
+<script type="text/javascript" src="{% static 'js/Local/crear_local.js' %}"></script>
