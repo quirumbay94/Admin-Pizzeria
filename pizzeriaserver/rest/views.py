@@ -3,6 +3,8 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.db import IntegrityError
 from django.views.decorators.csrf import csrf_exempt
+import base64
+from django.core.files.base import ContentFile
 
 from .models import *
 from rest import utils
@@ -33,7 +35,7 @@ def login(request):
                     'CODIGO' : 2,
                     'DETALLE' : 'No existe ninguna cuenta asociada a este correo'
                     })
-            else: 
+            else:
                 return JsonResponse({
                     'STATUS' : 'ERROR',
                     'CODIGO' : 3,
@@ -58,7 +60,7 @@ def login_RS(request):
             detalles = Detalles_Personales().crear_simple(usuario, nombres, apellidos, correo)
 
         ##BUSCANDO EL USUARIO PARA CREARLE UNA SESION
-        try: 
+        try:
             usuario = Usuario.objects.get(email=correo)
             sesion = Sesion().crear(usuario)
 
@@ -116,7 +118,7 @@ def registrar(request):
         telefono = body.get('TELEFONO', None)
 
         try:
-            if correo and contrasena and nombres and apellidos and cedula and telefono:  # EXITO
+            if correo and contrasena and nombres and apellidos  and telefono:  # EXITO
                 usuario = Usuario.objects.create_user(correo, correo, contrasena)
                 detalles_personales = Detalles_Personales().crear(usuario, nombres, apellidos, correo, cedula, telefono)
 
@@ -129,7 +131,7 @@ def registrar(request):
                         'TOKEN' : sesion.token,
                         'DETALLE' : 'La cuenta ha sido creada con éxito '
                         })
-                else: 
+                else:
                     return JsonResponse({
                         'STATUS' : 'ERROR',
                         'CODIGO' : 16,
@@ -162,7 +164,7 @@ def ver_usuario(request):
         try:
             usuario = Usuario.objects.get(pk=usuario_id)
             usuario = Detalles_Personales.objects.get(usuario=usuario)
-            
+
             paquete = {
                 'STATUS' : 'OK',
                 'CODIGO' : 7,
@@ -172,7 +174,7 @@ def ver_usuario(request):
                 'TELEFONO' : usuario.telefono,
                 'CEDULA' : usuario.cedula,
                 'DETALLE' : 'Usuario valido'
-            } 
+            }
 
             if usuario.imagen:
                 paquete['IMAGEN'] = IP + usuario.imagen.url
@@ -199,7 +201,11 @@ def editar_usuario(request):
     correo = request.POST.get("CORREO",None)
     telefono = request.POST.get("TELEFONO",None)
     cedula = request.POST.get("CEDULA",None)
-    imagen = request.FILES.get('IMAGEN', None)
+    imagen64 = request.POST.get('IMAGEN', None)
+    format, imgstr = imagen64.split(';base64,')
+    ext = format.split('/')[-1]
+
+    imagen = ContentFile(base64.b64decode(imgstr), name=token+'.' + ext)
 
     usuario_id = utils.getUsuarioIdConToken(token)
 
@@ -220,8 +226,8 @@ def editar_usuario(request):
                     usuario.username = correo
                     usuario.email = correo
                     usuario.save()
-            
-                
+
+
             ##EDITANDO DATOS DEL USUARIO
             if nombres:
                 detalles.nombres = nombres
@@ -238,13 +244,13 @@ def editar_usuario(request):
                         'CODIGO' : 6,
                         'DETALLE' : 'La cédula ya se encuentra registrada'
                     })
-                else: 
+                else:
                     detalles.cedula = cedula
 
             if imagen:
                 detalles.imagen = imagen
             detalles.save()
-            
+
             return JsonResponse({
                 'STATUS' : 'OK',
                 'CODIGO': 9,
@@ -376,7 +382,7 @@ def crear_pizza_favorita(request):
                     'CODIGO' : 24,
                     'DETALLE' : 'Error guardando pizza favorita'
                     })
-            else: 
+            else:
                 pizza = body.get('PIZZA', None)
                 nombre = body.get('NOMBRE', None)
 
@@ -402,7 +408,7 @@ def crear_pizza_favorita(request):
                     t_ingrediente = diccionario.get("ID", None)
                     porcion = diccionario.get("PORCION", None)
                     pizza_t_ingrediente = Pizza_Tamano_Ingrediente().crear(pizza_obj, t_ingrediente, porcion)
-                
+
                 ##CREANDO PIZZA FAVORITA
                 pizza_favorita = Pizza_Favorita().crear(pizza_obj, usuario)
                 pizza_id_para_retornar = pizza_favorita.pizza.id
@@ -418,14 +424,14 @@ def crear_pizza_favorita(request):
                     'CODIGO' : 19,
                     'DETALLE' : 'Solicitud correcta',
                     'ID' : pizza_id_para_retornar
-                    }) 
+                    })
         except Exception as e:
             return JsonResponse({
                 'STATUS' : 'ERROR',
                 'CODIGO' : 15,
                 'DETALLE' : 'Error de solicitud'
             })
-    else: 
+    else:
         return JsonResponse({
             'STATUS' : 'ERROR',
             'CODIGO' : 15,
@@ -448,12 +454,12 @@ def borrar_pizza_favorita(request):
                     p.delete()
             else:
                 pizza_obj.delete()
-            
+
             return JsonResponse({
                 'STATUS' : 'OK',
                 'CODIGO' : 19,
                 'DETALLE' : 'Solicitud correcta'
-            }) 
+            })
 
         except Exception as e:
             return JsonResponse({
@@ -537,7 +543,7 @@ def tamanos(request):
                 'CODIGO' : 19,
                 'TAMANOS' : paquete,
                 'DETALLE' : 'Solicitud correcta'
-                }) 
+                })
     return JsonResponse({
         'STATUS' : 'ERROR',
         'CODIGO' : 15,
@@ -559,19 +565,19 @@ def tamano_masa(request):
                     'DESCRIPCION' : t_m.masa.descripcion,
                     'TAMANO' : t_m.tamano.nombre,
                     'COSTO' : "%.2f" % float(t_m.costo )
-            }) 
+            })
             return JsonResponse({
                 'STATUS' : 'OK',
                 'CODIGO' : 19,
                 'MASAS' : masas,
                 'DETALLE' : 'Solicitud correcta'
-                }) 
+                })
         except Exception as e:
             return JsonResponse({
                 'STATUS' : 'ERROR',
                 'CODIGO' : 18,
                 'DETALLE' : 'Tamaño incorrecto'
-                }) 
+                })
 
     return JsonResponse({
         'STATUS' : 'ERROR',
@@ -600,13 +606,13 @@ def tamano_borde(request):
                 'CODIGO' : 19,
                 'BORDES' : bordes,
                 'DETALLE' : 'Solicitud correcta'
-                }) 
+                })
         except Exception as e:
             return JsonResponse({
                 'STATUS' : 'ERROR',
                 'CODIGO' : 18,
                 'DETALLE' : 'Tamaño incorrecto'
-                }) 
+                })
 
     return JsonResponse({
         'STATUS' : 'ERROR',
@@ -636,13 +642,13 @@ def tamano_ingrediente(request):
                 'CODIGO' : 19,
                 'INGREDIENTES' : ingredientes,
                 'DETALLE' : 'Solicitud correcta'
-                }) 
+                })
         except Exception as e:
             return JsonResponse({
                 'STATUS' : 'ERROR',
                 'CODIGO' : 18,
                 'DETALLE' : 'Tamaño incorrecto'
-                }) 
+                })
 
     return JsonResponse({
         'STATUS' : 'ERROR',
@@ -656,7 +662,7 @@ def crear_combinacion(request):  ## ARREGLAR RESPUESTAS DE ERRORES
     body = utils.request_todict(request)
     token = body.get('TOKEN', None)
     if request.method == "POST" and utils.verificarToken(token):
-        try: 
+        try:
             pizzas = body.get('PIZZAS', None)
             adicionales = body.get('ADICIONALES', None)
 
@@ -695,7 +701,7 @@ def crear_combinacion(request):  ## ARREGLAR RESPUESTAS DE ERRORES
                         porcion = diccionario.get("PORCION", None)
                         pizza_t_ingrediente = Pizza_Tamano_Ingrediente().crear(pizza_obj, t_ingrediente, porcion)
 
-            ##ITERANDO LISTA DE ADICIONALES 
+            ##ITERANDO LISTA DE ADICIONALES
             for diccionario in adicionales:
                 adicional = diccionario.get("ID", None)
                 cantidad = diccionario.get("CANTIDAD", None)
@@ -714,7 +720,7 @@ def crear_combinacion(request):  ## ARREGLAR RESPUESTAS DE ERRORES
                     'STATUS' : 'OK',
                     'CODIGO' : 19,
                     'DETALLE' : 'Solicitud correcta'
-                    }) 
+                    })
         except Exception as e:
             return JsonResponse({
                 'STATUS' : 'ERROR',
@@ -722,7 +728,7 @@ def crear_combinacion(request):  ## ARREGLAR RESPUESTAS DE ERRORES
                 'DETALLE' : e
             })
 
-    else: 
+    else:
         return JsonResponse({
             'STATUS' : 'ERROR',
             'CODIGO' : 15,
@@ -765,7 +771,7 @@ def getCarrito(request):
                     "COSTO" : "%.2f" % float(costo),
                     "TIPO" : "PIZZA"
                     })
-            
+
             for adicional in adicionales:
                 tamano_adicional = Tamano_Ingrediente.objects.filter(ingrediente=adicional.adicional)[0]
                 costo = 0
@@ -789,8 +795,8 @@ def getCarrito(request):
             'CODIGO' : 19,
             'CARRITO' : paquete,
             'DETALLE' : 'Solicitud correcta'
-        }) 
-    
+        })
+
     return JsonResponse({
         'STATUS' : 'ERROR',
         'CODIGO' : 15,
@@ -864,7 +870,7 @@ def editarCantidadCarrito(request):
                 'STATUS' : 'ERROR',
                 'CODIGO' : 26,
                 'DETALLE' : 'Error alterando cantidad de objeto en carrito'
-            })  
+            })
     return JsonResponse({
         'STATUS' : 'ERROR',
         'CODIGO' : 15,
@@ -891,7 +897,7 @@ def combos_promocionales(request):
                     'IMAGEN_URL' : IP + c.pizza.img_url.url,
                     'CANTIDAD' : c.cantidad
                 }
-            for c in combinaciones_adicionales: 
+            for c in combinaciones_adicionales:
                 comb_adic_dict[c.id] = {
                     'NOMBRE' : c.adicional.nombre,
                     'DESCRIPCION' : c.adicional.descripcion,
@@ -907,16 +913,16 @@ def combos_promocionales(request):
             combo_dict['DESCRIPCION'] = combo.descripcion
             combo_dict['COSTO'] = "%.2f" % float(combo.costo)
             combo_dict['IMAGEN_URL'] = IP + combo.img_url.url
-            
+
             paquete[combo.id] = combo_dict
-           
+
 
         return JsonResponse({
                 'STATUS' : 'OK',
                 'CODIGO' : 19,
                 'COMBOS' : paquete,
                 'DETALLE' : 'Solicitud correcta'
-                })         
+                })
     return JsonResponse({
         'STATUS' : 'ERROR',
         'CODIGO' : 15,
@@ -941,7 +947,7 @@ def promociones(request):
                 'CODIGO' : 19,
                 'COMBOS' : paquete,
                 'DETALLE' : 'Solicitud correcta'
-                }) 
+                })
 
     return JsonResponse({
         'STATUS' : 'ERROR',
@@ -966,7 +972,7 @@ def porciones(request):
                 'CODIGO' : 19,
                 'PORCIONES' : paquete,
                 'DETALLE' : 'Solicitud correcta'
-                }) 
+                })
     return JsonResponse({
         'STATUS' : 'ERROR',
         'CODIGO' : 15,
@@ -994,7 +1000,7 @@ def adicionales(request):
                     'CODIGO' : 19,
                     'ADICIONALES' : paquete,
                     'DETALLE' : 'Solicitud correcta'
-                    }) 
+                    })
         else:
             return JsonResponse({
                 'STATUS' : 'ERROR',
@@ -1005,12 +1011,12 @@ def adicionales(request):
         'STATUS' : 'ERROR',
         'CODIGO' : 15,
         'DETALLE' : 'Error de solicitud'
-        })    
+        })
 
 ##DIRECCIONES DEL CLIENTE
 def direcciones_cliente(request):
     token = request.GET.get('TOKEN', None)
-    if request.method == "GET" and utils.verificarToken(token):    
+    if request.method == "GET" and utils.verificarToken(token):
         usuario = utils.getUsuarioConToken(token)
         direcciones = Direccion_Cliente.objects.filter(usuario=usuario)
         if len(direcciones)>0:
@@ -1031,26 +1037,26 @@ def direcciones_cliente(request):
                         'CODIGO' : 19,
                         'DIRECCIONES' : paquete,
                         'DETALLE' : 'Solicitud correcta'
-                        }) 
-        else: 
+                        })
+        else:
             JsonResponse({
                 'STATUS' : 'OK',
                 'CODIGO' : 19,
                 'DIRECCIONES' : [],
                 'DETALLE' : 'Solicitud correcta'
-            }) 
+            })
 
     return JsonResponse({
         'STATUS' : 'ERROR',
         'CODIGO' : 15,
         'DETALLE' : 'Error de solicitud'
-        }) 
+        })
 
 @csrf_exempt
 def crear_direccion_cliente(request):
     body = utils.request_todict(request)
     token = body.get('TOKEN', None)
-    if request.method == "POST" and utils.verificarToken(token):  
+    if request.method == "POST" and utils.verificarToken(token):
         usuario = utils.getUsuarioConToken(token)
         nombre = body.get('NOMBRE', None)
         descripcion = body.get('DESCRIPCION', None)
@@ -1063,13 +1069,13 @@ def crear_direccion_cliente(request):
                         'STATUS' : 'OK',
                         'CODIGO' : 19,
                         'DETALLE' : 'Solicitud correcta'
-                        }) 
+                        })
 
     return JsonResponse({
         'STATUS' : 'ERROR',
         'CODIGO' : 15,
         'DETALLE' : 'Error de solicitud'
-        }) 
+        })
 @csrf_exempt
 def borrar_direccion_cliente(request):
     body = utils.request_todict(request)
@@ -1082,13 +1088,13 @@ def borrar_direccion_cliente(request):
                         'STATUS' : 'OK',
                         'CODIGO' : 19,
                         'DETALLE' : 'Solicitud correcta'
-                        }) 
+                        })
 
     return JsonResponse({
         'STATUS' : 'ERROR',
         'CODIGO' : 15,
         'DETALLE' : 'Error de solicitud'
-        }) 
+        })
 
 ## RECLAMOS Y SUGERENCIAS
 @csrf_exempt
@@ -1105,19 +1111,19 @@ def crear_reclamo_sugerencia(request):
                 'STATUS' : 'OK',
                 'CODIGO' : 19,
                 'DETALLE' : 'Solicitud correcta'
-            }) 
+            })
         else:
             return JsonResponse({
                 'STATUS' : 'ERROR',
                 'CODIGO' : 15,
                 'DETALLE' : 'Error creando reclamo'
-            }) 
+            })
 
     return JsonResponse({
         'STATUS' : 'ERROR',
         'CODIGO' : 15,
         'DETALLE' : 'Error de solicitud'
-    }) 
+    })
 
 def get_reclamo_sugerencia(request):
     token = request.GET.get('TOKEN', None)
@@ -1135,17 +1141,17 @@ def get_reclamo_sugerencia(request):
             'CODIGO' : 19,
             'PAQUETE' : paquete,
             'DETALLE' : 'Solicitud correcta'
-        }) 
+        })
     return JsonResponse({
         'STATUS' : 'ERROR',
         'CODIGO' : 15,
         'DETALLE' : 'Error de solicitud'
-    }) 
+    })
 
 ## LOCALES
 def getLocales(request):
     token = request.GET.get('TOKEN', None)
-    if request.method == "GET" and utils.verificarToken(token):   
+    if request.method == "GET" and utils.verificarToken(token):
         locales = Local.objects.all()
         print(locales)
         paquete = []
@@ -1164,11 +1170,11 @@ def getLocales(request):
             'CODIGO' : 19,
             'PAQUETE' : paquete,
             'DETALLE' : 'Solicitud correcta'
-        }) 
+        })
 
     return JsonResponse({
         'STATUS' : 'ERROR',
         'CODIGO' : 15,
         'DETALLE' : 'Error de solicitud'
-    }) 
+    })
 
