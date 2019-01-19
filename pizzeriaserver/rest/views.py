@@ -386,9 +386,8 @@ def crear_pizza_favorita(request):
                 pizza = body.get('PIZZA', None)
                 nombre = body.get('NOMBRE', None)
 
-                ##CREANDO COMBINACION
+                ##OBTENIENDO USUARIO
                 usuario = utils.getUsuarioConToken(token)
-                combinacion = Combinacion().crear(nombre, usuario)
 
                 ##OBTENIENDO INFO DE LA PIZZA
                 tamano = pizza.get("TAMANO", None)
@@ -399,9 +398,6 @@ def crear_pizza_favorita(request):
 
                 ##CREANDO PIZZA
                 pizza_obj = Pizza().crear_simple(tamano, masa_t_id, borde_t_id, nombre)
-
-                ##CREANDO COMBINACION CON PIZZA
-                Combinacion_Pizza().crear(combinacion, pizza_obj, cantidad)
 
                 for diccionario in ingredientes:
                     ##CREANDO PIZZA_TAMANO_INGREDIENTE
@@ -453,7 +449,14 @@ def borrar_pizza_favorita(request):
                 for p in pizzas_favoritas:
                     p.delete()
             else:
-                pizza_obj.delete()
+                ##VERIFICANDO SI EL OBJETO PIZZA ESTA REFERENCIADO EN UNA COMBINACION
+                ##SI LO ESTA SE BORRA SOLAMENTE LA REFERENCIA A PIZZA FAVORITA
+                ##SI NO ESTA SE BORRA LA REFERENCIA A PIZZA FAVORITA Y EL OBJETO PIZZA
+                if len(Combinacion_Pizza.objects.filter(pizza=pizza_obj)) > 0:
+                    for p in pizzas_favoritas:
+                        p.delete()
+                else:
+                    pizza_obj.delete()
 
             return JsonResponse({
                 'STATUS' : 'OK',
@@ -813,8 +816,12 @@ def borrarDetalleCarrito(request):
         try:
             if tipo == "PIZZA" or tipo == "ADICIONAL":
                 if tipo == "PIZZA":
-                    pizza = Combinacion_Pizza.objects.get(pk=elemento_id)
-                    pizza.delete()
+                    pizza_combinacion = Combinacion_Pizza.objects.get(pk=elemento_id)
+                    pizza = pizza_combinacion.pizza
+                    if (len(Pizza_Favorita.objects.filter(pizza=pizza)) > 0)or (len(Pizza_Tradicional.objects.filter(pizza=pizza)) > 0): ##OBJETO PIZZA ESTA SIENDO REFERENCIADO 
+                        pizza_combinacion.delete()
+                    else: ##OBJETO PIZZA NO ESTA SIENDO REFERENCIADO 
+                        pizza.delete()
                 elif tipo == "ADICIONAL":
                     adicional = Combinacion_Adicional.objects.get(pk=elemento_id)
                     adicional.delete()
