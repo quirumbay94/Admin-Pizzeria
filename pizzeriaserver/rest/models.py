@@ -723,9 +723,45 @@ class Reclamo_Sugerencia(models.Model):
         except:
             return None
 
+class Pedido(models.Model):
+    carrito = models.ForeignKey("Carrito", on_delete=models.CASCADE) 
+    total = models.FloatField()
+    forma_pago = models.IntegerField()
+    codigo = models.CharField(max_length=28)
+    fecha = models.DateTimeField(auto_now_add=True)
+
+    def crear(self, carrito_id, total, forma_pago, codigo):
+        try:
+            pedido = Pedido()
+            pedido.carrito = Carrito.objects.get(pk=carrito_id)
+            pedido.total = total
+            pedido.forma_pago = forma_pago
+            pedido.codigo = codigo
+            pedido.save()
+            return pedido
+        except:
+            return None
+
+    def __str__(self):
+        return self.carrito.usuario.username + " | " + str(self.total)
 
 
+class Detalle_Pedido(models.Model):
+    pedido = models.ForeignKey("Pedido", on_delete=models.CASCADE) 
+    combinacion = models.ForeignKey("Combinacion", on_delete=models.CASCADE) 
 
+    def crear(self, pedido_id, combinacion_id):
+        try:
+            d = Detalle_Pedido()
+            d.pedido = Pedido.objects.get(pk=pedido_id)
+            d.combinacion = Combinacion.objects.get(pk=combinacion_id)
+            d.save()
+            return d
+        except:
+            return None
+
+    def __str__(self):
+        return self.pedido.carrito.usuario.username
 
 
 

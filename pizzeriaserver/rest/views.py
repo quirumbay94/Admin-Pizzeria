@@ -1,14 +1,18 @@
+import base64
+import datetime
+import json
+import math
+
 from django.contrib.auth import authenticate, logout
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.db import IntegrityError
 from django.views.decorators.csrf import csrf_exempt
-import base64
 from django.core.files.base import ContentFile
 
 from .models import *
 from rest import utils
-import json
+
 
 IP = "http://navi.pythonanywhere.com"
 
@@ -1160,7 +1164,6 @@ def getLocales(request):
     token = request.GET.get('TOKEN', None)
     if request.method == "GET" and utils.verificarToken(token):
         locales = Local.objects.all()
-        print(locales)
         paquete = []
         for l in locales:
             paquete.append({
@@ -1184,4 +1187,81 @@ def getLocales(request):
         'CODIGO' : 15,
         'DETALLE' : 'Error de solicitud'
     })
+
+## PEDIDO
+def crear_pedido(request):
+    body = utils.request_todict(request)
+    token = body.get('TOKEN', None)
+    usuario = utils.getUsuarioConToken(token)
+    if request.method == "POST" and usuario:    
+        carrito_id = body.get('CARRITO_ID', None)
+        forma_pago = body.get('FORMA_PAGO', None)
+        total = 127.00 ##CALCULAR EL TOTAL
+        codigo = 'qadlk1ml231231' ##GENERAR CODIGO
+        pedido = Pedido().crear(carrito_id, total, forma_pago, codigo)
+
+        ##FALTA VACIAR CARRITO Y CREAR INSTANCIAS DETALLE_CARRITO
+        if pedido:
+            return JsonResponse({
+                'STATUS' : 'OK',
+                'CODIGO' : 19,
+                'DETALLE' : 'Solicitud correcta'
+            })
+        else: ##ERROR CREANDO PEDIDO
+            return JsonResponse({
+                'STATUS' : 'ERROR',
+                'CODIGO' : 15,
+                'DETALLE' : 'Error de solicitud'
+            })
+
+    return JsonResponse({
+        'STATUS' : 'ERROR',
+        'CODIGO' : 15,
+        'DETALLE' : 'Error de solicitud'
+    })
+
+## CONSULTA ESTADO DE PEDIDO
+def get_estado_pedido(request):
+    token = request.GET.get('TOKEN', None)
+    if request.method == "GET" and utils.verificarToken(token):
+        try:
+            respuesta = None
+            # pedido_id = request.GET.get('PEDIDO_ID', None)        
+            # pedido = Pedido.objects.get(pk=pedido_id)
+            # hora_pedido = pedido.fecha.date()
+            hora_pedido = datetime.datetime.strptime('2019-01-26 07:40:16', '%Y-%m-%d %H:%M:%S')
+            hora_actual = datetime.datetime.now()
+            minutos_transcurridos = math.floor((hora_actual - hora_pedido).total_seconds() / 60.0)
+
+            if minutos_transcurridos <= 10:
+                respuesta = "Su orden esta siendo preparada."
+            elif minutos_transcurridos <=20:
+                respuesta = "Su pizza esta dentro del horno."
+            elif minutos_transcurridos > 20:
+                respuesta = "Su pizza esta en camino."
+
+            return JsonResponse({
+                'STATUS' : 'OK',
+                'CODIGO' : 19,
+                'RESPUESTA' : respuesta,
+                'DETALLE' : 'Solicitud correcta'
+            })
+        except Exception as e:
+            return JsonResponse({
+                'STATUS' : 'ERROR',
+                'CODIGO' : 30,
+                'DETALLE' : 'El pedido no existe.' + str(e)
+            })
+    return JsonResponse({
+        'STATUS' : 'ERROR',
+        'CODIGO' : 15,
+        'DETALLE' : 'Error de solicitud'
+    })
+
+
+
+
+
+
+
 
