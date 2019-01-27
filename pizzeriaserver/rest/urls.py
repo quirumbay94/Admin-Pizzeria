@@ -53,7 +53,8 @@ urlpatterns = [
     ##LOCALES
     url(r'^locales$', views.getLocales, name='getLocales'),
 
-    ##CONSULTA ESTADO DE PEDIDO
+    ##PEDIDOS
+    url(r'^pedido/crear$', views.crear_pedido, name='crear_pedido'),
     url(r'^get_estado_pedido$', views.get_estado_pedido, name='get_estado_pedido'),
 
 ]

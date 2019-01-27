@@ -42,6 +42,7 @@ class Sesion(models.Model):
         try:
             s = Sesion.objects.get(token=token)
             s.delete()
+            s.save()
             return  True
         except:
             return False

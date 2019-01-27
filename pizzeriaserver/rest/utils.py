@@ -1,4 +1,6 @@
 import json
+from pyfcm import FCMNotification
+from pizzeriaserver.settings import FIREBASE_TOKEN
 from rest.models import Sesion, Carrito, Detalles_Personales
 
 ## TRANSFORMANDO REQUEST EN DICCIONARIO
@@ -63,6 +65,28 @@ def cedulaRepetida(cedula, usuario):
             return True
     else:
         return True
+
+##PUSH NOTIFICATION
+def enviarPushNot(token, titulo, mensaje):
+    push_service = FCMNotification(api_key=FIREBASE_TOKEN)
+    
+    # try:
+    #     sesion = Sesion.objects.get(token=token)
+    #     usuario = sesion.usuario
+    #     sesiones = Sesion.objects.filter(usuario=usuario)
+    #     for sesion in sesiones:
+    #         result = push_service.notify_single_device(registration_id=sesion.firebase_id, message_title=titulo,
+    #                                            message_body=mensaje)
+    #     return True
+    # except:
+    #     return False
+    # Token del dispositivo
+
+    result = push_service.notify_single_device(registration_id=token, message_title=titulo,
+                                               message_body=mensaje)
+    print("RESULTADO")
+    print(result)
+
 
 
 
