@@ -196,3 +196,11 @@ def diccionarioDatosSubBarraLocales(paquete):
 	paquete_['TITULO'] = 'LOCALES'
 	return paquete_
 
+##DICCIONARIO CON RECLAMOS Y SUGERENCIAS
+def diccionarioReclamosSugerencias(paquete):
+	paquete_ = paquete
+	paquete_['NO_LEIDOS'] = Reclamo_Sugerencia.objects.filter(estado=True)
+	paquete_['LEIDOS'] = Reclamo_Sugerencia.objects.filter(estado=False)
+	return paquete_
+
+

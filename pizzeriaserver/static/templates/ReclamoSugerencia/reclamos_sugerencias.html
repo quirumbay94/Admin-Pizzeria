@@ -1,0 +1,32 @@
+{% load static %}
+{% include 'General/header.html' %}
+{% include 'General/navbar.html' %}
+{% include 'General/subbarra.html' %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/Menu/menu.css' %}">
+<div class="title-container">
+	<h1 class="title-h1">Reclamos y Sugerencias</h1>
+</div>
+<div class="opcion-wrapper">
+	<div style="border: 2px solid gray; border-radius: 7px; padding: 0px 20px 10px; margin-bottom: 30px;">
+		<h3>No leídos</h3>
+		{% for no_leido in NO_LEIDOS %}
+		<a href="">
+			<div style="display: flex; padding: 0px 10px; border-bottom: 1px solid gray;">
+				<h5>{{ no_leido.usuario.username }}</h5>
+				<h5>{{ no_leido.contenido|truncatechars:50 }}</h5>
+			</div>
+		</a>
+		{% endfor %}
+	</div>
+	<div style="border: 2px solid gray; border-radius: 7px; padding: 0px 20px 10px;">
+		<h3>Leídos</h3>
+		{% for leido in LEIDOS %}
+		<a href="">
+			<div style="display: flex; padding: 0px 10px; border-bottom: 1px solid gray;">
+				<h5>{{ leido.usuario.username }}</h5>
+				<h5>{{ leido.contenido|truncatechars:50 }}</h5>
+			</div>
+		</a>
+		{% endfor %}
+	</div>
+</div>

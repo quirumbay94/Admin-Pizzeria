@@ -38,11 +38,14 @@ urlpatterns = [
     url(r'^menu/cobertura/get_poligonos$', views.get_poligonos, name='get_poligonos'), 
     
 
-    #LOCALES
+    ##LOCALES
     url(r'^menu/local$', views.local, name='local'),
     url(r'^menu/local/crear$', views.crear_local, name='crear_local'),
     url(r'^menu/local/ver/(?P<local_id>\d+)$', views.ver_local, name='ver_local'),
     url(r'^menu/local/editar/(?P<local_id>\d+)$', views.editar_local, name='editar_local'),
+
+    ##RECLAMOS Y SUGERENCIAS
+    url(r'^menu/reclamos_sugerencias$', views.reclamos_sugerencias, name='reclamos_sugerencias'),
 ]
 
 
