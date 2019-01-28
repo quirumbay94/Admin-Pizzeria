@@ -66,6 +66,18 @@ def cedulaRepetida(cedula, usuario):
     else:
         return True
 
+##CRITERIO DE ESTADO DE PEDIDO
+def getCantidadPizzasPedido(pedido):
+    cantidad = 0
+    detalles = Detalle_Pedido.objects.filter(pedido=pedido)
+    for detalle in detalles:
+        combinaciones_pizza = Combinacion_Pizza.objects.filter(combinacion=detalle.combinacion)
+        for c in combinaciones_pizza:
+            cantidad += c.cantidad
+    return cantidad
+
+
+
 ##PUSH NOTIFICATION
 def enviarPushNot(token, titulo, mensaje):
     push_service = FCMNotification(api_key=FIREBASE_TOKEN)

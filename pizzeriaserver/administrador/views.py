@@ -645,7 +645,6 @@ def get_poligonos(request):
 def reclamos_sugerencias(request):
     if verificarSesion(request):
         paquete = diccionarios.diccionarioBarraNav(request,{})
-        paquete = diccionarios.diccionarioDatosSubBarraLocales(paquete)
         paquete = diccionarios.diccionarioReclamosSugerencias(paquete)
         return render(request, "ReclamoSugerencia/reclamos_sugerencias.html", paquete)
     return redirect("login") 
