@@ -625,6 +625,17 @@ class Poligono(models.Model):
             return paquete
         except: 
             return []
+    def getCoordenadasJSON(self, local_id):
+        try:
+            local = Local.objects.get(pk=local_id)
+            poligono = Poligono.objects.get(local=local)
+            coordenadas_poligono = Coordenada_Poligono.objects.filter(poligono=poligono)
+            paquete = []
+            for c in coordenadas_poligono:
+                paquete.append({"LAT" : c.coordenada.latitud, "LNG" : c.coordenada.longitud})
+            return paquete
+        except: 
+            return []
 
     def __str__(self):
         return self.local.sector + " | " + self.local.ciudad.upper()

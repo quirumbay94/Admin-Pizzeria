@@ -1187,6 +1187,79 @@ def getLocales(request):
         'CODIGO' : 15,
         'DETALLE' : 'Error de solicitud'
     })
+def get_local_info(request):
+    token = request.GET.get('TOKEN', None)
+    local_id = request.GET.get('LOCAL_ID', None)
+    if request.method == "GET" and utils.verificarToken(token):
+        if local_id:
+            try:
+                local = Local.objects.get(pk=local_id)
+                poligono = Poligono.objects.get(local=local)
+                coordenadas = Poligono().getCoordenadasJSON(local_id)
+                paquete = {
+                    "ID" : local.id,
+                    "SECTOR" : local.sector,
+                    "CIUDAD" : local.ciudad,
+                    "IMAGEN" : IP + local.img_url.url,
+                    "APERTURA" : local.apertura,
+                    "CIERRE" : local.cierre,
+                    "COORDENADAS_LOCAL" : {"LAT": local.coordenada.latitud, "LNG": local.coordenada.longitud},
+                    "POLIGONO" : {
+                        "POLIGONO_ID" : poligono.id,
+                        "COORDENADAS" : coordenadas
+                    }
+                }
+                return JsonResponse({
+                    'STATUS' : 'OK',
+                    'CODIGO' : 19,
+                    'LOCAL' : paquete,
+                    'DETALLE' : 'Solicitud correcta'
+                })
+            except:
+                return JsonResponse({
+                    'STATUS' : 'ERROR',
+                    'CODIGO' : 26,
+                    'DETALLE' : 'Local no existe'
+                })
+        else:
+            paquete = []
+            locales = Local.objects.all()
+            for local in locales:
+                try:
+                    poligono = Poligono.objects.get(local=local)
+                    coordenadas = Poligono().getCoordenadasJSON(local.id)
+                    paquete.append({
+                        "ID" : local.id,
+                        "SECTOR" : local.sector,
+                        "CIUDAD" : local.ciudad,
+                        "IMAGEN" : IP + local.img_url.url,
+                        "APERTURA" : local.apertura,
+                        "CIERRE" : local.cierre,
+                        "COORDENADAS_LOCAL" : {"LAT": local.coordenada.latitud, "LNG": local.coordenada.longitud},
+                        "POLIGONO" : {
+                            "POLIGONO_ID" : poligono.id,
+                            "COORDENADAS" : coordenadas
+                        }
+                    })
+                    return JsonResponse({
+                        'STATUS' : 'OK',
+                        'CODIGO' : 19,
+                        'LOCALES' : paquete,
+                        'DETALLE' : 'Solicitud correcta'
+                    })
+                except:
+                    return JsonResponse({
+                        'STATUS' : 'ERROR',
+                        'CODIGO' : 26,
+                        'DETALLE' : 'Local no existe'
+                    })
+
+    return JsonResponse({
+        'STATUS' : 'ERROR',
+        'CODIGO' : 15,
+        'DETALLE' : 'Error de solicitud'
+    })
+
 
 ## PEDIDO
 @csrf_exempt

@@ -52,6 +52,7 @@ urlpatterns = [
 
     ##LOCALES
     url(r'^locales$', views.getLocales, name='getLocales'),
+    url(r'^locales/info$', views.get_local_info, name='get_local_info'),
 
     ##PEDIDOS
     url(r'^pedido/crear$', views.crear_pedido, name='crear_pedido'),
