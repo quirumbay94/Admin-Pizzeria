@@ -76,7 +76,38 @@ def getCantidadPizzasPedido(pedido):
             cantidad += c.cantidad
     return cantidad
 
+##CALCULAR TOTAL DEL PEDIDO
+def calcularTotal(carrito_id):
+    carrito = Carrito.objects.get(pk=carrito_id)
+    detalle_carrito = Detalle_Carrito.objects.filter(carrito=carrito)
+    for d_c in detalle_carrito:
+        combinacion = d_c.combinacion
+        combinaciones_pizza = Combinacion_Pizza.objects.filter(combinacion=combinacion)
+        combinaciones_adicional = Combinacion_Adicional.objects.filter(combinacion=combinacion)
+        combos = Combos_Promocionales.ob.filter(combinacion=combinacion)
 
+        total = 0.0
+        ##ITERANDO PIZZAS
+        for c_p in combinaciones_pizza:
+            pizza = c_p.pizza
+            cantidad = c_p.cantidad
+            pizza_trad = Pizza_Tradicional.objects.filter(pizza=pizza)
+            if len(pizza_trad) > 0: ##SI ES QUE LA PIZZA ES PIZZA TRADICIONAL
+                total += (pizza_trad[0] * cantidad)
+            else: ##SI ES QUE LA PIZZA ES ARMADA POR EL CLIENTE
+                pizza_t_i = Pizza_Tamano_Ingrediente.objects.filter(pizza=pizza)
+                for p_t_i in pizza_t_i: ##CACULANDO COSTO DE INGREDIENTE SEGUN LA PORCION
+                    total += (p_t_i.tamano_ingrediente.costo * p_t_i.porcion.valor)
+                ##CACULANDO COSTO DE BORDE Y MASA
+                total += (pizza.masa.costo + pizza.borde.costo)
+        ##ITERANDO ADICIONALES
+        for c_a in combinaciones_adicional:
+            t_a = Tamano_Ingrediente.objects.filter(ingrediente=c_a.adicional)[0]
+            total += t_a.costo
+        ##ITERANDO COMBOS
+        for c in combos:
+            total += c.costo
+    return total
 
 ##PUSH NOTIFICATION
 def enviarPushNot(token, titulo, mensaje):

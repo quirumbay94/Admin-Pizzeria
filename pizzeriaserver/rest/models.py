@@ -739,7 +739,7 @@ class Pedido(models.Model):
     carrito = models.ForeignKey("Carrito", on_delete=models.CASCADE) 
     total = models.FloatField()
     forma_pago = models.IntegerField()
-    codigo = models.CharField(max_length=28)
+    codigo = models.CharField(max_length=28, unique=True)
     fecha = models.DateTimeField(auto_now_add=True)
 
     def crear(self, carrito_id, total, forma_pago, codigo):
@@ -762,11 +762,11 @@ class Detalle_Pedido(models.Model):
     pedido = models.ForeignKey("Pedido", on_delete=models.CASCADE) 
     combinacion = models.ForeignKey("Combinacion", on_delete=models.CASCADE) 
 
-    def crear(self, pedido_id, combinacion_id):
+    def crear(self, pedido, combinacion):
         try:
             d = Detalle_Pedido()
-            d.pedido = Pedido.objects.get(pk=pedido_id)
-            d.combinacion = Combinacion.objects.get(pk=combinacion_id)
+            d.pedido = pedido
+            d.combinacion = combinacion
             d.save()
             return d
         except:
