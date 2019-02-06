@@ -1267,40 +1267,47 @@ def crear_pedido(request):
     body = utils.request_todict(request)
     token = body.get('TOKEN', None)
     usuario = utils.getUsuarioConToken(token)
-    if request.method == "POST" and usuario:    
-        # carrito_id = body.get('CARRITO_ID', None)
-        # forma_pago = body.get('FORMA_PAGO', None)
-        # total = 127.00 ##CALCULAR EL TOTAL
-        # codigo = 'qadlk1ml231231' ##GENERAR CODIGO
-        # pedido = Pedido().crear(carrito_id, total, forma_pago, codigo)
-        token_fire = body.get('TOKEN_FIRE', None)
+    if request.method == "POST" and usuario:   
+        try: 
+            # carrito_id = body.get('CARRITO_ID', None)
+            # forma_pago = body.get('FORMA_PAGO', None)
+            # total = 127.00 ##CALCULAR EL TOTAL
+            # codigo = 'qadlk1ml231231' ##GENERAR CODIGO
+            # pedido = Pedido().crear(carrito_id, total, forma_pago, codigo)
+            token_fire = 'chrpz-bW25E:APA91bHFcSelHBUesGJIje3P1PgS2MKdSDTgqfFbb8nFmrpI_gj2u1j1L-UkEwCjbu5DApuc3sruadJ6fcIxnNeDy82gcnWHzJoCaHgfM7xlxjBSHRSY2cFXReJcXe9O9L5_Ka8aAm4y'
 
-        print("TOKENS")
-        print(token_fire)
+            print("TOKENS")
+            print(token_fire)
 
-        resultado = utils.enviarPushNot(token, "Prueba", "Mensaje de prueba")
-        print("RESULTADO FINAL")
-        print(resultado)
+            resultado = utils.enviarPushNot(token_fire, "Prueba", "Mensaje de prueba")
+            print("RESULTADO FINAL")
+            print(resultado)
 
-        return JsonResponse({
-            'STATUS' : 'OK',
-            'CODIGO' : 19,
-            'DETALLE' : 'Solicitud correcta'
-        })
+            return JsonResponse({
+                'STATUS' : 'OK',
+                'CODIGO' : 19,
+                'DETALLE' : 'Solicitud correcta'
+            })
 
-        ##FALTA VACIAR CARRITO Y CREAR INSTANCIAS DETALLE_CARRITO
-        # if pedido:
-        #     return JsonResponse({
-        #         'STATUS' : 'OK',
-        #         'CODIGO' : 19,
-        #         'DETALLE' : 'Solicitud correcta'
-        #     })
-        # else: ##ERROR CREANDO PEDIDO
-        #     return JsonResponse({
-        #         'STATUS' : 'ERROR',
-        #         'CODIGO' : 15,
-        #         'DETALLE' : 'Error de solicitud'
-        #     })
+            ##FALTA VACIAR CARRITO Y CREAR INSTANCIAS DETALLE_CARRITO
+            # if pedido:
+            #     return JsonResponse({
+            #         'STATUS' : 'OK',
+            #         'CODIGO' : 19,
+            #         'DETALLE' : 'Solicitud correcta'
+            #     })
+            # else: ##ERROR CREANDO PEDIDO
+            #     return JsonResponse({
+            #         'STATUS' : 'ERROR',
+            #         'CODIGO' : 15,
+            #         'DETALLE' : 'Error de solicitud'
+            #     })
+        except Exception as e:
+            return JsonResponse({
+                'STATUS' : 'ERROR',
+                'CODIGO' : 15,
+                'DETALLE' : 'Error ' + str(e)
+            })
 
     return JsonResponse({
         'STATUS' : 'ERROR',
