@@ -92,7 +92,7 @@ def calcularTotal(carrito):
             cantidad = c_p.cantidad
             pizza_trad = Pizza_Tradicional.objects.filter(pizza=pizza)
             if len(pizza_trad) > 0: ##SI ES QUE LA PIZZA ES PIZZA TRADICIONAL
-                total += (pizza_trad[0] * cantidad)
+                total += (pizza_trad[0].costo * cantidad)
             else: ##SI ES QUE LA PIZZA ES ARMADA POR EL CLIENTE
                 pizza_t_i = Pizza_Tamano_Ingrediente.objects.filter(pizza=pizza)
                 for p_t_i in pizza_t_i: ##CACULANDO COSTO DE INGREDIENTE SEGUN LA PORCION
