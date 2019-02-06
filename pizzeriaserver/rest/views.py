@@ -764,8 +764,13 @@ def getCarrito(request):
                 ingredientes_ARR = []
                 ingredientes = Pizza_Tamano_Ingrediente.objects.filter(pizza=pizza.pizza)
                 for ingrediente in ingredientes:
-                    ## ESTIMANDO COSTO DE INGREDIENTES
-                    costo += (ingrediente.tamano_ingrediente.costo * ingrediente.porcion.valor)
+                    ##VERIFICANDO SI ES PIZZA TRADICIONAL PARA OBTENER SU PRECIO ESPECIAL
+                    pizza_trad = Pizza_Tradicional.objects.filter(pizza=pizza.pizza)
+                    if len(pizza_trad) > 0:
+                        costo += pizza_trad[0].costo
+                    else:
+                        ## ESTIMANDO COSTO DE INGREDIENTES
+                        costo += (ingrediente.tamano_ingrediente.costo * ingrediente.porcion.valor)
                     ingredientes_ARR.append(ingrediente.tamano_ingrediente.ingrediente.nombre.capitalize() + " " + utils.porcionToString(ingrediente.porcion))
                 pizzas_ARR.append({
                     "ID" : pizza.id,
@@ -1275,7 +1280,7 @@ def crear_pedido(request):
             codigo = secrets.token_hex(16) ##GENERAR CODIGO
             pedido = Pedido().crear(carrito, total, forma_pago, codigo)
 
-            ##COPIANDO INSTANCIAS DE DETALLE_CARRITO EN EL DETALLE_PEDIDO
+            #COPIANDO INSTANCIAS DE DETALLE_CARRITO EN EL DETALLE_PEDIDO
             if pedido:
                 detalle_carrito = DetalleCarrito.objects.filter(carrito=carrito)
                 for d_c in detalle_carrito:
