@@ -77,8 +77,7 @@ def getCantidadPizzasPedido(pedido):
     return cantidad
 
 ##CALCULAR TOTAL DEL PEDIDO
-def calcularTotal(carrito_id):
-    carrito = Carrito.objects.get(pk=carrito_id)
+def calcularTotal(carrito):
     detalle_carrito = Detalle_Carrito.objects.filter(carrito=carrito)
     for d_c in detalle_carrito:
         combinacion = d_c.combinacion

@@ -1269,15 +1269,14 @@ def crear_pedido(request):
     usuario = utils.getUsuarioConToken(token)
     if request.method == "POST" and usuario:   
         try: 
-            carrito_id = body.get('CARRITO_ID', None)
+            carrito = utils.getCarritoConToken(token)
             forma_pago = body.get('FORMA_PAGO', None)
-            total = utils.calcularTotal(carrito_id) ##CALCULAR EL TOTAL
+            total = utils.calcularTotal(carrito) ##CALCULAR EL TOTAL
             codigo = secrets.token_hex(16) ##GENERAR CODIGO
-            pedido = Pedido().crear(carrito_id, total, forma_pago, codigo)
+            pedido = Pedido().crear(carrito, total, forma_pago, codigo)
 
             ##COPIANDO INSTANCIAS DE DETALLE_CARRITO EN EL DETALLE_PEDIDO
             if pedido:
-                carrito = pedido.carrito
                 detalle_carrito = Detalle_Carrito.objects.filter(carrito=carrito)
                 for d_c in detalle_carrito:
                     combinacion = d_c.combinacion

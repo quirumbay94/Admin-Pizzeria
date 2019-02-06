@@ -742,10 +742,10 @@ class Pedido(models.Model):
     codigo = models.CharField(max_length=28, unique=True)
     fecha = models.DateTimeField(auto_now_add=True)
 
-    def crear(self, carrito_id, total, forma_pago, codigo):
+    def crear(self, carrito, total, forma_pago, codigo):
         try:
             pedido = Pedido()
-            pedido.carrito = Carrito.objects.get(pk=carrito_id)
+            pedido.carrito = carrito
             pedido.total = total
             pedido.forma_pago = forma_pago
             pedido.codigo = codigo
