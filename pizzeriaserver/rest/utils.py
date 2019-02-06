@@ -94,8 +94,7 @@ def enviarPushNot(token, titulo, mensaje):
     #     return False
     # Token del dispositivo
 
-    result = push_service.notify_single_device(registration_id=token, message_title=titulo,
-                                               message_body=mensaje)
+    result = push_service.notify_single_device(registration_id=token, sound=True, message_title=titulo, message_body=mensaje)
     print("RESULTADO")
     print(result)
 

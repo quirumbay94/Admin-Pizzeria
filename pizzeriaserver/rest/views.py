@@ -1274,14 +1274,10 @@ def crear_pedido(request):
             # total = 127.00 ##CALCULAR EL TOTAL
             # codigo = 'qadlk1ml231231' ##GENERAR CODIGO
             # pedido = Pedido().crear(carrito_id, total, forma_pago, codigo)
+
             token_fire = 'chrpz-bW25E:APA91bHFcSelHBUesGJIje3P1PgS2MKdSDTgqfFbb8nFmrpI_gj2u1j1L-UkEwCjbu5DApuc3sruadJ6fcIxnNeDy82gcnWHzJoCaHgfM7xlxjBSHRSY2cFXReJcXe9O9L5_Ka8aAm4y'
 
-            print("TOKENS")
-            print(token_fire)
-
             resultado = utils.enviarPushNot(token_fire, "Prueba", "Mensaje de prueba")
-            print("RESULTADO FINAL")
-            print(resultado)
 
             return JsonResponse({
                 'STATUS' : 'OK',
