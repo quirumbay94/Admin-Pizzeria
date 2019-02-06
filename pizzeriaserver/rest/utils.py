@@ -1,7 +1,7 @@
 import json
 from pyfcm import FCMNotification
 from pizzeriaserver.settings import FIREBASE_TOKEN
-from rest.models import Sesion, Carrito, Detalles_Personales
+from rest.models import *
 
 ## TRANSFORMANDO REQUEST EN DICCIONARIO
 def request_todict(request):
@@ -78,12 +78,12 @@ def getCantidadPizzasPedido(pedido):
 
 ##CALCULAR TOTAL DEL PEDIDO
 def calcularTotal(carrito):
-    detalle_carrito = Detalle_Carrito.objects.filter(carrito=carrito)
+    detalle_carrito = DetalleCarrito.objects.filter(carrito=carrito)
     for d_c in detalle_carrito:
         combinacion = d_c.combinacion
         combinaciones_pizza = Combinacion_Pizza.objects.filter(combinacion=combinacion)
         combinaciones_adicional = Combinacion_Adicional.objects.filter(combinacion=combinacion)
-        combos = Combos_Promocionales.ob.filter(combinacion=combinacion)
+        combos = Combos_Promocionales.objects.filter(combinacion=combinacion)
 
         total = 0.0
         ##ITERANDO PIZZAS

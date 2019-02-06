@@ -562,6 +562,9 @@ class DetalleCarrito(models.Model):
     combinacion = models.ForeignKey("Combinacion", on_delete=models.CASCADE, default=None)
     carrito = models.ForeignKey("Carrito", on_delete=models.CASCADE, default=None)
 
+    def __str__(self):
+        return "CARRITO DE: " + self.carrito.usuario.username
+        
     def crear(self, combinacion, carrito):
         try:
             detalle = DetalleCarrito()

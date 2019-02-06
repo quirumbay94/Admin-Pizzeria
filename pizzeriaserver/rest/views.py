@@ -1277,7 +1277,7 @@ def crear_pedido(request):
 
             ##COPIANDO INSTANCIAS DE DETALLE_CARRITO EN EL DETALLE_PEDIDO
             if pedido:
-                detalle_carrito = Detalle_Carrito.objects.filter(carrito=carrito)
+                detalle_carrito = DetalleCarrito.objects.filter(carrito=carrito)
                 for d_c in detalle_carrito:
                     combinacion = d_c.combinacion
                     d_p = Detalle_Pedido().crear(pedido, combinacion)
@@ -1298,6 +1298,7 @@ def crear_pedido(request):
             return JsonResponse({
                 'STATUS' : 'OK',
                 'CODIGO' : 19,
+                'PEDIDO' : pedido.id,
                 'DETALLE' : 'Solicitud correcta'
             })
         except Exception as e:
@@ -1312,6 +1313,65 @@ def crear_pedido(request):
         'CODIGO' : 15,
         'DETALLE' : 'Error de solicitud'
     })
+
+def getDetallePedido(request):
+    token = request.GET.get('TOKEN', None)
+    if request.method == "GET" and utils.verificarToken(token):
+        try:
+            pedido_id = request.GET.get('PEDIDO_ID', None)  
+            pedido = Pedido.objects.get(pk=pedido_id)
+            detalles = Detalle_Pedido.objects.filter(pedido=pedido)
+            for detalle in detalles:
+                combinaciones_pizza = Combinacion_Pizza.objects.filter(combinacion=detalle.combinacion)
+                combinaciones_adicional = Combinacion_Adicional.objects.filter(combinacion=detalle.combinacion)
+                combos = Combos_Promocionales.objects.filter(combinacion=detalle.combinacion)
+
+                ##ITERANDO PIZZAS
+                pizzas = []
+                for c_p in combinaciones_pizza:
+                    pizzas.append({
+                        "NOMBRE" : c_p.pizza.nombre,
+                        "TAMANO" : c_p.pizza.tamano.nombre,
+                        "CANTIDAD" : c_p.cantidad
+                    })
+                ##ITERANDO ADICIONALES
+                adicionales = []
+                for c_a in combinaciones_adicional:
+                    adicionales.append({
+                        "NOMBRE" : c_a.adicional.nombre,
+                        "CANTIDAD" : c_a.cantidad
+                    })
+                ##ITERANDO COMBOS
+                combos_p = []
+                for c in combos:
+                    combos_p.append({
+                        "NOMBRE" : c.nombre,
+                        "DESCRIPCION" : c.descripcion
+                    })
+            paquete = {
+                "PIZZAS" : pizzas,
+                "ADICIONALES" : adicionales,
+                "COMBOS" : combos_p,
+                "TOTAL" : pedido.total
+            }
+            return JsonResponse({
+                'STATUS' : 'OK',
+                'CODIGO' : 19,
+                'PAQUETE' : paquete,
+                'DETALLE' : 'Solicitud correcta'
+            })
+        except Exception as e:
+            return JsonResponse({
+                'STATUS' : 'ERROR',
+                'CODIGO' : 15,
+                'DETALLE' : 'Error ' + str(e)
+            })
+    return JsonResponse({
+        'STATUS' : 'ERROR',
+        'CODIGO' : 15,
+        'DETALLE' : 'Error de solicitud'
+    })
+
 
 ## CONSULTA ESTADO DE PEDIDO
 def get_estado_pedido(request):
