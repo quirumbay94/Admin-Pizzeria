@@ -138,37 +138,37 @@ def get_estado_pedido(pedido):
     hora_actual = datetime.datetime.now(timezone.utc) - timedelta(hours=DEFASE_ZONA_HORARIA)
     minutos_transcurridos = math.floor((hora_actual - hora_pedido).total_seconds() / 60.0)
     respuesta = []
-    if minutos_transcurridos <= 10:
+    if minutos_transcurridos <= 5:
         respuesta.append({
             "NOMBRE":"Preparando", 
-            "DESCRIPCION":"Tu pizza esta siendo preparada", 
+            "DESCRIPCION":"Tu orden esta siendo preparada", 
             "HORA": (hora_pedido + timedelta(minutes=10)).time().strftime("%H:%M")
         })
-    elif minutos_transcurridos <=20:
+    elif minutos_transcurridos <=15:
         respuesta.append({
             "NOMBRE":"Preparando", 
-            "DESCRIPCION":"Tu pizza esta siendo preparada", 
-            "HORA": (hora_pedido + timedelta(minutes=10)).time().strftime("%H:%M")
-        })
-        respuesta.append({
-            "NOMBRE":"En el horno", 
-            "DESCRIPCION":"Tu pizza se encuentra en el horno", 
-            "HORA": (hora_pedido + timedelta(minutes=20)).time().strftime("%H:%M")
-        })
-    elif minutos_transcurridos > 20:
-        respuesta.append({
-            "NOMBRE":"Preparando", 
-            "DESCRIPCION":"Tu pizza esta siendo preparada", 
+            "DESCRIPCION":"Tu orden esta siendo preparada", 
             "HORA": (hora_pedido + timedelta(minutes=10)).time().strftime("%H:%M")
         })
         respuesta.append({
             "NOMBRE":"En el horno", 
-            "DESCRIPCION":"Tu pizza se encuentra en el horno", 
+            "DESCRIPCION":"Tu orden se encuentra en el horno", 
+            "HORA": (hora_pedido + timedelta(minutes=20)).time().strftime("%H:%M")
+        })
+    elif minutos_transcurridos > 15:
+        respuesta.append({
+            "NOMBRE":"Preparando", 
+            "DESCRIPCION":"Tu orden esta siendo preparada", 
+            "HORA": (hora_pedido + timedelta(minutes=10)).time().strftime("%H:%M")
+        })
+        respuesta.append({
+            "NOMBRE":"En el horno", 
+            "DESCRIPCION":"Tu orden se encuentra en el horno", 
             "HORA": (hora_pedido + timedelta(minutes=20)).time().strftime("%H:%M")
         })
         respuesta.append({
-            "NOMBRE":"En camino", 
-            "DESCRIPCION":"Tu pizza se encuentra en camino", 
+            "NOMBRE":"Control de calidad", 
+            "DESCRIPCION":"Tu orden esta siendo revisada y empaquetada", 
             "HORA": (hora_pedido + timedelta(minutes=30)).time().strftime("%H:%M")
         })
     return respuesta
@@ -178,12 +178,12 @@ def get_estado_str(pedido):
     hora_actual = datetime.datetime.now(timezone.utc) - timedelta(hours=DEFASE_ZONA_HORARIA)
     minutos_transcurridos = math.floor((hora_actual - hora_pedido).total_seconds() / 60.0)
     respuesta = None
-    if minutos_transcurridos <= 10:
+    if minutos_transcurridos <= 5:
         respuesta = "Preparando"
-    elif minutos_transcurridos <=20:
+    elif minutos_transcurridos <=15:
         respuesta = "En el horno"
-    elif minutos_transcurridos > 20:
-        respuesta = "En camino"
+    elif minutos_transcurridos > 15:
+        respuesta = "Control de calidad"
     return respuesta
 
 ##PUSH NOTIFICATION

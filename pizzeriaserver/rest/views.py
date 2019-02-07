@@ -1331,7 +1331,8 @@ def getPedidos(request):
                 pedidos_dic.append({
                     "ID" : pedido.id,
                     "FECHA" : pedido.fecha.strftime("%d/%m/%Y"),
-                    "ESTADO" : utils.get_estado_str(pedido)
+                    "ESTADO" : utils.get_estado_str(pedido),
+                    "ENTREGADO" : pedido.entregado
                 })
             return JsonResponse({
                 'STATUS' : 'OK',
