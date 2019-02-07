@@ -144,7 +144,7 @@ def get_estado_pedido(pedido):
             "descripcion":"Tu pizza esta siendo preparada", 
             "hora": (hora_pedido + timedelta(minutes=10)).time().strftime("%H:%M")
         })
-    if minutos_transcurridos <=20:
+    elif minutos_transcurridos <=20:
         respuesta.append({
             "nombre":"Preparando", 
             "descripcion":"Tu pizza esta siendo preparada", 
@@ -155,7 +155,7 @@ def get_estado_pedido(pedido):
             "descripcion":"Tu pizza se encuentra en el horno", 
             "hora": (hora_pedido + timedelta(minutes=20)).time().strftime("%H:%M")
         })
-    if minutos_transcurridos > 20:
+    elif minutos_transcurridos > 20:
         respuesta.append({
             "nombre":"Preparando", 
             "descripcion":"Tu pizza esta siendo preparada", 

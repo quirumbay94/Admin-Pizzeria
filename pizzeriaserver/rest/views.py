@@ -1330,7 +1330,7 @@ def getPedidos(request):
             for pedido in pedidos:
                 pedidos_dic.append({
                     "ID" : pedido.id,
-                    "HORA_PEDIDO" : pedido.fecha.strftime("%H:%M"),
+                    "FECHA" : pedido.fecha.strftime("%d/%m/%Y"),
                     "ESTADO" : utils.get_estado_str(pedido)
                 })
             return JsonResponse({
