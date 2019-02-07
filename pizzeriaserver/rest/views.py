@@ -1359,7 +1359,8 @@ def getDetallePedido(request):
                 "PIZZAS" : pizzas,
                 "ADICIONALES" : adicionales,
                 "COMBOS" : combos_p,
-                "TOTAL" : pedido.total
+                "TOTAL" : pedido.total,
+                "ESTADO" : utils.get_estado_pedido(pedido)
             }
             return JsonResponse({
                 'STATUS' : 'OK',
@@ -1380,44 +1381,6 @@ def getDetallePedido(request):
     })
 
 
-## CONSULTA ESTADO DE PEDIDO
-def get_estado_pedido(request):
-    token = request.GET.get('TOKEN', None)
-    if request.method == "GET" and utils.verificarToken(token):
-        try:
-            respuesta = None
-            pedido_id = request.GET.get('PEDIDO_ID', None)        
-            pedido = Pedido.objects.get(pk=pedido_id)
-            hora_pedido = pedido.fecha.date()
-            hora_pedido = datetime.datetime.strptime('2019-01-26 07:40:16', '%Y-%m-%d %H:%M:%S')
-            hora_actual = datetime.datetime.now()
-            minutos_transcurridos = math.floor((hora_actual - hora_pedido).total_seconds() / 60.0)
-            cantidad = utils.getCantidadPizzasPedido(pedido)
-            
-            if minutos_transcurridos <= 10:
-                respuesta = "Su orden esta siendo preparada."
-            elif minutos_transcurridos <=20:
-                respuesta = "Su pizza esta dentro del horno."
-            elif minutos_transcurridos > 20:
-                respuesta = "Su pizza esta en camino."
-
-            return JsonResponse({
-                'STATUS' : 'OK',
-                'CODIGO' : 19,
-                'RESPUESTA' : respuesta,
-                'DETALLE' : 'Solicitud correcta'
-            })
-        except Exception as e:
-            return JsonResponse({
-                'STATUS' : 'ERROR',
-                'CODIGO' : 30,
-                'DETALLE' : 'El pedido no existe.' + str(e)
-            })
-    return JsonResponse({
-        'STATUS' : 'ERROR',
-        'CODIGO' : 15,
-        'DETALLE' : 'Error de solicitud'
-    })
 
 
 

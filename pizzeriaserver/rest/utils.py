@@ -129,6 +129,37 @@ def actualizarCantidades(elementos):
                 break
     return response
 
+## CONSULTA ESTADO DE PEDIDO
+def get_estado_pedido(pedido):
+    hora_pedido = pedido.fecha.date()
+    #hora_pedido = datetime.datetime.strptime('2019-02-07 01:15:16', '%Y-%m-%d %H:%M:%S')
+    hora_actual = datetime.datetime.now()
+    minutos_transcurridos = math.floor((hora_actual - hora_pedido).total_seconds() / 60.0)
+    cantidad = utils.getCantidadPizzasPedido(pedido)
+    respuesta = []
+    if minutos_transcurridos <= 10:
+        respuesta.append({
+            "nombre":"Preparando", 
+            "descripcion":"Tu pizza esta siendo preparada", 
+            "hora": hora_pedido + timedelta(minutes=minutos_transcurridos) 
+        })
+    elif minutos_transcurridos <=20:
+        respuesta.append({
+            "nombre":"En el horno", 
+            "descripcion":"Tu pizza se encuentra en el horno", 
+            "hora": hora_pedido + timedelta(minutes=minutos_transcurridos) 
+        })
+    elif minutos_transcurridos > 20:
+        respuesta.append({
+            "nombre":"En camino", 
+            "descripcion":"Tu pizza se encuentra en camino", 
+            "hora": hora_pedido + timedelta(minutes=minutos_transcurridos) 
+        })
+
+    return respuesta
+
+
+
 ##PUSH NOTIFICATION
 def enviarPushNot(token, titulo, mensaje):
     push_service = FCMNotification(api_key=FIREBASE_TOKEN)
