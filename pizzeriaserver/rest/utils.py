@@ -140,36 +140,36 @@ def get_estado_pedido(pedido):
     respuesta = []
     if minutos_transcurridos <= 10:
         respuesta.append({
-            "nombre":"Preparando", 
-            "descripcion":"Tu pizza esta siendo preparada", 
-            "hora": (hora_pedido + timedelta(minutes=10)).time().strftime("%H:%M")
+            "NOMBRE":"Preparando", 
+            "DESCRIPCION":"Tu pizza esta siendo preparada", 
+            "HORA": (hora_pedido + timedelta(minutes=10)).time().strftime("%H:%M")
         })
     elif minutos_transcurridos <=20:
         respuesta.append({
-            "nombre":"Preparando", 
-            "descripcion":"Tu pizza esta siendo preparada", 
-            "hora": (hora_pedido + timedelta(minutes=10)).time().strftime("%H:%M")
+            "NOMBRE":"Preparando", 
+            "DESCRIPCION":"Tu pizza esta siendo preparada", 
+            "HORA": (hora_pedido + timedelta(minutes=10)).time().strftime("%H:%M")
         })
         respuesta.append({
-            "nombre":"En el horno", 
-            "descripcion":"Tu pizza se encuentra en el horno", 
-            "hora": (hora_pedido + timedelta(minutes=20)).time().strftime("%H:%M")
+            "NOMBRE":"En el horno", 
+            "DESCRIPCION":"Tu pizza se encuentra en el horno", 
+            "HORA": (hora_pedido + timedelta(minutes=20)).time().strftime("%H:%M")
         })
     elif minutos_transcurridos > 20:
         respuesta.append({
-            "nombre":"Preparando", 
-            "descripcion":"Tu pizza esta siendo preparada", 
-            "hora": (hora_pedido + timedelta(minutes=10)).time().strftime("%H:%M")
+            "NOMBRE":"Preparando", 
+            "DESCRIPCION":"Tu pizza esta siendo preparada", 
+            "HORA": (hora_pedido + timedelta(minutes=10)).time().strftime("%H:%M")
         })
         respuesta.append({
-            "nombre":"En el horno", 
-            "descripcion":"Tu pizza se encuentra en el horno", 
-            "hora": (hora_pedido + timedelta(minutes=20)).time().strftime("%H:%M")
+            "NOMBRE":"En el horno", 
+            "DESCRIPCION":"Tu pizza se encuentra en el horno", 
+            "HORA": (hora_pedido + timedelta(minutes=20)).time().strftime("%H:%M")
         })
         respuesta.append({
-            "nombre":"En camino", 
-            "descripcion":"Tu pizza se encuentra en camino", 
-            "hora": (hora_pedido + timedelta(minutes=30)).time().strftime("%H:%M")
+            "NOMBRE":"En camino", 
+            "DESCRIPCION":"Tu pizza se encuentra en camino", 
+            "HORA": (hora_pedido + timedelta(minutes=30)).time().strftime("%H:%M")
         })
     return respuesta
 
