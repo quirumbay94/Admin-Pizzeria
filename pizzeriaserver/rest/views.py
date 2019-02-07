@@ -1328,13 +1328,15 @@ def getDetallePedido(request):
             pedido_id = request.GET.get('PEDIDO_ID', None)  
             pedido = Pedido.objects.get(pk=pedido_id)
             detalles = Detalle_Pedido.objects.filter(pedido=pedido)
+            pizzas = []
+            adicionales = []
+            combos_p = []
             for detalle in detalles:
                 combinaciones_pizza = Combinacion_Pizza.objects.filter(combinacion=detalle.combinacion)
                 combinaciones_adicional = Combinacion_Adicional.objects.filter(combinacion=detalle.combinacion)
                 combos = Combos_Promocionales.objects.filter(combinacion=detalle.combinacion)
 
                 ##ITERANDO PIZZAS
-                pizzas = []
                 for c_p in combinaciones_pizza:
                     pizzas.append({
                         "NOMBRE" : c_p.pizza.nombre,
@@ -1342,14 +1344,12 @@ def getDetallePedido(request):
                         "CANTIDAD" : c_p.cantidad
                     })
                 ##ITERANDO ADICIONALES
-                adicionales = []
                 for c_a in combinaciones_adicional:
                     adicionales.append({
                         "NOMBRE" : c_a.adicional.nombre,
                         "CANTIDAD" : c_a.cantidad
                     })
                 ##ITERANDO COMBOS
-                combos_p = []
                 for c in combos:
                     combos_p.append({
                         "NOMBRE" : c.nombre,
