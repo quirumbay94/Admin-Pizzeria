@@ -96,17 +96,18 @@ def calcularTotal(carrito):
             else: ##SI ES QUE LA PIZZA ES ARMADA POR EL CLIENTE
                 pizza_t_i = Pizza_Tamano_Ingrediente.objects.filter(pizza=pizza)
                 for p_t_i in pizza_t_i: ##CACULANDO COSTO DE INGREDIENTE SEGUN LA PORCION
-                    total += (p_t_i.tamano_ingrediente.costo * p_t_i.porcion.valor)
+                    total += (p_t_i.tamano_ingrediente.costo * p_t_i.porcion.valor * cantidad)
                 ##CACULANDO COSTO DE BORDE Y MASA
-                total += pizza.masa.costo 
-                total += pizza.borde.costo
+                total += (pizza.masa.costo * cantidad)
+                total += (pizza.borde.costo * cantidad)
+
         ##ITERANDO ADICIONALES
         for c_a in combinaciones_adicional:
             t_a = Tamano_Ingrediente.objects.filter(ingrediente=c_a.adicional)[0]
             total += (t_a.costo * c_a.cantidad)
         ##ITERANDO COMBOS
         for c in combos:
-            total += c.costoprint("******TOTAL ACU: " + str(total))
+            total += c.costo
     return total
 
 ##ACTUALIZAR CANTIDADES DE CARRITO
