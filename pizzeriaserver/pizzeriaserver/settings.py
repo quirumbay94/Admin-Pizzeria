@@ -18,6 +18,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Firebase project token
 FIREBASE_TOKEN = 'AAAASprE-zI:APA91bE3XOOpeKNaBxmrjjCRV36eHjB3JQYs-1rCW2F6VVlwoaz4UkUzjugGBTzMUl8MxfkKw8ZSsQjNigC0XM6okC_4-K4MuAhTKt1bjSqT9-mYSWi9F-5StkbrFCPSyAITrd40jGsK'
 
+#Defase de zona horaria
+DEFASE_ZONA_HORARIA = 5
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 

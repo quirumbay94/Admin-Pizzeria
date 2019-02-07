@@ -1,8 +1,11 @@
 import secrets
 import random
+import datetime
+from datetime import timedelta, timezone 
 from django.db import models
 from rest import user_model
 from rest.user_model import AbstractBaseUser, PermissionsMixin, UsuarioManager
+from pizzeriaserver.settings import DEFASE_ZONA_HORARIA
 from django.utils.translation import gettext_lazy as _
 
 class Usuario(AbstractBaseUser , PermissionsMixin):
@@ -760,7 +763,7 @@ class Pedido(models.Model):
     total = models.FloatField()
     forma_pago = models.IntegerField()
     codigo = models.CharField(max_length=28, unique=True)
-    fecha = models.DateTimeField(auto_now_add=True)
+    fecha = models.DateTimeField()
 
     def crear(self, carrito, total, forma_pago, codigo):
         try:
@@ -769,6 +772,7 @@ class Pedido(models.Model):
             pedido.total = total
             pedido.forma_pago = forma_pago
             pedido.codigo = codigo
+            pedido.fecha = datetime.datetime.now(timezone.utc) - timedelta(hours=DEFASE_ZONA_HORARIA)
             pedido.save()
             return pedido
         except:

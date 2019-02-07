@@ -135,7 +135,7 @@ def actualizarCantidades(elementos):
 ## CONSULTA ESTADO DE PEDIDO
 def get_estado_pedido(pedido):
     hora_pedido = pedido.fecha
-    hora_actual = datetime.datetime.now(timezone.utc) - timedelta(hours=5)
+    hora_actual = datetime.datetime.now(timezone.utc) - timedelta(hours=DEFASE_ZONA_HORARIA)
     minutos_transcurridos = math.floor((hora_actual - hora_pedido).total_seconds() / 60.0)
     respuesta = []
     if minutos_transcurridos <= 10:
@@ -175,7 +175,7 @@ def get_estado_pedido(pedido):
 
 def get_estado_str(pedido):
     hora_pedido = pedido.fecha
-    hora_actual = datetime.datetime.now(timezone.utc) - timedelta(hours=5)
+    hora_actual = datetime.datetime.now(timezone.utc) - timedelta(hours=DEFASE_ZONA_HORARIA)
     minutos_transcurridos = math.floor((hora_actual - hora_pedido).total_seconds() / 60.0)
     respuesta = None
     if minutos_transcurridos <= 10:
