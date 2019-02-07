@@ -1372,7 +1372,7 @@ def getDetallePedido(request):
                 for c_p in combinaciones_pizza:
                     pizzas.append({
                         "NOMBRE" : c_p.pizza.nombre,
-                        "TAMANO" : c_p.pizza.tamano.nombre,
+                        "TAMANO" : c_p.pizza.tamano.nombre.capitalize(),
                         "CANTIDAD" : c_p.cantidad
                     })
                 ##ITERANDO ADICIONALES
