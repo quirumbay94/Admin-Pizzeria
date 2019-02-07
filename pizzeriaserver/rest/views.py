@@ -1274,7 +1274,8 @@ def crear_pedido(request):
     if request.method == "POST" and usuario:   
         try:
             elementos = body.get('ELEMENTOS', None)
-            if utils.actualizarCantidades(elementos):  
+            respuesta = utils.actualizarCantidades(elementos)
+            if respuesta:  
                 carrito = utils.getCarritoConToken(token)
                 forma_pago = body.get('FORMA_PAGO', None)
                 total = utils.calcularTotal(carrito) ##CALCULAR EL TOTAL
