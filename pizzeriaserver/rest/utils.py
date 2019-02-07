@@ -109,6 +109,26 @@ def calcularTotal(carrito):
             total += c.costoprint("******TOTAL ACU: " + str(total))
     return total
 
+##ACTUALIZAR CANTIDADES DE CARRITO
+def actualizarCantidades(elementos):
+    response = True
+    for elemento in elementos:
+        combinacion_id = elemento.get("ID",None)
+        cantidad = elemento.get("CANTIDAD", None)
+        tipo = elemento.get("TIPO", None)
+        if tipo == "PIZZA":
+            c_p = Combinacion_Pizza().editar(combinacion_id, cantidad)
+            if not c_p:
+                response = False
+                break
+        elif tipo == "ADICIONAL":
+            c_a = Combinacion_Adicional().editar(combinacion_id,cantidad)
+            if not c_a:
+                response = False
+                break
+        print(combinacion_p_id, cantidad)
+    return response
+
 ##PUSH NOTIFICATION
 def enviarPushNot(token, titulo, mensaje):
     push_service = FCMNotification(api_key=FIREBASE_TOKEN)

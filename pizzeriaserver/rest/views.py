@@ -881,7 +881,6 @@ def editarCantidadCarrito(request):
                     'DETALLE' : 'Solicitud correcta'
                 })
         except Exception as e:
-            print(e)
             return JsonResponse({
                 'STATUS' : 'ERROR',
                 'CODIGO' : 26,
@@ -1273,39 +1272,41 @@ def crear_pedido(request):
     token = body.get('TOKEN', None)
     usuario = utils.getUsuarioConToken(token)
     if request.method == "POST" and usuario:   
-        try: 
-            carrito = utils.getCarritoConToken(token)
-            forma_pago = body.get('FORMA_PAGO', None)
-            total = utils.calcularTotal(carrito) ##CALCULAR EL TOTAL
-            codigo = secrets.token_hex(16) ##GENERAR CODIGO
-            pedido = Pedido().crear(carrito, total, forma_pago, codigo)
+        try:
+            elementos = body.get('ELEMENTOS', None)
+            if utils.actualizarCantidades(elementos):  
+                carrito = utils.getCarritoConToken(token)
+                forma_pago = body.get('FORMA_PAGO', None)
+                total = utils.calcularTotal(carrito) ##CALCULAR EL TOTAL
+                codigo = secrets.token_hex(16) ##GENERAR CODIGO
+                pedido = Pedido().crear(carrito, total, forma_pago, codigo)
 
-            #COPIANDO INSTANCIAS DE DETALLE_CARRITO EN EL DETALLE_PEDIDO
-            if pedido:
-                detalle_carrito = DetalleCarrito.objects.filter(carrito=carrito)
-                for d_c in detalle_carrito:
-                    combinacion = d_c.combinacion
-                    d_p = Detalle_Pedido().crear(pedido, combinacion)
-                    if not d_p:
-                        return JsonResponse({
-                            'STATUS' : 'ERROR',
-                            'CODIGO' : 28,
-                            'DETALLE' : 'Error creando detalle de pedido'
-                        })
-                ##VACIANDO CARRITO
-                for d_c in detalle_carrito:
-                    d_c.delete()
+                #COPIANDO INSTANCIAS DE DETALLE_CARRITO EN EL DETALLE_PEDIDO
+                # if pedido:
+                #     detalle_carrito = DetalleCarrito.objects.filter(carrito=carrito)
+                #     for d_c in detalle_carrito:
+                #         combinacion = d_c.combinacion
+                #         d_p = Detalle_Pedido().crear(pedido, combinacion)
+                #         if not d_p:
+                #             return JsonResponse({
+                #                 'STATUS' : 'ERROR',
+                #                 'CODIGO' : 28,
+                #                 'DETALLE' : 'Error creando detalle de pedido'
+                #             })
+                #     ##VACIANDO CARRITO
+                #     for d_c in detalle_carrito:
+                #         d_c.delete()
 
-            token_fire = 'chrpz-bW25E:APA91bHFcSelHBUesGJIje3P1PgS2MKdSDTgqfFbb8nFmrpI_gj2u1j1L-UkEwCjbu5DApuc3sruadJ6fcIxnNeDy82gcnWHzJoCaHgfM7xlxjBSHRSY2cFXReJcXe9O9L5_Ka8aAm4y'
+                token_fire = 'chrpz-bW25E:APA91bHFcSelHBUesGJIje3P1PgS2MKdSDTgqfFbb8nFmrpI_gj2u1j1L-UkEwCjbu5DApuc3sruadJ6fcIxnNeDy82gcnWHzJoCaHgfM7xlxjBSHRSY2cFXReJcXe9O9L5_Ka8aAm4y'
 
-            resultado = utils.enviarPushNot(token_fire, "Pedido", "Tu pedido ha sido recibido.")
+                resultado = utils.enviarPushNot(token_fire, "Pedido", "Tu pedido ha sido recibido.")
 
-            return JsonResponse({
-                'STATUS' : 'OK',
-                'CODIGO' : 19,
-                'PEDIDO' : pedido.id,
-                'DETALLE' : 'Solicitud correcta'
-            })
+                return JsonResponse({
+                    'STATUS' : 'OK',
+                    'CODIGO' : 19,
+                    'PEDIDO' : pedido.id,
+                    'DETALLE' : 'Solicitud correcta'
+                })
         except Exception as e:
             return JsonResponse({
                 'STATUS' : 'ERROR',

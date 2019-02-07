@@ -452,13 +452,21 @@ class Combinacion_Pizza(models.Model):
     cantidad = models.IntegerField()
 
     def __str__(self):
-        return self.pizza.nombre + " | COMBINACION: " + self.combinacion.nombre + " | CANT: " + str(self.cantidad)
+        return "ID: " + str(self.id) + "  NOMBRE: " + self.pizza.nombre + " | COMBINACION: " + self.combinacion.nombre + " | CANT: " + str(self.cantidad)
 
     def crear(self, combinacion, pizza, cantidad):
         try:
             c = Combinacion_Pizza()
             c.combinacion = combinacion
             c.pizza = pizza
+            c.cantidad = cantidad
+            c.save()
+            return c
+        except:
+            return None
+    def editar(self, combinacion_id, cantidad):
+        try:
+            c = Combinacion_Pizza.objects.get(pk=combinacion_id)
             c.cantidad = cantidad
             c.save()
             return c
@@ -471,7 +479,7 @@ class Combinacion_Adicional(models.Model):
     cantidad = models.IntegerField()
 
     def __str__(self):
-        return self.adicional.nombre + " | COMBINACION: " + self.combinacion.nombre + " | CANT: " + str(self.cantidad)
+        return "ID: " + str(self.id) + "  NOMBRE: " + self.adicional.nombre + " | COMBINACION: " + self.combinacion.nombre + " | CANT: " + str(self.cantidad)
 
     def crear(self, combinacion, adicional, cantidad):
         try: 
@@ -481,6 +489,15 @@ class Combinacion_Adicional(models.Model):
             c_a.cantidad = cantidad
             c_a.save()
             return c_a
+        except:
+            return None
+
+    def editar(self, combinacion_id, cantidad):
+        try:
+            c = Combinacion_Adicional.objects.get(pk=combinacion_id)
+            c.cantidad = cantidad
+            c.save()
+            return c
         except:
             return None
 
@@ -563,8 +580,8 @@ class DetalleCarrito(models.Model):
     carrito = models.ForeignKey("Carrito", on_delete=models.CASCADE, default=None)
 
     def __str__(self):
-        return "CARRITO DE: " + self.carrito.usuario.username
-        
+        return "ID: " + str(self.id) + " CARRITO DE: " + self.carrito.usuario.username
+
     def crear(self, combinacion, carrito):
         try:
             detalle = DetalleCarrito()
