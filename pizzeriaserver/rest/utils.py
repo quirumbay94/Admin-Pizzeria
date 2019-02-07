@@ -126,7 +126,6 @@ def actualizarCantidades(elementos):
             if not c_a:
                 response = False
                 break
-        print(combinacion_p_id, cantidad)
     return response
 
 ##PUSH NOTIFICATION

@@ -1282,20 +1282,20 @@ def crear_pedido(request):
                 pedido = Pedido().crear(carrito, total, forma_pago, codigo)
 
                 #COPIANDO INSTANCIAS DE DETALLE_CARRITO EN EL DETALLE_PEDIDO
-                # if pedido:
-                #     detalle_carrito = DetalleCarrito.objects.filter(carrito=carrito)
-                #     for d_c in detalle_carrito:
-                #         combinacion = d_c.combinacion
-                #         d_p = Detalle_Pedido().crear(pedido, combinacion)
-                #         if not d_p:
-                #             return JsonResponse({
-                #                 'STATUS' : 'ERROR',
-                #                 'CODIGO' : 28,
-                #                 'DETALLE' : 'Error creando detalle de pedido'
-                #             })
-                #     ##VACIANDO CARRITO
-                #     for d_c in detalle_carrito:
-                #         d_c.delete()
+                if pedido:
+                    detalle_carrito = DetalleCarrito.objects.filter(carrito=carrito)
+                    for d_c in detalle_carrito:
+                        combinacion = d_c.combinacion
+                        d_p = Detalle_Pedido().crear(pedido, combinacion)
+                        if not d_p:
+                            return JsonResponse({
+                                'STATUS' : 'ERROR',
+                                'CODIGO' : 28,
+                                'DETALLE' : 'Error creando detalle de pedido'
+                            })
+                    ##VACIANDO CARRITO
+                    for d_c in detalle_carrito:
+                        d_c.delete()
 
                 token_fire = 'chrpz-bW25E:APA91bHFcSelHBUesGJIje3P1PgS2MKdSDTgqfFbb8nFmrpI_gj2u1j1L-UkEwCjbu5DApuc3sruadJ6fcIxnNeDy82gcnWHzJoCaHgfM7xlxjBSHRSY2cFXReJcXe9O9L5_Ka8aAm4y'
 
