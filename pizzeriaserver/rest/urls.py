@@ -57,6 +57,7 @@ urlpatterns = [
     ##PEDIDOS
     url(r'^pedido/crear$', views.crear_pedido, name='crear_pedido'),
     url(r'^pedido/ver$', views.getDetallePedido, name='getDetallePedido'),
+    url(r'^pedidos$', views.getPedidos, name='getPedidos'),
 
     
 

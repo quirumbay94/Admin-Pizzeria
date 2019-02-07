@@ -1,7 +1,7 @@
 import json
 import datetime
 import math
-from datetime import timedelta  
+from datetime import timedelta, timezone  
 from pyfcm import FCMNotification
 from pizzeriaserver.settings import FIREBASE_TOKEN
 from rest.models import *
@@ -134,11 +134,9 @@ def actualizarCantidades(elementos):
 
 ## CONSULTA ESTADO DE PEDIDO
 def get_estado_pedido(pedido):
-    hora_pedido = pedido.fecha.now()
-    #hora_pedido = datetime.datetime.strptime('2019-02-07 01:15:16', '%Y-%m-%d %H:%M:%S')
-    hora_actual = datetime.datetime.now()
+    hora_pedido = pedido.fecha
+    hora_actual = datetime.datetime.now(timezone.utc) - timedelta(hours=5)
     minutos_transcurridos = math.floor((hora_actual - hora_pedido).total_seconds() / 60.0)
-    # cantidad = getCantidadPizzasPedido(pedido)
     respuesta = []
     if minutos_transcurridos <= 10:
         respuesta.append({
@@ -146,22 +144,47 @@ def get_estado_pedido(pedido):
             "descripcion":"Tu pizza esta siendo preparada", 
             "hora": (hora_pedido + timedelta(minutes=10)).time().strftime("%H:%M")
         })
-    elif minutos_transcurridos <=20:
+    if minutos_transcurridos <=20:
+        respuesta.append({
+            "nombre":"Preparando", 
+            "descripcion":"Tu pizza esta siendo preparada", 
+            "hora": (hora_pedido + timedelta(minutes=10)).time().strftime("%H:%M")
+        })
         respuesta.append({
             "nombre":"En el horno", 
             "descripcion":"Tu pizza se encuentra en el horno", 
             "hora": (hora_pedido + timedelta(minutes=20)).time().strftime("%H:%M")
         })
-    elif minutos_transcurridos > 20:
+    if minutos_transcurridos > 20:
+        respuesta.append({
+            "nombre":"Preparando", 
+            "descripcion":"Tu pizza esta siendo preparada", 
+            "hora": (hora_pedido + timedelta(minutes=10)).time().strftime("%H:%M")
+        })
+        respuesta.append({
+            "nombre":"En el horno", 
+            "descripcion":"Tu pizza se encuentra en el horno", 
+            "hora": (hora_pedido + timedelta(minutes=20)).time().strftime("%H:%M")
+        })
         respuesta.append({
             "nombre":"En camino", 
             "descripcion":"Tu pizza se encuentra en camino", 
-            "hora": (hora_pedido + timedelta(minutes=30)).time().strftime("%H:%M") 
+            "hora": (hora_pedido + timedelta(minutes=30)).time().strftime("%H:%M")
         })
-
     return respuesta
 
-
+def get_estado_str(pedido):
+    hora_pedido = pedido.fecha
+    hora_actual = datetime.datetime.now(timezone.utc) - timedelta(hours=5)
+    minutos_transcurridos = math.floor((hora_actual - hora_pedido).total_seconds() / 60.0)
+    respuesta = None
+    if minutos_transcurridos <= 10:
+        respuesta = "Preparando"
+    elif minutos_transcurridos <=20:
+        respuesta = "En el horno"
+    elif minutos_transcurridos > 20:
+        respuesta = "En camino"
+    return respuesta
 
 ##PUSH NOTIFICATION
 def enviarPushNot(token, titulo, mensaje):
