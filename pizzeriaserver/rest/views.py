@@ -773,7 +773,7 @@ def getCarrito(request):
                     "ID" : combo.id,
                     "NOMBRE" : combo.nombre,
                     "DESCRIPCION" : combo.descripcion,
-                    "IMAGEN" : IP + combo.img_url.url,
+                    "IMAGEN_URL" : IP + combo.img_url.url,
                     "COSTO" : "%.2f" % float(combo.costo), 
                     "CANTIDAD" : combinacion.cantidad,
                     "TIPO" : "COMBO"
