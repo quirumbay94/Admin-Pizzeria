@@ -1202,6 +1202,7 @@ def getLocales(request):
         paquete = []
         for l in locales:
             paquete.append({
+                "ID" : l.id,
                 "SECTOR" : l.sector,
                 "CIUDAD" : l.ciudad,
                 "APERTURA" : l.apertura,
