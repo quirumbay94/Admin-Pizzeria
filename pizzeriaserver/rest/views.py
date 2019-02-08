@@ -770,7 +770,7 @@ def getCarrito(request):
             for combinacion in combinacion_combos:
                 combo = combinacion.combo
                 combos_ARR.append({
-                    "ID" : combo.id,
+                    "ID" : combinacion,
                     "NOMBRE" : combo.nombre,
                     "DESCRIPCION" : combo.descripcion,
                     "IMAGEN_URL" : IP + combo.img_url.url,
