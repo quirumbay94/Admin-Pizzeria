@@ -790,7 +790,7 @@ class Pedido(models.Model):
     local = models.ForeignKey("Local", on_delete=models.CASCADE, null=True)
     total = models.FloatField()
     forma_pago = models.IntegerField()
-    codigo = models.CharField(max_length=28, unique=True)
+    codigo = models.CharField(max_length=32, unique=True)
     fecha = models.DateTimeField()
     entregado = models.IntegerField(default=0)
     recibido = models.IntegerField(default=0)

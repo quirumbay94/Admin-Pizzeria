@@ -213,8 +213,8 @@ def diccionarioDatosSubBarraPedido(paquete):
 
 def diccionarioPedidos(paquete, usuario):
 	paquete_ = paquete
-	paquete_['PEDIDOS_NUEVOS'] = Pedido.objects.filter(local=usuario.local).filter(entregado=0)
-	paquete_['PEDIDOS_DESPACHADOS'] =  Pedido.objects.filter(local=usuario.local).filter(entregado=1)
+	paquete_['PEDIDOS_NUEVOS'] = Pedido.objects.filter(local=usuario.local).filter(entregado=0).order_by("-fecha")
+	paquete_['PEDIDOS_DESPACHADOS'] =  Pedido.objects.filter(local=usuario.local).filter(entregado=1).order_by("-fecha")
 	return paquete_
 
 def diccionarioConPedido(paquete, pedido_id):
