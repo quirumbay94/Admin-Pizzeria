@@ -805,6 +805,7 @@ class Pedido(models.Model):
             pedido.fecha = datetime.datetime.now(timezone.utc) - timedelta(hours=DEFASE_ZONA_HORARIA)
             pedido.entregado = 0
             pedido.recibido = 0
+            pedido.local = Local.objects.get(sector="Alborada")
             pedido.save()
             return pedido
         except:
