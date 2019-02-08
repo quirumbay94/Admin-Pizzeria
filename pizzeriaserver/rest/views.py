@@ -1413,7 +1413,8 @@ def getDetallePedido(request):
                     combos_p.append({
                         "NOMBRE" : c.combo.nombre,
                         "DESCRIPCION" : c.combo.descripcion,
-                        "CANTIDAD" : c.cantidad
+                        "CANTIDAD" : c.cantidad,
+                        "IMAGEN_URL" : IP + c.combo.img_url.url
                     })
             paquete = {
                 "PIZZAS" : pizzas,

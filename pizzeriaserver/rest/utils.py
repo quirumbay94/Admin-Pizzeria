@@ -85,7 +85,7 @@ def calcularTotal(carrito):
         combinacion = d_c.combinacion
         combinaciones_pizza = Combinacion_Pizza.objects.filter(combinacion=combinacion)
         combinaciones_adicional = Combinacion_Adicional.objects.filter(combinacion=combinacion)
-        combos = Combos_Promocionales.objects.filter(combinacion=combinacion)
+        combinaciones_combo = Combinacion_Combo.objects.filter(combinacion=combinacion)
 
         ##ITERANDO PIZZAS
         for c_p in combinaciones_pizza:
@@ -107,8 +107,8 @@ def calcularTotal(carrito):
             t_a = Tamano_Ingrediente.objects.filter(ingrediente=c_a.adicional)[0]
             total += (t_a.costo * c_a.cantidad)
         ##ITERANDO COMBOS
-        for c in combos:
-            total += c.costo
+        for c in combinaciones_combo:
+            total += c.combo.costo
     return total
 
 ##ACTUALIZAR CANTIDADES DE CARRITO
