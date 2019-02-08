@@ -1277,18 +1277,18 @@ def get_local_info(request):
                             "COORDENADAS" : coordenadas
                         }
                     })
-                    return JsonResponse({
-                        'STATUS' : 'OK',
-                        'CODIGO' : 19,
-                        'LOCALES' : paquete,
-                        'DETALLE' : 'Solicitud correcta'
-                    })
                 except:
                     return JsonResponse({
                         'STATUS' : 'ERROR',
                         'CODIGO' : 26,
-                        'DETALLE' : 'Local no existe'
+                        'DETALLE' : 'Poligono no existe'
                     })
+            return JsonResponse({
+                'STATUS' : 'OK',
+                'CODIGO' : 19,
+                'LOCALES' : paquete,
+                'DETALLE' : 'Solicitud correcta'
+            })
 
     return JsonResponse({
         'STATUS' : 'ERROR',
