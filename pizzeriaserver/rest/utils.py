@@ -129,7 +129,7 @@ def actualizarCantidades(elementos):
                 response = False
                 break
         elif tipo == "COMBO":
-            c_c = Combinacion_Combo.editar(combinacion_id,cantidad)
+            c_c = Combinacion_Combo().editar(combinacion_id,cantidad)
             if not c_c:
                 response = False
                 break
