@@ -584,6 +584,7 @@ def crear_local(request):
             #CREANDO LOCAL
             local = Local().crear(sector, ciudad, coordenada, apertura, cierre, imagen)
             if local:
+                Poligono().crear(local, [])
                 paquete = diccionarios.diccionarioMensaje(paquete, "Local creado con éxito.")
             else:
                 paquete = diccionarios.diccionarioMensaje(paquete, "Error creando local.")
@@ -622,23 +623,35 @@ def ver_local(request, local_id):
 
 def cobertura(request):
     if verificarSesion(request):
-        local = Local.objects.all()[1]
         paquete = diccionarios.diccionarioBarraNav(request,{})
-        if request.method == "POST":
-            posiciones = request.POST.getlist("POSICION[]",None)
-            poligono = Poligono().crear(local, posiciones)
-            if poligono:
-                paquete = diccionarios.diccionarioMensaje(paquete, "Cobertura creada con éxito.")
-            else:
-                paquete = diccionarios.diccionarioMensaje(paquete, "Error creando cobertura.")
-
         paquete = diccionarios.diccionarioTodosLocales(paquete)
         return render(request, "Cobertura/cobertura.html",paquete) 
     return redirect("login")   
 
+def cobertura_local(request):
+    if verificarSesion(request):
+        paquete = diccionarios.diccionarioBarraNav(request,{})
+        usuario = getUserBySesion(request)
+        if request.method == "POST":
+            posiciones = request.POST.getlist("POSICION[]",None)
+            poligono = Poligono().crear(usuario.local, posiciones)
+            if poligono:
+                paquete = diccionarios.diccionarioMensaje(paquete, "Cobertura creada con éxito.")
+            else:
+                paquete = diccionarios.diccionarioMensaje(paquete, "Error creando cobertura.")
+            return redirect("cobertura")
+        paquete = diccionarios.diccionarioNombreLocal(paquete, usuario.local)
+        return render(request, "Cobertura/cobertura_local.html",paquete) 
+    return redirect("login") 
+
 def get_poligonos(request):   
     return JsonResponse({
         'RESPONSE' : diccionarios.diccionarioCoordenadasTodosLocales()
+    })
+def get_poligono_local(request):   
+    usuario = getUserBySesion(request)
+    return JsonResponse({
+        'RESPONSE' : diccionarios.diccionarioCoordenadasLocal(usuario.local)
     })
 
 ## RECLAMOS Y SUGERENCIAS

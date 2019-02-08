@@ -1,3 +1,4 @@
+var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 var labelIndex = 0;
 var poligonos = [];
 var poligonos_objs = [];
@@ -20,23 +21,22 @@ function initMap() {
         addMarker(event.latLng, map);
     });
 
-    makeRequest("http://127.0.0.1:8000/menu/cobertura/get_poligonos");
+    makeRequest("http://127.0.0.1:8000/menu/cobertura/get_poligono_local");
 }
 
 function crearPoligonoInicial(posiciones) {
-    posiciones.forEach(function(element) {
-        var color = element["COLOR"];
-        var coordenadas = element["COORDENADAS"];
-        coordenadas_poligono = [];
-        coordenadas.forEach(function(coordenada) {
-            var location = {lat: parseFloat(coordenada[0]), lng: parseFloat(coordenada[1])};
-            coordenadas_poligono.push(location);
-        });
-        poligonos.push({
-            "COLOR" : color,
-            "COORDENADAS" : coordenadas_poligono
-        })
+    var color = posiciones["COLOR"];
+    var coordenadas = posiciones["COORDENADAS"];
+    coordenadas.forEach(function(coordenada) {
+        var location = {lat: parseFloat(coordenada[0]), lng: parseFloat(coordenada[1])}
+        anadirPosicionEnHtml(parseFloat(coordenada[0]), parseFloat(coordenada[1]));
+        addMarker(location, map);
+        coordenadas_poligono.push(location);
     });
+    poligonos.push({
+        "COLOR" : color,
+        "COORDENADAS" : coordenadas_poligono
+    })
     crearPoligono();
 }
 
@@ -61,13 +61,14 @@ function crearPoligono() {
         poligono.setMap(map);
         poligonos_objs.push(poligono);
     });
+    setMapOnAll(map);
 }
 
 // Adds a marker to the map.
 function addMarker(location, map) {
     var marker = new google.maps.Marker({
         position: location,
-        label: "*",
+        label: labels[labelIndex++ % labels.length],
         map: map
     });
     markers.push(marker);
@@ -98,6 +99,13 @@ function undo() {
     //CREANDO NUEVAMENTE UN POLIGONO Y MARCADORES
     setMapOnAll(map);
     crearPoligono();
+}
+
+function anadirPosicionEnHtml(lat, lng){
+    var input = document.getElementsByClassName("position_sample_obj")[0];
+    var nuevo_input = input.cloneNode(true);
+    nuevo_input.value = (lat + "|" + lng);
+    document.getElementById("guardarForm").appendChild(nuevo_input);
 }
 
 function makeRequest(url) {
@@ -133,6 +141,7 @@ function makeRequest(url) {
     function alertContents() {
 
         if (http_request.readyState == 4) {
+            console.log(http_request.status)
             if (http_request.status == 200) {
                 var obj = JSON.parse(http_request.responseText);
                 crearPoligonoInicial(obj["RESPONSE"]);

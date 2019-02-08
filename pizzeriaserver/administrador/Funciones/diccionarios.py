@@ -139,9 +139,8 @@ def diccionarioDatosComboPromocional(paquete, combo_id):
 	paquete_["BEBIDAS_SELEC"] = bebidas_list
 	paquete_["ADICIONALES_SELEC"] = adicionales_list
 	paquete_["COMBO"] = combo
-
-	print(paquete_)
 	return paquete_
+
 def diccionarioCoordenadas(paquete, local_id):
 	paquete_ = paquete
 	paquete_["COORDENADAS"] = Poligono().getCoordenadas(local_id)
@@ -162,6 +161,11 @@ def diccionarioTodosLocales(paquete):
 	paquete_["LOCALES"] = poligonos
 	return paquete_
 
+def diccionarioNombreLocal(paquete, local):
+	paquete_ = paquete
+	paquete_["NOMBRE_LOCAL"] = local.sector.capitalize()
+	return paquete_
+
 def diccionarioCoordenadasTodosLocales():
 	locales = Local.objects.all()
 	poligonos = []
@@ -177,6 +181,20 @@ def diccionarioCoordenadasTodosLocales():
 				"COORDENADAS" : coordenadas_list
 			})
 	return poligonos
+
+def diccionarioCoordenadasLocal(local):
+	respuesta = {}
+	if (len(Poligono.objects.filter(local=local)) > 0):
+		poligono_obj = Poligono.objects.get(local=local)
+		coordenadas = Poligono().getCoordenadas(local.id)
+		coordenadas_list = []
+		for c in coordenadas:
+			coordenadas_list.append([c.latitud, c.longitud])
+		
+		respuesta["COLOR"] = poligono_obj.color,
+		respuesta["COORDENADAS"] = coordenadas_list
+
+	return respuesta
 
 
 ##DICCIONARIO CON TODOS LOS LOCALES

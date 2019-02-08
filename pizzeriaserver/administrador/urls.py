@@ -35,7 +35,9 @@ urlpatterns = [
 
     ##COBERTURA
     url(r'^menu/cobertura$', views.cobertura, name='cobertura'), 
-    url(r'^menu/cobertura/get_poligonos$', views.get_poligonos, name='get_poligonos'), 
+    url(r'^menu/cobertura/local$', views.cobertura_local, name='cobertura_local'), 
+    url(r'^menu/cobertura/get_poligonos$', views.get_poligonos, name='get_poligonos'),
+    url(r'^menu/cobertura/get_poligono_local$', views.get_poligono_local, name='get_poligono_local'), 
     
     ##LOCALES
     url(r'^menu/local$', views.local, name='local'),
