@@ -78,7 +78,7 @@ def obtenerPedido(pedido_id):
         "PIZZAS" : pizzas,
         "ADICIONALES" : adicionales,
         "COMBOS" : combos_p,
-        "TOTAL" : pedido.total,
+        "TOTAL" : "%.2f" % float(pedido.total),
         "ENTREGADO" : pedido.entregado
     }
     return paquete
