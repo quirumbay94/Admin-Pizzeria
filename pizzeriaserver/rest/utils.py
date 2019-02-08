@@ -108,7 +108,7 @@ def calcularTotal(carrito):
             total += (t_a.costo * c_a.cantidad)
         ##ITERANDO COMBOS
         for c in combinaciones_combo:
-            total += c.combo.costo
+            total += (c.combo.costo * c.cantidad)
     return total
 
 ##ACTUALIZAR CANTIDADES DE CARRITO
