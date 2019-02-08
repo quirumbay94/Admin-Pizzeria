@@ -2,6 +2,7 @@ var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 var labelIndex = 0;
 var poligonos = [];
 var poligonos_objs = [];
+var coordenadas_poligono = [];
 var map;
 var markers = [];
 
@@ -27,7 +28,6 @@ function crearPoligonoInicial(posiciones) {
     posiciones.forEach(function(element) {
         var color = element["COLOR"]
         var coordenadas = element["COORDENADAS"]
-        var coordenadas_poligono = [];
         coordenadas.forEach(function(coordenada) {
             var location = {lat: parseFloat(coordenada[0]), lng: parseFloat(coordenada[1])}
             coordenadas_poligono.push(location);

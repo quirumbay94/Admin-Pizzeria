@@ -14,6 +14,7 @@ class Usuario(AbstractBaseUser , PermissionsMixin):
     is_admin = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    local = models.ForeignKey("Local", on_delete=models.CASCADE, null=True)
 
     objects = UsuarioManager()
 
@@ -449,6 +450,24 @@ class Combos_Promocionales(models.Model):
         except:
             return None
 
+class Combinacion_Combo(models.Model):
+    combinacion = models.ForeignKey("Combinacion", on_delete=models.CASCADE, default=None)
+    combo = models.ForeignKey("Combos_Promocionales", on_delete=models.CASCADE)
+    cantidad = models.IntegerField()
+
+    def __str__(self):
+        return "ID: " + str(self.id) + " NOMBRE: " + self.combo.nombre
+    def crear(self, combinacion, combo, cantidad):
+        try:
+            c = Combinacion_Combo()
+            c.combinacion = combinacion
+            c.combo = combo
+            c.cantidad = cantidad
+            c.save()
+            return c
+        except:
+            return None
+
 class Combinacion_Pizza(models.Model):
     combinacion = models.ForeignKey("Combinacion", on_delete=models.CASCADE, default=None)
     pizza = models.ForeignKey("Pizza", on_delete=models.CASCADE)
@@ -760,6 +779,7 @@ class Reclamo_Sugerencia(models.Model):
 
 class Pedido(models.Model):
     carrito = models.ForeignKey("Carrito", on_delete=models.CASCADE) 
+    local = models.ForeignKey("Local", on_delete=models.CASCADE, null=True)
     total = models.FloatField()
     forma_pago = models.IntegerField()
     codigo = models.CharField(max_length=28, unique=True)

@@ -1,4 +1,5 @@
 from rest.models import *
+from administrador.Funciones import utils
 ##			GENERAL 		##
 ##DICCIONARIO CON DATOS PERSONALES PARA BARRA DE NAV
 def diccionarioBarraNav(request, paquete):
@@ -202,5 +203,28 @@ def diccionarioReclamosSugerencias(paquete):
 	paquete_['NO_LEIDOS'] = Reclamo_Sugerencia.objects.filter(estado=True)
 	paquete_['LEIDOS'] = Reclamo_Sugerencia.objects.filter(estado=False)
 	return paquete_
+
+##DICCIONARIO CON PEDIDOS
+def diccionarioDatosSubBarraPedido(paquete):
+	paquete_ = paquete
+	paquete_['URL'] = "pedidos"
+	paquete_['TITULO'] = "PEDIDOS"
+	return paquete_
+
+def diccionarioPedidos(paquete, usuario):
+	paquete_ = paquete
+	paquete_['PEDIDOS_NUEVOS'] = Pedido.objects.filter(local=usuario.local).filter(entregado=0)
+	paquete_['PEDIDOS_DESPACHADOS'] =  Pedido.objects.filter(local=usuario.local).filter(entregado=1)
+	return paquete_
+
+def diccionarioConPedido(paquete, pedido_id):
+	paquete_ = paquete
+	paquete_["PEDIDO"] = utils.obtenerPedido(pedido_id)
+	print(paquete_["PEDIDO"])
+	return paquete_
+
+
+
+
 
 

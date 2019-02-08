@@ -649,6 +649,33 @@ def reclamos_sugerencias(request):
         return render(request, "ReclamoSugerencia/reclamos_sugerencias.html", paquete)
     return redirect("login") 
 
+##PEDIDOS
+def pedidos(request):
+    if verificarSesion(request):
+        usuario = getUserBySesion(request)
+        paquete = diccionarios.diccionarioBarraNav(request,{})
+        paquete = diccionarios.diccionarioPedidos(paquete,usuario)
+        return render(request, "Pedido/pedido.html", paquete)
+    return redirect("login")
+
+def ver_pedido(request, pedido_id):
+    if verificarSesion(request):
+        if request.method == "POST":
+            pedido = Pedido.objects.get(pk=pedido_id)
+            pedido.entregado = 1
+            pedido.save()
+            token_fire = 'chrpz-bW25E:APA91bHFcSelHBUesGJIje3P1PgS2MKdSDTgqfFbb8nFmrpI_gj2u1j1L-UkEwCjbu5DApuc3sruadJ6fcIxnNeDy82gcnWHzJoCaHgfM7xlxjBSHRSY2cFXReJcXe9O9L5_Ka8aAm4y'
+            utils.enviarPushNot(token_fire, "Orden en camino", "Su orden esta en camino")
+            return redirect("pedidos")
+        else:
+            usuario = getUserBySesion(request)
+            paquete = diccionarios.diccionarioBarraNav(request,{})
+            paquete = diccionarios.diccionarioDatosSubBarraPedido(paquete)
+            paquete = diccionarios.diccionarioConPedido(paquete, pedido_id)
+            return render(request, "Pedido/ver_pedido.html", paquete)
+    return redirect("login")
+
+
 
 
 

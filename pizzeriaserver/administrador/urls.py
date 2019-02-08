@@ -37,7 +37,6 @@ urlpatterns = [
     url(r'^menu/cobertura$', views.cobertura, name='cobertura'), 
     url(r'^menu/cobertura/get_poligonos$', views.get_poligonos, name='get_poligonos'), 
     
-
     ##LOCALES
     url(r'^menu/local$', views.local, name='local'),
     url(r'^menu/local/crear$', views.crear_local, name='crear_local'),
@@ -46,6 +45,10 @@ urlpatterns = [
 
     ##RECLAMOS Y SUGERENCIAS
     url(r'^menu/reclamos_sugerencias$', views.reclamos_sugerencias, name='reclamos_sugerencias'),
+
+    ##PEDIDOS
+    url(r'^menu/pedidos$', views.pedidos, name='pedidos'),
+    url(r'^menu/pedidos/(?P<pedido_id>\d+)$$', views.ver_pedido, name='ver_pedido'),
 ]
 
 

@@ -1,0 +1,56 @@
+{% load static %}
+{% include 'General/header.html' %}
+{% include 'General/navbar.html' %}
+{% include 'General/subbarra.html' %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/Pedido/ver_pedido.css' %}">
+<div class="wrapper">
+	<div class="divisor">
+		<div class="bloque">
+			<h3>Detalle de pedido:</h3>
+			<div class="pedido-contianer">
+				{% if PEDIDO.PIZZAS %}
+					<h3>Pizzas:</h3>
+				{% endif %}
+				{% for pizza in PEDIDO.PIZZAS %}
+				<div class="listado-container">
+					<h5>Nombre: {{pizza.NOMBRE}}</h5>
+					<h5>Cantidad: {{pizza.CANTIDAD}}</h5>
+					<h5>Tamaño: {{pizza.TAMANO}}</h5>
+					<h5>Ingredientes: </h5>
+					<div class="ingrediente-contianer">
+						{% for ingrediente in pizza.INGREDIENTES %}
+							<div class="detalle-ingrediente-container">
+								<h5>-{{ingrediente.NOMBRE}}</h5>
+								<h5 style="margin-left: 10px;">| {{ingrediente.PORCION}}</h5>
+							</div>
+						{% endfor %}
+					</div>
+				</div>
+				{% endfor %}
+
+				{% if PEDIDO.ADICIONALES %}
+					<h3 style="margin-top: 20px;">Adicionales:</h3>
+				{% endif %}
+				{% for adicional in PEDIDO.ADICIONALES %}
+					<div class="listado-container">
+						<h5>Nombre: {{adicional.NOMBRE}}</h5>
+						<h5>Cantidad: {{adicional.CANTIDAD}}</h5>
+					</div>
+				{% endfor %}
+				{% for combo in COMBOS %}
+				
+				{% endfor %}
+			</div>
+		</div>
+		<div class="bloque" style="display:flex;">
+			{% if PEDIDO.ENTREGADO == 0 %}
+				<form action="" method="POST" style="margin:auto;">
+					{% csrf_token %}
+					<button class="btn btn-success btn-lg">DESPACHAR</button>
+				</form>
+			{% else %}
+				<h2 style="text-align:center; margin:30px auto;">PEDIDO DESPACHADO</h2>
+			{% endif %}
+		</div>
+	</div>
+</div>

@@ -664,17 +664,27 @@ def tamano_ingrediente(request):
 
 ## COMBINACION ##
 @csrf_exempt
-def crear_combinacion(request):  ## ARREGLAR RESPUESTAS DE ERRORES
+def crear_combinacion(request):
     body = utils.request_todict(request)
     token = body.get('TOKEN', None)
     if request.method == "POST" and utils.verificarToken(token):
         try:
             pizzas = body.get('PIZZAS', None)
             adicionales = body.get('ADICIONALES', None)
+            combos = body.get('COMBOS', None)
 
             ##CREANDO COMBINACION
             usuario = utils.getUsuarioConToken(token)
             combinacion = Combinacion().crear(None, usuario)
+
+            ##ITERANDO LISTA DE COMBOS
+            for combo in combos:
+                combo_id = combo.get("ID", None)
+                cantidad = combo.get("CANTIDAD", None)
+                ##RECUPERANDO INSTANCIA DE COMBO
+                combo_obj = Combos_Promocionales.objects.get(pk=combo_id)
+                ##CREANDO COMBINACION_COMBO
+                Combinacion_Combo().crear(combinacion, combo_obj, cantidad)
 
             ##ITERANDO LISTA DE PIZZAS PARA CREARLAS
             for pizza in pizzas:
@@ -923,6 +933,7 @@ def combos_promocionales(request):
             if len(combinaciones_adicionales) > 0:
                 combo_dict['ADICIONALES'] = comb_adic_dict
 
+            combo_dict['ID'] = combo.id
             combo_dict['NOMBRE'] = combo.nombre
             combo_dict['DESCRIPCION'] = combo.descripcion
             combo_dict['COSTO'] = "%.2f" % float(combo.costo)
@@ -1296,10 +1307,6 @@ def crear_pedido(request):
                     ##VACIANDO CARRITO
                     for d_c in detalle_carrito:
                         d_c.delete()
-
-                token_fire = 'chrpz-bW25E:APA91bHFcSelHBUesGJIje3P1PgS2MKdSDTgqfFbb8nFmrpI_gj2u1j1L-UkEwCjbu5DApuc3sruadJ6fcIxnNeDy82gcnWHzJoCaHgfM7xlxjBSHRSY2cFXReJcXe9O9L5_Ka8aAm4y'
-
-                resultado = utils.enviarPushNot(token_fire, "Pedido", "Tu pedido ha sido recibido.")
 
                 return JsonResponse({
                     'STATUS' : 'OK',
