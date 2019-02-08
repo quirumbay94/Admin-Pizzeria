@@ -37,8 +37,15 @@
 						<h5>Cantidad: {{adicional.CANTIDAD}}</h5>
 					</div>
 				{% endfor %}
-				{% for combo in COMBOS %}
-				
+				{% if PEDIDO.COMBOS %}
+					<h3 style="margin-top: 20px;">Combos Promocionales:</h3>
+				{% endif %}
+				{% for combo in PEDIDO.COMBOS %}
+					<div class="listado-container">
+						<h5>Nombre: {{combo.NOMBRE}}</h5>
+						<h5>Descripción: {{combo.DESCRIPCION}}</h5>
+						<h5>Cantidad: {{combo.CANTIDAD}}</h5>
+					</div>
 				{% endfor %}
 			</div>
 		</div>

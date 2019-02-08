@@ -71,7 +71,8 @@ def obtenerPedido(pedido_id):
         for c in combos:
             combos_p.append({
                 "NOMBRE" : c.combo.nombre,
-                "DESCRIPCION" : c.combo.descripcion
+                "DESCRIPCION" : c.combo.descripcion,
+                "CANTIDAD" : c.cantidad
             })
     paquete = {
         "PIZZAS" : pizzas,
