@@ -863,7 +863,6 @@ def borrarDetalleCarrito(request):
                 elif tipo == "COMBO":
                     combo = Combinacion_Combo.objects.get(pk=elemento_id)
                     combinacion_carrito = combo.combinacion.delete()
-                    combinacion_combinacion = combo.combo.combinacion.delete()
                 return JsonResponse({
                     'STATUS' : 'OK',
                     'CODIGO' : 19,
