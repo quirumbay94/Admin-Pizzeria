@@ -1407,7 +1407,8 @@ def getDetallePedido(request):
                 for c_a in combinaciones_adicional:
                     adicionales.append({
                         "NOMBRE" : c_a.adicional.nombre,
-                        "CANTIDAD" : c_a.cantidad
+                        "CANTIDAD" : c_a.cantidad,
+                        "IMAGEN_URL" : IP + c_a.adicional.img_url.url
                     })
                 ##ITERANDO COMBOS
                 for c in combos:
@@ -1421,7 +1422,7 @@ def getDetallePedido(request):
                 "PIZZAS" : pizzas,
                 "ADICIONALES" : adicionales,
                 "COMBOS" : combos_p,
-                "TOTAL" : pedido.total,
+                "TOTAL" : "%.2f" % float(pedido.total),
                 "ESTADO" : utils.get_estado_pedido(pedido)
             }
             return JsonResponse({
