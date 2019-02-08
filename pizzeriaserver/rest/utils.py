@@ -141,38 +141,60 @@ def get_estado_pedido(pedido):
     hora_actual = datetime.datetime.now(timezone.utc) - timedelta(hours=DEFASE_ZONA_HORARIA)
     minutos_transcurridos = math.floor((hora_actual - hora_pedido).total_seconds() / 60.0)
     respuesta = []
-    if minutos_transcurridos <= 5:
+    if pedido.entregado == 1:
         respuesta.append({
             "NOMBRE":"Preparando", 
             "DESCRIPCION":"Tu orden esta siendo preparada", 
-            "HORA": (hora_pedido + timedelta(minutes=10)).time().strftime("%H:%M")
+            "HORA": (hora_pedido + timedelta(minutes=5)).time().strftime("%H:%M")
+        })
+        respuesta.append({
+            "NOMBRE":"En el horno", 
+            "DESCRIPCION":"Tu orden se encuentra en el horno", 
+            "HORA": (hora_pedido + timedelta(minutes=15)).time().strftime("%H:%M")
+        })
+        respuesta.append({
+            "NOMBRE":"Control de calidad", 
+            "DESCRIPCION":"Tu orden esta siendo revisada y empaquetada", 
+            "HORA": (hora_pedido + timedelta(minutes=17)).time().strftime("%H:%M")
+        })
+        respuesta.append({
+            "NOMBRE":"En camino", 
+            "DESCRIPCION":"Tu orden se encuentra en camino", 
+            "HORA": (hora_pedido + timedelta(minutes=20)).time().strftime("%H:%M")
+        })
+
+    elif minutos_transcurridos <= 5:
+        respuesta.append({
+            "NOMBRE":"Preparando", 
+            "DESCRIPCION":"Tu orden esta siendo preparada", 
+            "HORA": (hora_pedido + timedelta(minutes=5)).time().strftime("%H:%M")
         })
     elif minutos_transcurridos <=15:
         respuesta.append({
             "NOMBRE":"Preparando", 
             "DESCRIPCION":"Tu orden esta siendo preparada", 
-            "HORA": (hora_pedido + timedelta(minutes=10)).time().strftime("%H:%M")
+            "HORA": (hora_pedido + timedelta(minutes=5)).time().strftime("%H:%M")
         })
         respuesta.append({
             "NOMBRE":"En el horno", 
             "DESCRIPCION":"Tu orden se encuentra en el horno", 
-            "HORA": (hora_pedido + timedelta(minutes=20)).time().strftime("%H:%M")
+            "HORA": (hora_pedido + timedelta(minutes=15)).time().strftime("%H:%M")
         })
     elif minutos_transcurridos > 15:
         respuesta.append({
             "NOMBRE":"Preparando", 
             "DESCRIPCION":"Tu orden esta siendo preparada", 
-            "HORA": (hora_pedido + timedelta(minutes=10)).time().strftime("%H:%M")
+            "HORA": (hora_pedido + timedelta(minutes=5)).time().strftime("%H:%M")
         })
         respuesta.append({
             "NOMBRE":"En el horno", 
             "DESCRIPCION":"Tu orden se encuentra en el horno", 
-            "HORA": (hora_pedido + timedelta(minutes=20)).time().strftime("%H:%M")
+            "HORA": (hora_pedido + timedelta(minutes=15)).time().strftime("%H:%M")
         })
         respuesta.append({
             "NOMBRE":"Control de calidad", 
             "DESCRIPCION":"Tu orden esta siendo revisada y empaquetada", 
-            "HORA": (hora_pedido + timedelta(minutes=30)).time().strftime("%H:%M")
+            "HORA": (hora_pedido + timedelta(minutes=17)).time().strftime("%H:%M")
         })
     return respuesta
 
