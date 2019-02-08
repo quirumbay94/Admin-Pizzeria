@@ -783,19 +783,20 @@ def getCarrito(request):
             for pizza in pizzas:
                 ## ESTIMANDO COSTO DE MASA Y BORDE
                 costo = 0
-                costo += pizza.pizza.masa.costo
-                costo += pizza.pizza.borde.costo
+                ##VERIFICANDO SI ES PIZZA TRADICIONAL PARA OBTENER SU PRECIO ESPECIAL
+                pizza_trad = Pizza_Tradicional.objects.filter(pizza=pizza.pizza)
+                if len(pizza_trad) > 0:
+                    costo += pizza_trad[0].costo
+                else:
+                    costo += pizza.pizza.masa.costo
+                    costo += pizza.pizza.borde.costo
 
                 ingredientes_ARR = []
                 ingredientes = Pizza_Tamano_Ingrediente.objects.filter(pizza=pizza.pizza)
                 for ingrediente in ingredientes:
-                    ##VERIFICANDO SI ES PIZZA TRADICIONAL PARA OBTENER SU PRECIO ESPECIAL
-                    pizza_trad = Pizza_Tradicional.objects.filter(pizza=pizza.pizza)
-                    if len(pizza_trad) > 0:
-                        costo += pizza_trad[0].costo
-                    else:
-                        ## ESTIMANDO COSTO DE INGREDIENTES
+                    if len(pizza_trad) == 0:## ESTIMANDO COSTO DE INGREDIENTES
                         costo += (ingrediente.tamano_ingrediente.costo * ingrediente.porcion.valor)
+                        
                     ingredientes_ARR.append(ingrediente.tamano_ingrediente.ingrediente.nombre.capitalize() + " " + utils.porcionToString(ingrediente.porcion))
                 pizzas_ARR.append({
                     "ID" : pizza.id,
