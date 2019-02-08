@@ -128,6 +128,11 @@ def actualizarCantidades(elementos):
             if not c_a:
                 response = False
                 break
+        elif tipo == "COMBO":
+            c_c = Combinacion_Combo.editar(combinacion_id,cantidad)
+            if not c_c:
+                response = False
+                break
     return response
 
 ## CONSULTA ESTADO DE PEDIDO

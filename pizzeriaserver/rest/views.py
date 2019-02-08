@@ -759,9 +759,25 @@ def getCarrito(request):
         detalles = DetalleCarrito.objects.filter(carrito=carrito)
         pizzas_ARR = []
         adicionales_ARR = []
+        combos_ARR = []
         for detalle in detalles:
             pizzas = Combinacion_Pizza.objects.filter(combinacion=detalle.combinacion)
             adicionales = Combinacion_Adicional.objects.filter(combinacion=detalle.combinacion)
+            combinacion_combos = Combinacion_Combo.objects.filter(combinacion=detalle.combinacion)
+
+
+            ##ITERANDO COMBOS
+            for combinacion in combinacion_combos:
+                combo = combinacion.combo
+                combos_ARR.append({
+                    "ID" : combo.id,
+                    "NOMBRE" : combo.nombre,
+                    "DESCRIPCION" : combo.descripcion,
+                    "IMAGEN" : IP + combo.img_url.url,
+                    "COSTO" : "%.2f" % float(combo.costo), 
+                    "CANTIDAD" : combinacion.cantidad,
+                    "TIPO" : "COMBO"
+                })
 
             ##ITERANDO PIZZAS
             for pizza in pizzas:
@@ -809,7 +825,8 @@ def getCarrito(request):
 
         paquete = {
             "PIZZAS" : pizzas_ARR,
-            "ADICIONALES" : adicionales_ARR
+            "ADICIONALES" : adicionales_ARR,
+            "COMBOS" : combos_ARR
         }
         return JsonResponse({
             'STATUS' : 'OK',
@@ -832,7 +849,7 @@ def borrarDetalleCarrito(request):
     elemento_id = body.get('ID', None)
     if request.method == "POST" and utils.verificarToken(token) and tipo and elemento_id:
         try:
-            if tipo == "PIZZA" or tipo == "ADICIONAL":
+            if tipo == "PIZZA" or tipo == "ADICIONAL" or tipo == "COMBO":
                 if tipo == "PIZZA":
                     pizza_combinacion = Combinacion_Pizza.objects.get(pk=elemento_id)
                     pizza = pizza_combinacion.pizza
@@ -843,6 +860,10 @@ def borrarDetalleCarrito(request):
                 elif tipo == "ADICIONAL":
                     adicional = Combinacion_Adicional.objects.get(pk=elemento_id)
                     adicional.delete()
+                elif tipo == "COMBO":
+                    combo = Combinacion_Combo.objects.get(pk=elemento_id)
+                    combinacion_carrito = combo.combinacion.delete()
+                    combinacion_combinacion = combo.combo.combinacion.delete()
                 return JsonResponse({
                     'STATUS' : 'OK',
                     'CODIGO' : 19,
@@ -876,11 +897,11 @@ def editarCantidadCarrito(request):
     elemento_id = body.get('ID', None)
     if request.method == "POST" and utils.verificarToken(token) and cantidad and elemento_id and tipo:
         try:
-            if tipo == "PIZZAS":
+            if tipo == "PIZZA":
                 pizza_combinacion = Combinacion_Pizza.objects.get(pk=elemento_id)
                 pizza_combinacion.cantidad = cantidad
                 pizza_combinacion.save()
-            elif (tipo == "BEBIDAS") or (tipo == "ADICIONALES"):
+            elif (tipo == "BEBIDA") or (tipo == "ADICIONALES"):
                 adicional_combinacion = Combinacion_Adicional.objects.get(pk=elemento_id)
                 adicional_combinacion.cantidad = cantidad
                 adicional_combinacion.save()
@@ -1373,7 +1394,7 @@ def getDetallePedido(request):
             for detalle in detalles:
                 combinaciones_pizza = Combinacion_Pizza.objects.filter(combinacion=detalle.combinacion)
                 combinaciones_adicional = Combinacion_Adicional.objects.filter(combinacion=detalle.combinacion)
-                combos = Combos_Promocionales.objects.filter(combinacion=detalle.combinacion)
+                combos = Combinacion_Combo.objects.filter(combinacion=detalle.combinacion)
 
                 ##ITERANDO PIZZAS
                 for c_p in combinaciones_pizza:
@@ -1391,8 +1412,9 @@ def getDetallePedido(request):
                 ##ITERANDO COMBOS
                 for c in combos:
                     combos_p.append({
-                        "NOMBRE" : c.nombre,
-                        "DESCRIPCION" : c.descripcion
+                        "NOMBRE" : c.combo.nombre,
+                        "DESCRIPCION" : c.combo.descripcion,
+                        "CANTIDAD" : c.cantidad
                     })
             paquete = {
                 "PIZZAS" : pizzas,

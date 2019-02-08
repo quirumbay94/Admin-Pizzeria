@@ -467,6 +467,14 @@ class Combinacion_Combo(models.Model):
             return c
         except:
             return None
+    def editar(self, combinacion_id, cantidad):
+        try:
+            c = Combinacion_Combo.objects.get(pk=combinacion_id)
+            c.cantidad = cantidad
+            c.save()
+            return c
+        except:
+            return None
 
 class Combinacion_Pizza(models.Model):
     combinacion = models.ForeignKey("Combinacion", on_delete=models.CASCADE, default=None)
