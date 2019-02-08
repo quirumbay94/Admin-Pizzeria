@@ -44,7 +44,7 @@ def obtenerPedido(pedido_id):
     for detalle in detalles:
         combinaciones_pizza = Combinacion_Pizza.objects.filter(combinacion=detalle.combinacion)
         combinaciones_adicional = Combinacion_Adicional.objects.filter(combinacion=detalle.combinacion)
-        combos = Combos_Promocionales.objects.filter(combinacion=detalle.combinacion)
+        combos = Combinacion_Combo.objects.filter(combinacion=detalle.combinacion)
 
         ##ITERANDO PIZZAS
         for c_p in combinaciones_pizza:
@@ -70,8 +70,8 @@ def obtenerPedido(pedido_id):
         ##ITERANDO COMBOS
         for c in combos:
             combos_p.append({
-                "NOMBRE" : c.nombre,
-                "DESCRIPCION" : c.descripcion
+                "NOMBRE" : c.combo.nombre,
+                "DESCRIPCION" : c.combo.descripcion
             })
     paquete = {
         "PIZZAS" : pizzas,
