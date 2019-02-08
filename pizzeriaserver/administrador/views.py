@@ -665,7 +665,7 @@ def ver_pedido(request, pedido_id):
             pedido.entregado = 1
             pedido.save()
             token_fire = 'chrpz-bW25E:APA91bHFcSelHBUesGJIje3P1PgS2MKdSDTgqfFbb8nFmrpI_gj2u1j1L-UkEwCjbu5DApuc3sruadJ6fcIxnNeDy82gcnWHzJoCaHgfM7xlxjBSHRSY2cFXReJcXe9O9L5_Ka8aAm4y'
-            utils.enviarPushNot(token_fire, "Orden en camino", "Su orden esta en camino")
+            resultado = utils.enviarPushNot(token_fire, "Orden en camino", "Su orden esta en camino")
             return redirect("pedidos")
         else:
             usuario = getUserBySesion(request)

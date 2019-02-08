@@ -793,6 +793,7 @@ class Pedido(models.Model):
     codigo = models.CharField(max_length=28, unique=True)
     fecha = models.DateTimeField()
     entregado = models.IntegerField(default=0)
+    recibido = models.IntegerField(default=0)
 
     def crear(self, carrito, total, forma_pago, codigo):
         try:
@@ -803,6 +804,7 @@ class Pedido(models.Model):
             pedido.codigo = codigo
             pedido.fecha = datetime.datetime.now(timezone.utc) - timedelta(hours=DEFASE_ZONA_HORARIA)
             pedido.entregado = 0
+            pedido.recibido = 0
             pedido.save()
             return pedido
         except:

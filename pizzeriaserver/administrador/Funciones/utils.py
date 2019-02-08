@@ -100,5 +100,5 @@ def enviarPushNot(token, titulo, mensaje):
     # Token del dispositivo
 
     result = push_service.notify_single_device(registration_id=token, sound=True, message_title=titulo, message_body=mensaje)
-
+    return result
 

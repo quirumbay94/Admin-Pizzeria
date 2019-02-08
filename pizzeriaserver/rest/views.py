@@ -1360,7 +1360,7 @@ def getPedidos(request):
                     "ID" : pedido.id,
                     "FECHA" : pedido.fecha.strftime("%d/%m/%Y"),
                     "ESTADO" : utils.get_estado_str(pedido),
-                    "ENTREGADO" : pedido.entregado
+                    "RECIBIDO" : pedido.recibido
                 })
             return JsonResponse({
                 'STATUS' : 'OK',
