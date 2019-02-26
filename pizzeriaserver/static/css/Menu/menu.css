@@ -14,15 +14,14 @@ form {
 	text-align: center;
 }
 .opcion-wrapper {
-	width: 975px;
-	margin: 25px auto;
+	margin: 5vh 18vw 70px;
 }
 .opcion-container-button {
 	width: 200px;
-	height: 250px;
+	height: 200px;
 	margin: 20px 20px;
 	padding: 30px;
-	border-radius: 7px;
+	border-radius: 100px;
 	border: 2px solid gray;
 	position: relative;
 }
@@ -42,6 +41,6 @@ form {
 .opcion-tittle-h3 {
 	width: 136px;
 	position: absolute;
-	top: 65px;
+	top: 195px;
 	left: 30px;
 }

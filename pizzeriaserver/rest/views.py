@@ -1201,8 +1201,10 @@ def getLocales(request):
         locales = Local.objects.all()
         paquete = []
         for l in locales:
+            poligono = Poligono.objects.get(local=l)
             paquete.append({
                 "ID" : l.id,
+                "POLIGONO_ID" : poligono.id,
                 "SECTOR" : l.sector,
                 "CIUDAD" : l.ciudad,
                 "APERTURA" : l.apertura,
@@ -1310,6 +1312,8 @@ def crear_pedido(request):
             if respuesta:  
                 carrito = utils.getCarritoConToken(token)
                 forma_pago = body.get('FORMA_PAGO', None)
+                poligono_id = body.get('POLIGONO_ID', None)
+                direccion = body.get('DIRECCION', None)
                 total = utils.calcularTotal(carrito) ##CALCULAR EL TOTAL
                 codigo = secrets.token_hex(16) ##GENERAR CODIGO
                 pedido = Pedido().crear(carrito, total, forma_pago, codigo)

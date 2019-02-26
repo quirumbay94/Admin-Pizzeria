@@ -2,11 +2,8 @@
 {% include 'General/header.html' %}
 {% include 'General/navbar.html' %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/Menu/menu.css' %}">
-<div class="title-container">
-	<h1 class="title-h1">MENU PRINCIPAL</h1>
-</div>
 <div class="opcion-wrapper">
-	<a href="/menu/pedidos">
+	<a class="btn-container" href="/menu/pedidos">
 		<button class="opcion-container-button">
 			<h3 class="opcion-tittle-h3">Pedidos</h3>
 		</button>
@@ -31,6 +28,8 @@
 			<h3 class="opcion-tittle-h3">Pizzas Tradicionales</h3>
 		</button>
 	</a>
+</div>
+<div class="opcion-wrapper">
 	<a href="/menu/combos_promocionales">
 		<button class="opcion-container-button">
 			<h3 class="opcion-tittle-h3">Combos</h3>

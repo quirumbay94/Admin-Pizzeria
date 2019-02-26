@@ -1,17 +1,31 @@
 {% load static %}
 {% include 'General/header.html' %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/Login/login.css' %}">
+<div class="header">
+	<img class="logo-header-img" src="{% static 'img/logo_color.png'%}">
+</div>
 <div class="login-wrapper">
 	<div class="login-container">
 		<form action="" method="post">
 			{% csrf_token %}
-			<h2 class="login-title-h2">Pizzeria Admin</h2>
+			<div class="logo-img-container">
+				<img src="{% static 'img/logo_color.png'%}">
+			</div>
 			<small>{{ MENSAJE }}</small>
-			<h4>Correo</h4>
-			<input type="text" class="form-control" name="correo">
-			<h4>Contraseña</h4>
-			<input type="password" class="form-control" name="contrasena">
-			<button class="btn btn-primary login-btn">Ingresar</button>
+			<div class="input-container">
+				<img class="icon" src="{% static 'img/usuario.png' %}">
+				<input type="text" class="form-control" name="correo">
+			</div>
+			<div class="input-container">
+				<img class="icon" src="{% static 'img/candado.png' %}">
+				<input type="password" class="form-control" name="contrasena">
+			</div>
+			<div class="btn-container">
+				<button class="btn btn-primary login-btn">Ingresar</button>
+			</div>
 		</form>
 	</div>
+</div>
+<div class="footer">
+
 </div>

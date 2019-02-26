@@ -788,6 +788,7 @@ class Reclamo_Sugerencia(models.Model):
 class Pedido(models.Model):
     carrito = models.ForeignKey("Carrito", on_delete=models.CASCADE) 
     local = models.ForeignKey("Local", on_delete=models.CASCADE, null=True)
+    coordenada_entrega = models.ForeignKey("Coordenada", on_delete=models.CASCADE, null=True)
     total = models.FloatField()
     forma_pago = models.IntegerField()
     codigo = models.CharField(max_length=32, unique=True)
@@ -795,7 +796,7 @@ class Pedido(models.Model):
     entregado = models.IntegerField(default=0)
     recibido = models.IntegerField(default=0)
 
-    def crear(self, carrito, total, forma_pago, codigo):
+    def crear(self, carrito, total, coordenada_entrega, forma_pago, codigo):
         try:
             pedido = Pedido()
             pedido.carrito = carrito
@@ -806,6 +807,8 @@ class Pedido(models.Model):
             pedido.entregado = 0
             pedido.recibido = 0
             pedido.local = Local.objects.get(sector="Alborada")
+            if coordenada_entrega:
+                pedido.coordenada_entrega = coordenada_entrega
             pedido.save()
             return pedido
         except:
