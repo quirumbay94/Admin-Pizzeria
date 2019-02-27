@@ -3,45 +3,47 @@
 {% include 'General/navbar.html' %}
 {% include 'General/subbarra.html' %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/General/formulario.css' %}">
-<div class="title-container">
-	<h1 class="title-h1">Crear</h1>
-	<small>{{ MENSAJE }}</small>
-</div>
 <div class="wrapper">
-	<form action="" method="POST" id="form" enctype="multipart/form-data">
-		{% csrf_token %}
-		<div class="input-main-container">
-			<div class="input-container">
-				<h4>Sector</h4>
-				<input type="text" class="form-control input" name="SECTOR">
-			</div>
-			<div class="input-container">
-				<h4>Ciudad</h4>
-				<input type="text" class="form-control input" name="CIUDAD">
-			</div>
-			<div class="input-container">
-				<h4>Hora de apertura</h4>
-				<input type="time" class="form-control input" name="APERTURA">
-			</div>
-			<div class="input-container">
-				<h4>Hora de cierre</h4>
-				<input type="time" class="form-control input" name="CIERRE">
-			</div>
-			<div class="input-container">
-				<h4>Imagen</h4>
-				<input type="file" class="form-control input" name="IMAGEN">
-			</div>		
-			<div class="input-container">
-				<h4>Ubicación</h4>
-				<input type="hidden" class="form-control input" name="COORDENADAS" id="coordenada">
-				<div id="map" style="height: 100%;"></div>
-			</div>
-			<div class="btn-container">
-				<button type="button" class="btn btn-formulario" id="limpiarCampos-btn">Limpiar Campos</button>
-				<button type="button" class="btn btn-formulario btn-guardar" id="guardar-btn">Guardar</button>
-			</div>
+	<div class="input-main-container">
+		<div class="title-form-container">
+			<h1 class="title-form-h1">Crear</h1>
+			<small>{{ MENSAJE }}</small>
 		</div>
-	</form>
+		<div class="input-wrapper">
+			<form action="" method="POST" id="form" enctype="multipart/form-data">
+				{% csrf_token %}
+				<div class="input-container">
+					<h4>Sector</h4>
+					<input type="text" class="form-control input" name="SECTOR">
+				</div>
+				<div class="input-container">
+					<h4>Ciudad</h4>
+					<input type="text" class="form-control input" name="CIUDAD">
+				</div>
+				<div class="input-container">
+					<h4>Hora de apertura</h4>
+					<input type="time" class="form-control input" name="APERTURA">
+				</div>
+				<div class="input-container">
+					<h4>Hora de cierre</h4>
+					<input type="time" class="form-control input" name="CIERRE">
+				</div>
+				<div class="input-container">
+					<h4>Imagen</h4>
+					<input type="file" class="form-control input" name="IMAGEN">
+				</div>		
+				<div class="input-container">
+					<h4>Ubicación</h4>
+					<input type="hidden" class="form-control input" name="COORDENADAS" id="coordenada">
+					<div id="map" style="height: 70%;"></div>
+				</div>
+				<div class="btn-container">
+					<button type="button" class="btn btn-formulario" id="limpiarCampos-btn">Limpiar Campos</button>
+					<button type="button" class="btn btn-formulario btn-guardar" id="guardar-btn">Guardar</button>
+				</div>
+			</form>
+		</div>
+	</div>
 </div>
 <script type="text/javascript" src="{% static 'js/Formulario/formulario.js' %}"></script>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCbXSHu8u2uiu7O13orG95evbkL0PN_v1Q&callback=initMap"></script>

@@ -2,54 +2,55 @@
 {% include 'General/header.html' %}
 {% include 'General/navbar.html' %}
 {% include 'General/subbarra.html' %}
-<link rel="stylesheet" type="text/css" href="{% static 'css/Menu/menu.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'css/General/ver_formulario.css' %}">
-<div class="title-container">
-	<h1 class="title-h1">{{ TIPO }}</h1>
-</div>
 <div class="main-container">
 	<div class="sub-container">
-		<div class="editar-container">
-			<a href="/menu/componentes/editar/{{ TIPO }}/{{ COMPONENTE.id }}">
-				<button class="btn btn-secondary">Editar</button>
-			</a>
+		<div class="title-form-container">
+			<h1 class="title-form-h1">{{ TIPO }}</h1>
 		</div>
-		<div class="sub2-container">
-			<h4>Nombre</h4>
-			<h5>{{ COMPONENTE.nombre }}</h5>
-		</div>
-		<div class="sub2-container">
-			<h4>Descripción</h4>
-			<h5>{{ COMPONENTE.descripcion }}</h5>
-		</div>
-		<div class="sub2-container">
-			{% if TIPO == "INGREDIENTE" %}
-				<h4>Costos:</h4>
-				<div style="display: flex;">
-					{% for costo in COSTOS %}
-						<div class="input-container" style="margin-right: 40px;">
-							<h4 style="text-transform: lowercase;">{{ costo.tamano.nombre }}</h4>
-							<div style="display: flex;">
-								<h5>$</h5>
-								<h5>{{ costo.costo }}</h5>
+		<div class="form-wrapper">
+			<div class="editar-container">
+				<a href="/menu/componentes/editar/{{ TIPO }}/{{ COMPONENTE.id }}">
+					<button class="btn btn-secondary">Editar</button>
+				</a>
+			</div>
+			<div class="sub2-container">
+				<h4>Nombre</h4>
+				<h5>{{ COMPONENTE.nombre }}</h5>
+			</div>
+			<div class="sub2-container">
+				<h4>Descripción</h4>
+				<h5>{{ COMPONENTE.descripcion }}</h5>
+			</div>
+			<div class="sub2-container">
+				{% if TIPO == "INGREDIENTE" %}
+					<h4>Costos:</h4>
+					<div style="display: flex;">
+						{% for costo in COSTOS %}
+							<div class="input-container" style="margin-right: 40px;">
+								<h4 style="text-transform: lowercase;">{{ costo.tamano.nombre }}</h4>
+								<div style="display: flex;">
+									<h5>$</h5>
+									<h5>{{ costo.costo }}</h5>
+								</div>
 							</div>
-						</div>
+						{% endfor %}
+					</div>
+				{% else %}
+					<h4>Costo: </h4>
+					{% for costo in COSTOS %}
+						<h5>${{ costo.costo }}</h5>
 					{% endfor %}
-				</div>
-			{% else %}
-				<h4>Costo: </h4>
-				{% for costo in COSTOS %}
-					<h5>${{ costo.costo }}</h5>
-				{% endfor %}
-			{% endif %}
-		</div>
-		<div class="sub2-container">
-			<h4>Imagen</h4>
-			<img src="{{ COMPONENTE.img_url.url }}">
-		</div>
-		<div class="sub2-container">
-			<h4>Estado</h4>
-			<h5>{% if COMPONENTE.estado %} Activo {% else %} Inactivo {% endif %}</h5>
+				{% endif %}
+			</div>
+			<div class="sub2-container">
+				<h4>Imagen</h4>
+				<img src="{{ COMPONENTE.img_url.url }}">
+			</div>
+			<div class="sub2-container">
+				<h4>Estado</h4>
+				<h5>{% if COMPONENTE.estado %} Activo {% else %} Inactivo {% endif %}</h5>
+			</div>
 		</div>
 	</div>
 </div>

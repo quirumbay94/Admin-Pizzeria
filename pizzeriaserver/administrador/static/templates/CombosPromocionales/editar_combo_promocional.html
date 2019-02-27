@@ -3,116 +3,120 @@
 {% include 'General/navbar.html' %}
 {% include 'General/subbarra.html' %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/General/formulario.css' %}">
-<div class="title-container">
-	<h1 class="title-h1">Editar</h1>
-	<small>{{ MENSAJE }}</small>
-</div>
 <div class="wrapper">
-	<form action="" method="POST" id="form" enctype="multipart/form-data">
-		{% csrf_token %}
-		<div class="input-main-container">
-			<div class="input-container">
-				<h4>Nombre</h4>
-				<input type="text" class="form-control input" name="NOMBRE" value="{{ COMBO.nombre }}">
-			</div>
-			<div class="input-container">
-				<h4>Descripción</h4>
-				<textarea class="form-control input" name="DESCRIPCION" row="3">{{ COMBO.descripcion }}</textarea>
-			</div>
-			<div class="input-container">
-				<h4>Costo</h4>
-				<input type="number" class="form-control input" name="COSTO" value="{{ COMBO.costo }}">
-			</div>
-			<div class="input-container">
-				<h4>Imagen</h4>
-				<img src="{{ COMBO.img_url.url }}">
-				<input type="file" class="form-control" name="IMAGEN" value="{{ COMBO.img_url.url }}">
-			</div>
-			<div class="input-container">
-				<h4>Fecha Inicio</h4>
-				<input type="date" class="form-control" name="FECHA_INICIO" value="{{ COMBO.fecha_inicio }}">
-			</div>
-			<div class="input-container">
-				<h4>Fecha Fin</h4>
-				<input type="date" class="form-control" name="FECHA_FIN" value="{{ COMBO.fecha_fin }}">
-			</div>
+	<div class="input-main-container">
+		<div class="title-form-container">
+			<h1 class="title-form-h1">Editar</h1>
+			<small>{{ MENSAJE }}</small>
 		</div>
-		<div class="input-main-container" style="margin-top: 30px;">
-			<div class="input-container" style="padding-bottom: 20px; border-bottom: 2px solid gray;">
-				<div class="subtitle-anadir-container">
-					<h4>Pizzas</h4>
-					<button class="btn btn-primary" type="button" onclick="agregarBloque('PIZZA')">+</button>
+		<div class="input-wrapper">
+			<form action="" method="POST" id="form" enctype="multipart/form-data">
+				{% csrf_token %}
+				<div>
+					<div class="input-container">
+						<h4>Nombre</h4>
+						<input type="text" class="form-control input" name="NOMBRE" value="{{ COMBO.nombre }}">
+					</div>
+					<div class="input-container">
+						<h4>Descripción</h4>
+						<textarea class="form-control input" name="DESCRIPCION" row="3">{{ COMBO.descripcion }}</textarea>
+					</div>
+					<div class="input-container">
+						<h4>Costo</h4>
+						<input type="number" class="form-control input" name="COSTO" value="{{ COMBO.costo }}">
+					</div>
+					<div class="input-container">
+						<h4>Imagen</h4>
+						<img src="{{ COMBO.img_url.url }}">
+						<input type="file" class="form-control" name="IMAGEN" value="{{ COMBO.img_url.url }}">
+					</div>
+					<div class="input-container">
+						<h4>Fecha Inicio</h4>
+						<input type="date" class="form-control" name="FECHA_INICIO" value="{{ COMBO.fecha_inicio }}">
+					</div>
+					<div class="input-container">
+						<h4>Fecha Fin</h4>
+						<input type="date" class="form-control" name="FECHA_FIN" value="{{ COMBO.fecha_fin }}">
+					</div>
 				</div>
-				<div id="pizza-select-contianer">
-					{% for pizza_selec in PIZZAS_SELEC %}
-						<div class="pizza-select-subcontainer" style="display: flex;">
-							<select class="form-control input pizza-select" name="PIZZAS[]" id="pizza-select"  style="margin-bottom: 10px;">
-								<option value="">Seleccione una pizza</option>
-								{% for pizza in PIZZAS %}
-									{% if pizza_selec.pizza == pizza %}
-										<option value="{{ pizza.id }}" selected>{{ pizza.nombre }}</option>
-									{% else %}
-										<option value="{{ pizza.id }}">{{ pizza.nombre }}</option>
-									{% endif %}
-								{% endfor %}
-							</select>
-							<button class="btn btn-danger remover_opcion_btn" type="button" onclick="removerOpcion(this)">X</button>
+				<div style="margin-top: 70px; border-top: 1px solid #ca5153; padding-top: 50px;">
+					<div class="input-container" style="padding-bottom: 20px; border-bottom: 2px solid gray;">
+						<div class="subtitle-anadir-container">
+							<h4>Pizzas</h4>
+							<button class="btn btn-primary" type="button" onclick="agregarBloque('PIZZA')">+</button>
 						</div>
-					{% endfor %}
-				</div>
-			</div>
-			<div class="input-container" style="padding-bottom: 20px; border-bottom: 2px solid gray;">
-				<div class="subtitle-anadir-container">
-					<h4>Adicionales</h4>
-					<button class="btn btn-primary" type="button" onclick="agregarBloque('ADICIONAL')">+</button>
-				</div>
-				<div id="adicional-select-contianer">
-					{% for adicional_selec in ADICIONALES_SELEC %}
-						<div class="adicional-select-subcontainer" style="display: flex;">
-							<select class="form-control input adicional-select" name="ADICIONALES[]" id="adicional-select" style="margin-bottom: 10px;">
-								<option value="">Seleccione un adicional</option>
-								{% for adicional in ADICIONALES %}
-									{% if adicional_selec.adicional == adicional %}
-										<option value="{{ adicional.id }}" selected>{{ adicional.nombre }}</option>
-									{% else %}
-										<option value="{{ adicional.id }}">{{ adicional.nombre }}</option>
-									{% endif %}
-								{% endfor %}
-							</select>
-							<button class="btn btn-danger remover_opcion_btn" type="button" onclick="removerOpcion(this)">X</button>
+						<div id="pizza-select-contianer">
+							{% for pizza_selec in PIZZAS_SELEC %}
+								<div class="pizza-select-subcontainer" style="display: flex;">
+									<select class="form-control input pizza-select" name="PIZZAS[]" id="pizza-select"  style="margin-bottom: 10px;">
+										<option value="">Seleccione una pizza</option>
+										{% for pizza in PIZZAS %}
+											{% if pizza_selec.pizza == pizza %}
+												<option value="{{ pizza.id }}" selected>{{ pizza.nombre }}</option>
+											{% else %}
+												<option value="{{ pizza.id }}">{{ pizza.nombre }}</option>
+											{% endif %}
+										{% endfor %}
+									</select>
+									<button class="btn btn-danger remover_opcion_btn" type="button" onclick="removerOpcion(this)">X</button>
+								</div>
+							{% endfor %}
 						</div>
-					{% endfor %}
-				</div>
-			</div>
-			<div class="input-container" style="padding-bottom: 20px; border-bottom: 2px solid gray;">
-				<div class="subtitle-anadir-container">
-					<h4>Bebidas</h4>
-					<button class="btn btn-primary" type="button" onclick="agregarBloque('BEBIDA')">+</button>
-				</div>
-				<div id="bebida-select-contianer">
-					{% for bebida_selec in BEBIDAS_SELEC %}
-						<div  class="bebida-select-subcontainer" style="display: flex;">
-							<select class="form-control input bebida-select" name="BEBIDAS[]" id="bebida-select"  style="margin-bottom: 10px;">
-								<option value="">Seleccione una bebida</option>
-								{% for bebida in BEBIDAS %}
-									{% if bebida_selec.adicional == bebida %}
-										<option value="{{ bebida.id }}" selected>{{ bebida.nombre }}</option>
-									{% else %}
-										<option value="{{ bebida.id }}">{{ bebida.nombre }}</option>
-									{% endif %}
-								{% endfor %}
-							</select>
-							<button class="btn btn-danger remover_opcion_btn" type="button" onclick="removerOpcion(this)">X</button>
+					</div>
+					<div class="input-container" style="padding-bottom: 20px; border-bottom: 2px solid gray;">
+						<div class="subtitle-anadir-container">
+							<h4>Adicionales</h4>
+							<button class="btn btn-primary" type="button" onclick="agregarBloque('ADICIONAL')">+</button>
 						</div>
-					{% endfor %}
+						<div id="adicional-select-contianer">
+							{% for adicional_selec in ADICIONALES_SELEC %}
+								<div class="adicional-select-subcontainer" style="display: flex;">
+									<select class="form-control input adicional-select" name="ADICIONALES[]" id="adicional-select" style="margin-bottom: 10px;">
+										<option value="">Seleccione un adicional</option>
+										{% for adicional in ADICIONALES %}
+											{% if adicional_selec.adicional == adicional %}
+												<option value="{{ adicional.id }}" selected>{{ adicional.nombre }}</option>
+											{% else %}
+												<option value="{{ adicional.id }}">{{ adicional.nombre }}</option>
+											{% endif %}
+										{% endfor %}
+									</select>
+									<button class="btn btn-danger remover_opcion_btn" type="button" onclick="removerOpcion(this)">X</button>
+								</div>
+							{% endfor %}
+						</div>
+					</div>
+					<div class="input-container" style="padding-bottom: 20px; border-bottom: 2px solid gray;">
+						<div class="subtitle-anadir-container">
+							<h4>Bebidas</h4>
+							<button class="btn btn-primary" type="button" onclick="agregarBloque('BEBIDA')">+</button>
+						</div>
+						<div id="bebida-select-contianer">
+							{% for bebida_selec in BEBIDAS_SELEC %}
+								<div  class="bebida-select-subcontainer" style="display: flex;">
+									<select class="form-control input bebida-select" name="BEBIDAS[]" id="bebida-select"  style="margin-bottom: 10px;">
+										<option value="">Seleccione una bebida</option>
+										{% for bebida in BEBIDAS %}
+											{% if bebida_selec.adicional == bebida %}
+												<option value="{{ bebida.id }}" selected>{{ bebida.nombre }}</option>
+											{% else %}
+												<option value="{{ bebida.id }}">{{ bebida.nombre }}</option>
+											{% endif %}
+										{% endfor %}
+									</select>
+									<button class="btn btn-danger remover_opcion_btn" type="button" onclick="removerOpcion(this)">X</button>
+								</div>
+							{% endfor %}
+						</div>
+					</div>
+					<div class="btn-container">
+						<button type="button" class="btn btn-formulario" id="limpiarCampos-btn">Limpiar Campos</button>
+						<button type="button" class="btn btn-formulario btn-guardar" id="guardar-btn">Guardar</button>
+					</div>
 				</div>
-			</div>
-			<div class="btn-container">
-				<button type="button" class="btn btn-formulario" id="limpiarCampos-btn">Limpiar Campos</button>
-				<button type="button" class="btn btn-formulario btn-guardar" id="guardar-btn">Guardar</button>
-			</div>
+			</form>
 		</div>
-	</form>
+	</div>
 </div>
 <script type="text/javascript" src="{% static 'js/Formulario/formulario.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/Combo/crear_combo.js' %}"></script>

@@ -7,15 +7,14 @@
 	<h1 class="title-h1">Locales</h1>
 </div>
 <div class="opcion-wrapper">
-	<form method="GET" action="/menu/local/crear">
-		<button class="opcion-container-button">
-			<h3 class="opcion-aumentar-h3">+</h3>
-			<h3> </h3>
+	<a href="/menu/local/crear">
+		<button class="opcion-container-button agregar-btn">
+			<h3 class="opcion-tittle-h3">Nuevo</h3>
 		</button>
-	</form>
+	</a>
 	{% for local in LOCALES %}
 		<a href="/menu/local/ver/{{ local.id }}">
-			<button class="opcion-container-button">
+			<button class="opcion-container-button" style="background-image: url('{{ local.img_url.url }}'); background-size: contain;">
 				<h3 class="opcion-tittle-h3">{{ local.sector }}</h3>
 			</button>
 		</a>

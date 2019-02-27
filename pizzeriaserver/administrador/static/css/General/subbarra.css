@@ -1,3 +1,8 @@
+@font-face {
+	font-family: 'Hand of Sean';
+	src: url('../../fonts/Hand_Of_Sean_Demo.ttf') format('truetype');
+}
+
 .subbarra-container {
 	width: 100%;
 	padding: 10px 0px;
@@ -8,6 +13,7 @@
 	margin-right: 20px;
 	border-right: 5px solid gray;
 }
-h2 {
-	margin: 0px;
+.subbarra-h2 {
+	margin: 15px 0px 0px;
+	font-family: 'Hand of Sean';
 }

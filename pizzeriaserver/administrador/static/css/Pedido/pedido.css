@@ -1,19 +1,72 @@
-h4 {
+body {
+	background-image: url('../../img/fondo.png');
+	background-size: cover;
+}
+h4, h5 {
 	text-align: center;
 }
+a {
+	display: block;
+	width: 100%;
+}
+a:hover {
+	text-decoration: none;
+}
+.main-container {
+	margin: 20px auto;
+	background-color: white;
+	width: 70%;
+	border: 3px solid gray;
+	border-radius: 7px;
+}
+.main-title-container {
+	background-color: #ca5153;
+	text-align: center;
+	padding: 20px;
+	color: white;
+}
+.main-title-h2 {
+	font-family: 'Hand of Sean';
+	font-size: 45px;
+}
+.pedidos-main-container {
+	margin-top: 50px;
+}
 .title-container {
+	font-family: 'Hand of Sean';
 	width: 100%;
 }
 .title-h2 {
-	text-align: center;
+	font-family: 'Hand of Sean';
+	text-align: left;
+	padding-left: 40px;
 }
 .pedidos-wrapper {
-	padding: 20px 20vw;
+	padding: 20px 20px;
+	margin: 0px 50px;
 }
 .pedidos-container {
 	padding: 5px 10px;
 	display: flex;
-	border: 2px solid gray;
-	border-radius: 5px;
+	border: 0px;
 	margin-bottom: 5px;
+	background-color: #edcbc3;
+	border-radius: 7px;
 }
+.pedidos-bloque {
+	color: black;
+	width: 25%;
+	margin: 0px 4.16%;
+	text-align: center; 
+}
+.verPedido-btn {
+	width: 70%;
+	margin: 15px auto 0px;
+	background-color: #ca5153;
+	color: white;
+}
+.verPedido-btn:hover {
+	background-color: #c0193b;
+	color: white;
+}
+

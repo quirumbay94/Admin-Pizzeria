@@ -3,39 +3,62 @@
 {% include 'General/navbar.html' %}
 {% include 'General/subbarra.html' %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/Pedido/pedido.css' %}">
-<div>
-	<div class="title-container">
-		<h2 class="title-h2">Nuevos</h2>
+<div class="main-container">
+	<div class="main-title-container">
+		<h2 class="main-title-h2">Pedidos</h2>
 	</div>
-	<div class="pedidos-wrapper">
-		{% if PEDIDOS_NUEVOS %}
-			{% for pedido in PEDIDOS_NUEVOS %}
-			<a href="/menu/pedidos/{{ pedido.id }}">
+	<div class="pedidos-main-container">
+		<div class="title-container">
+			<h2 class="title-h2">Nuevos</h2>
+		</div>
+		<div class="pedidos-wrapper" style="border-bottom: 1px solid lightgray;">
+			{% if PEDIDOS_NUEVOS %}
+				{% for pedido in PEDIDOS_NUEVOS %}
 				<div class="pedidos-container">
-					<h5>{{ pedido.carrito.usuario.username }}</h5>
-					<h5 style="margin-left: 20px;">{{ pedido.fecha|time:"H:i" }} | {{ pedido.fecha|date:"d/m/Y" }} </h5>
+					<div class="pedidos-bloque">
+						<h4>USUARIO</h4>
+						<h5>{{ pedido.carrito.usuario.username }}</h5>
+					</div>
+					<div class="pedidos-bloque">
+						<h4>HORA/FECHA</h4>
+						<h5 style="margin-left: 20px;">{{ pedido.fecha|time:"H:i" }} | {{ pedido.fecha|date:"d/m/Y" }} </h5>
+					</div>
+					<div class="pedidos-bloque">
+						<a href="/menu/pedidos/{{ pedido.id }}">
+							<button class="btn verPedido-btn">Ver Pedido</button>
+						</a>
+					</div>
 				</div>
-			</a>
-			{% endfor %}
-		{% else %}
-			<h4>** No hay pedidos nuevos por el momento **</h4>
-		{% endif %}
-	</div>
-	<div class="title-container" style="margin-top: 30px;">
-		<h2 class="title-h2">Despachados</h2>
-	</div>
-	<div class="pedidos-wrapper">
-		{% if PEDIDOS_DESPACHADOS %}
-			{% for pedido in PEDIDOS_DESPACHADOS %}
-			<a href="/menu/pedidos/{{ pedido.id }}">
+				{% endfor %}
+			{% else %}
+				<h4>** No hay pedidos nuevos por el momento **</h4>
+			{% endif %}
+		</div>
+		<div class="title-container" style="margin-top: 30px;">
+			<h2 class="title-h2">Despachados</h2>
+		</div>
+		<div class="pedidos-wrapper">
+			{% if PEDIDOS_DESPACHADOS %}
+				{% for pedido in PEDIDOS_DESPACHADOS %}
 				<div class="pedidos-container">
-					<h5>{{ pedido.carrito.usuario.username }}</h5>
-					<h5 style="margin-left: 20px;">{{ pedido.fecha|time:"H:i" }} | {{ pedido.fecha|date:"d/m/Y" }}</h5>
+					<div class="pedidos-bloque">
+						<h4>USUARIO</h4>
+						<h5>{{ pedido.carrito.usuario.username }}</h5>
+					</div>
+					<div class="pedidos-bloque">
+						<h4>HORA/FECHA</h4>
+						<h5 style="margin-left: 20px;">{{ pedido.fecha|time:"H:i" }} | {{ pedido.fecha|date:"d/m/Y" }} </h5>
+					</div>
+					<div class="pedidos-bloque">
+						<a href="/menu/pedidos/{{ pedido.id }}">
+							<button class="btn verPedido-btn">Ver Pedido</button>
+						</a>
+					</div>
 				</div>
-			</a>
-			{% endfor %}
-		{% else %}
-			<h4>** No hay pedidos despachados por el momento **</h4>
-		{% endif %}
+				{% endfor %}
+			{% else %}
+				<h4>** No hay pedidos despachados por el momento **</h4>
+			{% endif %}
+		</div>
 	</div>
 </div>

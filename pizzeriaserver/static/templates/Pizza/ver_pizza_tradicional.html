@@ -4,36 +4,37 @@
 {% include 'General/subbarra.html' %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/Menu/menu.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'css/General/ver_formulario.css' %}">
-<div class="title-container">
-	<h1 class="title-h1">{{ TIPO }}</h1>
-</div>
 <div class="main-container">
 	<div class="sub-container">
-		<div class="editar-container">
-			<a href="/menu/pizzas_tradicionales/editar/{{ PIZZA_T.id }}">
-				<button class="btn btn-secondary">Editar</button>
-			</a>
+		<div class="title-form-container">
+			<h1 class="title-form-h1">Pizza Tradicional</h1>
 		</div>
-		<div class="sub2-container">
-			<h4>Nombre</h4>
-			<h5>{{ PIZZA_T.pizza.nombre }}</h5>
+		<div class="form-wrapper">
+			<div class="editar-container">
+				<a href="/menu/pizzas_tradicionales/editar/{{ PIZZA_T.id }}">
+					<button class="btn btn-secondary">Editar</button>
+				</a>
+			</div>
+			<div class="sub2-container">
+				<h4>Nombre</h4>
+				<h5>{{ PIZZA_T.pizza.nombre }}</h5>
+			</div>
+			<div class="sub2-container">
+				<h4>Descripción</h4>
+				<h5>{{ PIZZA_T.pizza.descripcion }}</h5>
+			</div>
+			<div class="sub2-container">
+				<h4>Costo</h4>
+				<h5>{{ PIZZA_T.costo }}</h5>
+			</div>
+			<div class="sub2-container">
+				<h4>Imagen</h4>
+				<img src="{{ PIZZA_T.pizza.img_url.url }}">
+			</div>
+			<div class="sub2-container">
+				<h4>Estado</h4>
+				<h5>{% if PIZZA_T.estado %} Activo {% else %} Inactivo {% endif %}</h5>
+			</div>
 		</div>
-		<div class="sub2-container">
-			<h4>Descripción</h4>
-			<h5>{{ PIZZA_T.pizza.descripcion }}</h5>
-		</div>
-		<div class="sub2-container">
-			<h4>Costo</h4>
-			<h5>{{ PIZZA_T.costo }}</h5>
-		</div>
-		<div class="sub2-container">
-			<h4>Imagen</h4>
-			<img src="{{ PIZZA_T.pizza.img_url.url }}">
-		</div>
-		<div class="sub2-container">
-			<h4>Estado</h4>
-			<h5>{% if PIZZA_T.estado %} Activo {% else %} Inactivo {% endif %}</h5>
-		</div>
-
 	</div>
 </div>

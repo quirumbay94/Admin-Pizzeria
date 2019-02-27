@@ -3,92 +3,95 @@
 {% include 'General/navbar.html' %}
 {% include 'General/subbarra.html' %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/General/formulario.css' %}">
-<div class="title-container">
-	<h1 class="title-h1">Crear</h1>
-	<small>{{ MENSAJE }}</small>
-</div>
 <div class="wrapper">
-	<form action="" method="POST" id="form" enctype="multipart/form-data">
-		{% csrf_token %}
-		<div class="input-main-container">
-			<div class="input-container">
-				<h4>Nombre</h4>
-				<input type="text" class="form-control input" name="NOMBRE">
-			</div>
-			<div class="input-container">
-				<h4>Descripción</h4>
-				<textarea class="form-control input" name="DESCRIPCION" row="3"></textarea>
-			</div>
-			<div class="input-container">
-				<h4>Costo</h4>
-				<input type="number" class="form-control input" name="COSTO">
-			</div>
-			<div class="input-container">
-				<h4>Imagen</h4>
-				<input type="file" class="form-control input" name="IMAGEN">
-			</div>
+	<div class="input-main-container">
+		<div class="title-form-container">
+			<h1 class="title-form-h1">Crear</h1>
+			<small>{{ MENSAJE }}</small>
 		</div>
-		<div class="input-main-container" style="margin-top: 30px;">
-			<div class="input-container">
-				<h4>Tamaño de pizza</h4>
-				<select class="form-control input" name="TAMANO" id="tamano-select">
-					<option value="">Seleccione tamaño de pizza</option>
-					{% for tamano in TAMANOS %}
-						<option value="{{ tamano.id }}" tamano="{{ tamano.nombre }}">{{ tamano.nombre }}</option>
-					{% endfor %}
-				</select>
-			<div class="input-container">
-				<h4>Masa</h4>
-				<select class="form-control input" name="MASA" id="masa-select">
-					<option value="">Seleccione un tipo de masa</option>
-					{% for masa in MASAS %}
-						<option value="{{ masa.id }}" class="pizza-masas pizza-componente-seleccion-bloqueado" tipo="{{ masa.tamano.nombre}}">{{ masa.masa.nombre }} | {{ masa.tamano.nombre }}</option>
-					{% endfor %}
-				</select>
-			</div>
-			<div class="input-container">
-				<h4>Borde</h4>
-				<select class="form-control input" name="BORDE" id="borde-select">
-					<option value="">Seleccione un tipo de borde</option>
-					{% for borde in BORDES %}
-						<option value="{{ borde.id }}" class="pizza-bordes pizza-componente-seleccion-bloqueado" tipo="{{ borde.tamano.nombre}}">{{ borde.borde.nombre }} | {{ borde.tamano.nombre }}</option>
-					{% endfor %}
-				</select>
-			</div>
-			<div class="input-container" id="ingrediente-main-container">
-				<div class="subtitle-anadir-container">
-					<h4>Ingredientes</h4>
-					<button class="btn btn-primary" type="button" onclick="agregarIngrediente()">+</button>
+		<div class="input-wrapper">
+			<form action="" method="POST" id="form" enctype="multipart/form-data">
+				{% csrf_token %}
+				<div>
+					<div class="input-container">
+						<h4>Nombre</h4>
+						<input type="text" class="form-control input" name="NOMBRE">
+					</div>
+					<div class="input-container">
+						<h4>Descripción</h4>
+						<textarea class="form-control input" name="DESCRIPCION" row="3"></textarea>
+					</div>
+					<div class="input-container">
+						<h4>Costo</h4>
+						<input type="number" class="form-control input" name="COSTO">
+					</div>
+					<div class="input-container">
+						<h4>Imagen</h4>
+						<input type="file" class="form-control input" name="IMAGEN">
+					</div>
 				</div>
-				<div class="select-wrapper">
-					<div class ="select-ingrediente-container">
-						<h6>Ingrediente: </h6>
-						<select class="form-control input ingrediente-select" name="INGREDIENTES[]">
-							<option value="">Seleccione un ingrediente</option>
-							{% for ingrediente in INGREDIENTES %}
-								<option value="{{ ingrediente.id }}" class="pizza-ingredientes pizza-componente-seleccion-bloqueado" tipo="{{ ingrediente.tamano.nombre}}">{{ ingrediente.ingrediente.nombre }} | {{ ingrediente.tamano.nombre }}</option>
+				<div style="margin-top: 70px; border-top: 1px solid #ca5153; padding-top: 50px;">
+					<div class="input-container">
+						<h4>Tamaño de pizza</h4>
+						<select class="form-control input" name="TAMANO" id="tamano-select">
+							<option value="">Seleccione tamaño de pizza</option>
+							{% for tamano in TAMANOS %}
+								<option value="{{ tamano.id }}" tamano="{{ tamano.nombre }}">{{ tamano.nombre }}</option>
+							{% endfor %}
+						</select>
+					<div class="input-container">
+						<h4>Masa</h4>
+						<select class="form-control input" name="MASA" id="masa-select">
+							<option value="">Seleccione un tipo de masa</option>
+							{% for masa in MASAS %}
+								<option value="{{ masa.id }}" class="pizza-masas pizza-componente-seleccion-bloqueado" tipo="{{ masa.tamano.nombre}}">{{ masa.masa.nombre }} | {{ masa.tamano.nombre }}</option>
 							{% endfor %}
 						</select>
 					</div>
-					<div class ="select-porcion-container">
-						<h6>Porcion: </h6>
-						<select class="form-control input porcion-select" name="PORCIONES[]">
-							<option value="">Seleccione la porcion</option>
-							{% for porcion in PORCIONES %}
-								<option value="{{ porcion.id }}" class="pizza-porciones pizza-componente-seleccion-bloqueado" tipo="{{ porcion.nombre}}">{{ porcion.nombre }}</option>
+					<div class="input-container">
+						<h4>Borde</h4>
+						<select class="form-control input" name="BORDE" id="borde-select">
+							<option value="">Seleccione un tipo de borde</option>
+							{% for borde in BORDES %}
+								<option value="{{ borde.id }}" class="pizza-bordes pizza-componente-seleccion-bloqueado" tipo="{{ borde.tamano.nombre}}">{{ borde.borde.nombre }} | {{ borde.tamano.nombre }}</option>
 							{% endfor %}
 						</select>
 					</div>
-					<button class="btn btn-danger remover_ingrediente_btn" type="button" onclick="removerIngrediente(this)">X</button>
+					<div class="input-container" id="ingrediente-main-container">
+						<div class="subtitle-anadir-container">
+							<h4>Ingredientes</h4>
+							<button class="btn btn-primary" type="button" onclick="agregarIngrediente()">+</button>
+						</div>
+						<div class="select-wrapper">
+							<div class ="select-ingrediente-container">
+								<h6>Ingrediente: </h6>
+								<select class="form-control input ingrediente-select" name="INGREDIENTES[]">
+									<option value="">Seleccione un ingrediente</option>
+									{% for ingrediente in INGREDIENTES %}
+										<option value="{{ ingrediente.id }}" class="pizza-ingredientes pizza-componente-seleccion-bloqueado" tipo="{{ ingrediente.tamano.nombre}}">{{ ingrediente.ingrediente.nombre }} | {{ ingrediente.tamano.nombre }}</option>
+									{% endfor %}
+								</select>
+							</div>
+							<div class ="select-porcion-container">
+								<h6>Porcion: </h6>
+								<select class="form-control input porcion-select" name="PORCIONES[]">
+									<option value="">Seleccione la porcion</option>
+									{% for porcion in PORCIONES %}
+										<option value="{{ porcion.id }}" class="pizza-porciones pizza-componente-seleccion-bloqueado" tipo="{{ porcion.nombre}}">{{ porcion.nombre }}</option>
+									{% endfor %}
+								</select>
+							</div>
+							<button class="btn btn-danger remover_ingrediente_btn" type="button" onclick="removerIngrediente(this)">X</button>
+						</div>
+					</div>
 				</div>
-			</div>
+				<div class="btn-container">
+					<button type="button" class="btn btn-formulario" id="limpiarCampos-btn">Limpiar Campos</button>
+					<button type="button" class="btn btn-formulario btn-guardar" id="guardar-btn">Guardar</button>
+				</div>
+			</form>
 		</div>
-
-		<div class="btn-container">
-			<button type="button" class="btn btn-formulario" id="limpiarCampos-btn">Limpiar Campos</button>
-			<button type="button" class="btn btn-formulario btn-guardar" id="guardar-btn">Guardar</button>
-		</div>
-	</form>
+	</div>
 </div>
 <script type="text/javascript" src="{% static 'js/Formulario/formulario.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/Pizza/crear_pizza.js' %}"></script>

@@ -1,12 +1,18 @@
+body {
+	background-image: url('../../img/fondo.png');
+	background-size: cover;
+}
 .title-container {
+	font-family: 'Hand of Sean';
 	width: 100%;
 	text-align: center;
 }
 .main-container {
+	background-color: white;
 	padding: 25px;
 	text-align: center;
 	width: 650px;
-	margin: 100px auto;
+	margin: 70px auto;
 	border: 2px solid gray;
 	border-radius: 7px;
 }

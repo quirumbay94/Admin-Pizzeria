@@ -3,69 +3,71 @@
 {% include 'General/navbar.html' %}
 {% include 'General/subbarra.html' %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/General/formulario.css' %}">
-<div class="title-container">
-	<h1 class="title-h1">Editar</h1>
-	<small>{{ MENSAJE }}</small>
-</div>
 <div class="wrapper">
 	<div class="input-main-container">
-		<form action="" method="POST" id="form" enctype="multipart/form-data">
-			{% csrf_token %}
-			<input type="hidden" name="TIPO" value="{{ COMPONENTE.tipo }}">
+		<div class="title-form-container">
+			<h1 class="title-form-h1">Editar</h1>
+			<small>{{ MENSAJE }}</small>
+		</div>
+		<div class="input-wrapper">
+			<form action="" method="POST" id="form" enctype="multipart/form-data">
+				{% csrf_token %}
+				<input type="hidden" name="TIPO" value="{{ COMPONENTE.tipo }}">
 
-			<div class="input-container">
-				<h4>Nombre</h4>
-				<input type="text" class="form-control input" name="NOMBRE" value="{{ COMPONENTE.nombre }}">
-			</div>
-			<div class="input-container">
-				<h4>Descripción</h4>
-				<textarea class="form-control input" name="DESCRIPCION" row="3">{{ COMPONENTE.descripcion }}</textarea>
-			</div>
-			{% if TIPO == "INGREDIENTE" %}
-				<h4 style="margin: 20px 0px 0px;">Costos: </h4>
-				<div style="display: flex;">
-					{% for costo in COSTOS %}
-						<div class="input-container" style="margin-right: 10px;">
-							<h4 style="text-transform: lowercase;">{{ costo.tamano.nombre }}</h4>
-							<div style="display: flex;">
-								<h5>$</h5>
-								<input type="number" class="form-control input" name="COSTO_{{ costo.tamano.nombre }}" style="margin: 0px 50px 0px 15px; width: 70px;" value = "{{ costo.costo }}">
-							</div>
-						</div>
-					{% endfor %}
-				</div>
-			{% else %}
 				<div class="input-container">
-					<h4>Costo</h4>
-					{% for costo in COSTOS %}
-						<input type="number" class="form-control input" name="COSTO" value="{{ costo.costo }}">
-					{% endfor %}
+					<h4>Nombre</h4>
+					<input type="text" class="form-control input" name="NOMBRE" value="{{ COMPONENTE.nombre }}">
 				</div>
-			{% endif %}
-			<div class="input-container">
-				<h4>Imagen</h4>
-				<img src="{{ COMPONENTE.img_url.url }}">
-				<input type="file" class="form-control" name="IMAGEN" value="{{ COMPONENTE.img_url }}">
-			</div>
-			<div class="input-container">
-				<h4>Estado</h4>
-				<select class="form-control input" name="ESTADO">
-					{% if COMPONENTE.estado %}
-						<option value="True" selected>Activo</option>
-						<option value="False">Inactivo</option>
-					{% else %}
-						<option value="True">Activo</option>
-						<option value="False" selected>Inactivo</option>
-					{% endif %}
-				</select>
-			</div>
-			<div class="btn-container">
-				<a href="/menu/componentes/{{ TIPO }}/{{ COMPONENTE.id }}">
-					<button class="btn btn-formulario" type="button">Regresar</button>
-				</a>
-				<button type="button" class="btn btn-formulario btn-guardar" id="guardar-btn">Guardar</button>
-			</div>
-		</form>
+				<div class="input-container">
+					<h4>Descripción</h4>
+					<textarea class="form-control input" name="DESCRIPCION" row="3">{{ COMPONENTE.descripcion }}</textarea>
+				</div>
+				{% if TIPO == "INGREDIENTE" %}
+					<h4 style="margin: 20px 0px 0px;">Costos: </h4>
+					<div style="display: flex;">
+						{% for costo in COSTOS %}
+							<div class="input-container" style="margin-right: 10px;">
+								<h4 style="text-transform: lowercase;">{{ costo.tamano.nombre }}</h4>
+								<div style="display: flex;">
+									<h5>$</h5>
+									<input type="number" class="form-control input" name="COSTO_{{ costo.tamano.nombre }}" style="margin: 0px 50px 0px 15px; width: 70px;" value = "{{ costo.costo }}">
+								</div>
+							</div>
+						{% endfor %}
+					</div>
+				{% else %}
+					<div class="input-container">
+						<h4>Costo</h4>
+						{% for costo in COSTOS %}
+							<input type="number" class="form-control input" name="COSTO" value="{{ costo.costo }}">
+						{% endfor %}
+					</div>
+				{% endif %}
+				<div class="input-container">
+					<h4>Imagen</h4>
+					<img src="{{ COMPONENTE.img_url.url }}">
+					<input type="file" class="form-control" name="IMAGEN" value="{{ COMPONENTE.img_url }}">
+				</div>
+				<div class="input-container">
+					<h4>Estado</h4>
+					<select class="form-control input" name="ESTADO">
+						{% if COMPONENTE.estado %}
+							<option value="True" selected>Activo</option>
+							<option value="False">Inactivo</option>
+						{% else %}
+							<option value="True">Activo</option>
+							<option value="False" selected>Inactivo</option>
+						{% endif %}
+					</select>
+				</div>
+				<div class="btn-container">
+					<a href="/menu/componentes/{{ TIPO }}/{{ COMPONENTE.id }}">
+						<button class="btn btn-formulario" type="button">Regresar</button>
+					</a>
+					<button type="button" class="btn btn-formulario btn-guardar" id="guardar-btn">Guardar</button>
+				</div>
+			</form>
+		</div>
 	</div>
 </div>
 <script type="text/javascript" src="{% static 'js/Formulario/formulario.js' %}"></script>

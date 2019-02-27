@@ -1,3 +1,12 @@
+@font-face {
+	font-family: 'Hand of Sean';
+	src: url('../../fonts/Hand_Of_Sean_Demo.ttf') format('truetype');
+}
+body {
+	background-image: url('../../img/fondo.png');
+	background-size: cover;
+}
+
 form {
 	display: contents;
 	margin: 0px;
@@ -13,16 +22,19 @@ form {
 	width: 100%;
 	text-align: center;
 }
+.title-h1 {
+	font-family: 'Hand of Sean';
+}
 .opcion-wrapper {
 	margin: 5vh 18vw 70px;
 }
 .opcion-container-button {
 	width: 200px;
 	height: 200px;
-	margin: 20px 20px;
+	margin: 30px 20px;
 	padding: 30px;
 	border-radius: 100px;
-	border: 2px solid gray;
+	border: 2px solid;
 	position: relative;
 }
 .opcion-container-button:hover {
@@ -43,4 +55,34 @@ form {
 	position: absolute;
 	top: 195px;
 	left: 30px;
+	font-family: 'Hand of Sean';
+	color: black;
 }
+.icono-menu {
+	width: 100%;
+	height: 100%;
+}
+.icono-objeto-btn {
+	overflow: hidden;
+}
+.icono-objeto {
+	width: 150%;
+    margin: -35px 0px 0px -35px;
+}
+
+.agregar-btn {
+	background-image: url('../../img/boton_agregar.png'); 
+	background-size: cover;
+	border: 1px solid #c0193b;
+}
+
+.rojo {
+	border-color: #c0193b;
+}
+.verde {
+	border-color: #00aa5b;
+}
+.amarillo {
+	border-color: #c88f31;
+}
+

@@ -408,6 +408,7 @@ def nuevo_combo_promocional(request):
     if verificarSesion(request):
         ##DETALLES PARA LA SUBBARRA DE NAVEGACION
         paquete = diccionarios.diccionarioBarraNav(request,{})
+        paquete = diccionarios.diccionarioDatosSubBarraCombosPromocionales(paquete)
         paquete = diccionarios.diccionarioOpcionesParaComboPromocional(paquete)
 
         if request.method == "POST":

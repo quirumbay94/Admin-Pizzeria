@@ -1,3 +1,7 @@
+body {
+	background-image: url('../../img/fondo.png');
+	background-size: cover;
+}
 .title-container {
 	width: 100%;
 	text-align: center;
@@ -7,11 +11,22 @@
 	margin: 50px 0px;
 }
 .input-main-container {
-	width: 500px;
-	padding: 20px;
+	background-color: white;
+	width: 600px;
 	margin: 0px auto;
 	border: 2px solid gray;
 	border-radius: 7px;
+}
+.title-form-container {
+	background-color: #ca5153;
+	color: white;
+	font-family: 'Hand of Sean';
+	text-align: center;
+	padding: 20px;
+}
+.input-wrapper {
+	font-family: 'Hand of Sean';
+	padding: 20px;
 }
 .input-container {
 	margin-bottom: 10px;
@@ -20,16 +35,20 @@
 	width: 250px;
 	padding-bottom: 10px;
 }
+.input {
+	background-color: #edcbc3;
+	border-radius: 7px;
+}
 .btn-container {
 	display: flex;
 	margin: 25px 0px 10px;
 }
 .btn-formulario {
-	background-color: gray;
+	background-color: #ca5153;
 	color: white;
 }
 .btn-formulario:hover {
-	background-color: lightgray;
+	background-color: #c0193b;
 	color: white;
 }
 .btn-guardar {
