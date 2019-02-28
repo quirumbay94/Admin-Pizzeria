@@ -4,62 +4,94 @@
 {% include 'General/subbarra.html' %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/Pedido/ver_pedido.css' %}">
 <div class="wrapper">
-	<div class="divisor">
-		<div class="bloque">
-			<h3>Detalle de pedido:</h3>
+	<div class="main-container">
+		<div class="title-container">
+			<h3>Ver Detalle de Pedido</h3>
+		</div>
+		<div class="pedido-wrapper">
 			<div class="pedido-contianer">
 				{% if PEDIDO.PIZZAS %}
-					<h3>Pizzas:</h3>
-				{% endif %}
-				{% for pizza in PEDIDO.PIZZAS %}
-				<div class="listado-container">
-					<h5>Nombre: {{pizza.NOMBRE}}</h5>
-					<h5>Cantidad: {{pizza.CANTIDAD}}</h5>
-					<h5>Tamaño: {{pizza.TAMANO}}</h5>
-					<h5>Ingredientes: </h5>
-					<div class="ingrediente-contianer">
-						{% for ingrediente in pizza.INGREDIENTES %}
-							<div class="detalle-ingrediente-container">
-								<h5>-{{ingrediente.NOMBRE}}</h5>
-								<h5 style="margin-left: 10px;">| {{ingrediente.PORCION}}</h5>
-							</div>
+				<h3 class="tipo-title">Pizzas:</h3>
+				<table class="table">
+					<thead>
+						<tr>
+							<th scope="col">TIPO</th>
+							<th scope="col">CANTIDAD</th>
+							<th scope="col">TAMAÑO</th>
+							<th scope="col">INGREDIENTES</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for pizza in PEDIDO.PIZZAS %}
+						<tr>
+							<td>{{pizza.NOMBRE}}</td>
+							<td>{{pizza.CANTIDAD}}</td>
+							<td>{{pizza.TAMANO}}</td>
+							<td>
+								{% for ingrediente in pizza.INGREDIENTES %}
+								-{{ingrediente.NOMBRE}} | {{ingrediente.PORCION}}
+								{% endfor %}
+							</td>
+						</tr>
 						{% endfor %}
-					</div>
-				</div>
-				{% endfor %}
+					</tbody>
+				</table>
+				{% endif %}
+
 
 				{% if PEDIDO.ADICIONALES %}
-					<h3 style="margin-top: 20px;">Adicionales:</h3>
+				<h3 class="tipo-title" style="margin-top: 20px;">Adicionales:</h3>
+				<table class="table">
+					<thead>
+						<tr>
+							<th scope="col">NOMBRE</th>
+							<th scope="col">CANTIDAD</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for adicional in PEDIDO.ADICIONALES %}
+						<tr>
+							<td>{{adicional.NOMBRE}}</td>
+							<td>{{adicional.CANTIDAD}}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
 				{% endif %}
-				{% for adicional in PEDIDO.ADICIONALES %}
-					<div class="listado-container">
-						<h5>Nombre: {{adicional.NOMBRE}}</h5>
-						<h5>Cantidad: {{adicional.CANTIDAD}}</h5>
-					</div>
-				{% endfor %}
-				{% if PEDIDO.COMBOS %}
-					<h3 style="margin-top: 20px;">Combos Promocionales:</h3>
-				{% endif %}
-				{% for combo in PEDIDO.COMBOS %}
-					<div class="listado-container">
-						<h5>Nombre: {{combo.NOMBRE}}</h5>
-						<h5>Descripción: {{combo.DESCRIPCION}}</h5>
-						<h5>Cantidad: {{combo.CANTIDAD}}</h5>
-					</div>
-				{% endfor %}
 
-				<h3 style="margin-top: 20px;">Total: ${{ PEDIDO.TOTAL }}</h3>
+				{% if PEDIDO.COMBOS %}
+				<h3 class="tipo-title" style="margin-top: 20px;">Combos Promocionales:</h3>
+				<table class="table">
+					<thead>
+						<tr>
+							<th scope="col">NOMBRE</th>
+							<th scope="col">DESCRIPCIÓN</th>
+							<th scope="col">CANTIDAD</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for combo in PEDIDO.COMBOS %}
+						<tr>
+							<td>{{combo.NOMBRE}}</td>
+							<td>{{combo.DESCRIPCION}}</td>
+							<td>{{combo.CANTIDAD}}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+				{% endif %}
 			</div>
-		</div>
-		<div class="bloque" style="display:flex;">
-			{% if PEDIDO.ENTREGADO == 0 %}
-				<form action="" method="POST" style="margin:auto;">
-					{% csrf_token %}
-					<button class="btn btn-success btn-lg">DESPACHAR</button>
-				</form>
-			{% else %}
-				<h2 style="text-align:center; margin:30px auto;">PEDIDO DESPACHADO</h2>
-			{% endif %}
+			<div class="total-container">
+				<h3 class="tipo-title" style="margin-top: 40px;">Total: ${{ PEDIDO.TOTAL }}</h3>
+				{% if PEDIDO.ENTREGADO == 0 %}
+					<form action="" method="POST" style="margin: 0px 0px 0px auto;">
+						{% csrf_token %}
+						<button class="btn btn-success btn-despachar">DESPACHAR</button>
+					</form>
+				{% else %}
+					<h2 style="text-align:center; margin:30px auto;">DESPACHADO</h2>
+				{% endif %}
+			</div>
 		</div>
 	</div>
 </div>

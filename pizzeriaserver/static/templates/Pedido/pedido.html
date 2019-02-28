@@ -24,6 +24,10 @@
 						<h5 style="margin-left: 20px;">{{ pedido.fecha|time:"H:i" }} | {{ pedido.fecha|date:"d/m/Y" }} </h5>
 					</div>
 					<div class="pedidos-bloque">
+						<h4>TOTAL</h4>
+						<h5 style="margin-left: 20px;">${{ pedido.total }} </h5>
+					</div>
+					<div class="pedidos-bloque">
 						<a href="/menu/pedidos/{{ pedido.id }}">
 							<button class="btn verPedido-btn">Ver Pedido</button>
 						</a>
@@ -48,6 +52,10 @@
 					<div class="pedidos-bloque">
 						<h4>HORA/FECHA</h4>
 						<h5 style="margin-left: 20px;">{{ pedido.fecha|time:"H:i" }} | {{ pedido.fecha|date:"d/m/Y" }} </h5>
+					</div>
+					<div class="pedidos-bloque">
+						<h4>TOTAL</h4>
+						<h5 style="margin-left: 20px;">${{ pedido.total }} </h5>
 					</div>
 					<div class="pedidos-bloque">
 						<a href="/menu/pedidos/{{ pedido.id }}">
