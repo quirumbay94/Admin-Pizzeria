@@ -20,7 +20,7 @@ function initMap() {
         addMarker(event.latLng, map);
     });
 
-    makeRequest("http://127.0.0.1:8000/menu/cobertura/get_poligonos");
+    makeRequest("http://navi.pythonanywhere.com/menu/cobertura/get_poligonos");
 }
 
 function crearPoligonoInicial(posiciones) {
