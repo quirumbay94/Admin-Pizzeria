@@ -796,7 +796,7 @@ class Pedido(models.Model):
     entregado = models.IntegerField(default=0)
     recibido = models.IntegerField(default=0)
 
-    def crear(self, carrito, total, coordenada_entrega, forma_pago, codigo):
+    def crear(self, carrito, total, coordenada_entrega, forma_pago, codigo, poligono, local):
         try:
             pedido = Pedido()
             pedido.carrito = carrito
@@ -806,9 +806,18 @@ class Pedido(models.Model):
             pedido.fecha = datetime.datetime.now(timezone.utc) - timedelta(hours=DEFASE_ZONA_HORARIA)
             pedido.entregado = 0
             pedido.recibido = 0
-            pedido.local = Local.objects.get(sector="Alborada")
+
+            #ENCONTRAR EL LOCAL SEGUN EL POLIGONO
+            if poligono:
+                poligono_obj = Poligono.objects.get(pk=poligono)
+                pedido.local = poligono_obj.local
+
+            if local:
+                pedido.local = Local.objects.get(pk=local)
+
             if coordenada_entrega:
                 pedido.coordenada_entrega = coordenada_entrega
+
             pedido.save()
             return pedido
         except:
